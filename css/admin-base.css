@@ -1,0 +1,333 @@
+
+body
+{
+  margin: 70px auto;
+  padding: 0 20px;
+  
+  
+  color: #000;
+  background-color: #fff;
+  
+  font-family: Avenir, Corbel, sans-serif; 
+  font-weight: 400;
+
+  font-size: 15px;
+  line-height: 1.4em;
+  
+  -webkit-text-size-adjust: none /* prevent font scaling in landscape */
+}
+
+h1
+{
+  margin: 10px 0 20px 0;
+  font-weight: 500;
+  font-size: 22px;
+}
+
+h2
+{
+  margin: 20px 0 10px 0;
+  font-weight: 500;
+  font-size: 17px;
+}
+
+h3
+{
+  margin: 20px 0 10px 0;
+  font-weight: 500;
+  font-size: 15px;
+}
+
+h4
+{
+  margin: 20px 0 10px 0;
+  font-weight: 400;
+  font-size: 15px;
+}
+
+p
+{
+  margin: 10px 0;
+}
+
+a {
+  text-decoration: none;
+  color: #258df6;
+}
+a:hover {
+  color: #003db6;
+}
+
+p.message
+{
+  padding: 4px 6px;
+  display: inline-block;
+  background-color: #b1d8ff;
+  border-top: 1px solid #258df6;
+  border-bottom: 1px solid #258df6;
+}
+
+div#header
+{
+  position: absolute;
+  top: -20px;
+  left: 0;
+  right: 0;
+  height: 20px;
+  padding: 17px 20px 13px 20px;
+  text-align: right;
+  
+  background-color: #fafafa;
+  border-bottom: 1px solid #eee;
+}
+
+div#nav
+{
+  float: left;
+}
+
+div#login-status
+{
+  float: right;
+}
+
+div.buttons
+{
+  margin: 20px 0;
+  text-align: right;
+}
+
+.buttons a, .buttons input[type=submit]
+{
+  padding: 1px 6px 0px 6px;
+  
+  color: #000;
+  background-color: #eee;
+  border-radius: 2px;
+  border: 1px solid #aaa;
+  
+  font-family: inherit;
+  font-size: inherit;
+  cursor: pointer;
+}
+.buttons a:active, .buttons input[type=submit]:active {
+  background-color: #ddd;
+}
+
+table.grid
+{
+  font-family: inherit;
+  font-size: inherity;
+  width: 100%;
+  border-collapse: collapse;
+}
+
+
+table.grid > tr > td,
+table.grid > thead > tr > th,
+table.grid > tbody > tr > td
+{
+  padding: 6px 5px 3px 5px;
+  border-bottom: 1px solid #eee;
+  margin: 0;
+}
+
+table.grid > thead > tr > th
+{
+  color: #999;
+  margin-bottom: 5px;
+  font-weight: normal;
+  text-align: left;
+}
+
+table.grid > thead > tr > th,
+table.grid > tbody > tr:last-child > td
+{
+  border-color: #000;
+}
+
+table.grid > thead > tr > th.buttons,
+table.grid > tbody > tr > td.buttons
+{
+  text-align: right;
+  width: 200px;
+}
+
+table.grid > tbody > tr > td.buttons a:last-child
+{
+  margin-right: -5px;
+}
+
+table#user_list th.name
+{
+  width: 120px;
+}
+
+table#page_list th.name
+{
+  width: 200px;
+}
+
+form.medium
+{
+  width: 100%;
+  border-top: 1px solid #000;
+}
+
+form.medium > h2:first-child
+{
+  margin-top: 10px;
+}
+
+form > div.row
+{
+  margin: 10px;
+}
+
+form > div.row:first-child
+{
+  margin-top: 17px;
+}
+
+form > div.row > label
+{
+  display: inline-block;
+  width: 150px;
+  color: #999;
+}
+
+form > div.row input[type=text], form > div.row input[type=password]
+{
+  font-family: inherit;
+  font-size: inherit;
+  
+  border: 1px solid #aaa;
+  padding: 2px 4px;
+  
+  width: 200px;
+}
+
+form > div.row input.large[type=text]
+{
+  width: 350px;
+}
+
+form > div.row input.num[type=text]
+{
+  width: 50px;
+}
+
+form > div.row select
+{
+  border: 1px solid #aaa;
+  font-family: inherit;
+  font-size: inherit;
+}
+
+form > div.row textarea
+{
+  vertical-align: top;
+  font-famly: inherit;
+  font-size: inherit;
+  width: 280px;
+  height: 70px;
+  border: 1px solid #aaa;
+}
+
+form > div.row textarea.large
+{
+  width: 370px;
+  height: 300px;
+}
+
+form > div.row textarea.full
+{
+  width: 100%;
+  height: 500px;
+}
+
+form > div.row textarea.wysiwyg
+{
+  font-family: monospace;
+  font-size: 12px;
+  width: 515px;
+  height: 500px;
+  padding: 5px;
+}
+
+form > div.row div.wysiwyg-editor
+{
+  display: inline-block;
+  vertical-align: top;
+  font-famly: inherit;
+  font-size: inherit;
+  width: 515px;
+  margin-left: 10px;
+  height: 500px;
+  border: 1px solid #aaa;
+  overflow: auto;
+  padding: 5px;
+}
+
+form > div.row span.note
+{
+  padding-top: 4px;
+  padding-left: 10px;
+  position: absolute;
+  color: #999;
+  font-size: 13px;
+}
+
+form > div.row span.note:before
+{
+  content: '(';
+}
+form > div.row span.note:after
+{
+  content: ')';
+}
+
+form > div.buttons
+{
+  margin-top: 20px;
+  border-top: 1px solid #000;
+  padding-top: 5px;
+}
+
+form > div.buttons input[type=submit]
+{
+  border-color: #003db6;
+  
+  color: #fff;
+  
+  background-color: #258df6;
+  
+}
+form > div.buttons input[type=submit]:active {
+  background-color: #003db6;
+}
+
+
+@media 
+only screen and (-webkit-min-device-pixel-ratio: 2),
+only screen and (   min--moz-device-pixel-ratio: 2),
+only screen and (        min-device-pixel-ratio: 2),
+only screen and (            min-resolution: 2dppx) {
+  div.header,
+  p.message,
+  .buttons a,
+  .buttons input[type=submit],
+  table.grid > div.row > span,
+  table.grid > div.headings > span,
+  table.grid > div.headings > span,
+  form.medium,
+  form > div.row input[type=text],
+  form > div.row input[type=password],
+  form > div.row select,
+  form > div.row textarea,
+  form > div.buttons
+  form > div.row div.wysiwyg-editor
+  {
+    border-width: 0.5px;
+  }
+}
