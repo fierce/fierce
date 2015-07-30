@@ -24,6 +24,16 @@ RewriteCond %{REQUEST_URI} !dispatch.php$
 RewriteRule ^(/?)(.*)$ $1fierce/dispatch.php [L,QSA]
 ```
 
+Create a `fierce-config.php` file:
+
+```php
+<?
+
+define('AUTH_SALT', '8d6f6390017eb415bcf468a050d893628e40d12f'); // generate this for your own site with `random | shasum` in Terminal
+
+
+```
+
 Add a `classes` directory with all your php class definitions (all of them will be autoloaded).
 
 Add a `views` directory for your tpl files.

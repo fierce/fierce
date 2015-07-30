@@ -175,7 +175,8 @@ class Auth
     }
     
     // verify user hash
-    if ($user->signature != sha1($user->id . $user->type . $user->email . $user->password . AUTH_SALT)) {
+    $expectedSignature = sha1($user->id . $user->type . $user->email . $user->password . AUTH_SALT);
+    if ($user->signature != $expectedSignature) {
       $userLoginFailuresRow->failures[] = time();
       $db->login_failures->write($id, $userLoginFailuresRow, true);
       return false;
