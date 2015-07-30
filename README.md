@@ -1,7 +1,7 @@
 # Fierce
 
-> _This is free and unencumbered software released into the public domain.
-For more information, please refer to http://unlicense.org_
+> This is free and unencumbered software released into the public domain.<br>
+> For more information, please refer to <http://unlicense.org>
 
 ## About
 
