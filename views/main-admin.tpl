@@ -23,7 +23,7 @@
     </style>
   <? endforeach ?>
   
-  <? foreach ($scriptUrls as $script): ?>
+  <? foreach ($scriptUrls as $scriptUrl): ?>
     <script type="text/javascript" src="<?= htmlspecialchars($scriptUrl) ?>" defer="defer"></script>
   <? endforeach ?>
 </head>
