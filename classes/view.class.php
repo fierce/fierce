@@ -12,15 +12,16 @@
 
 class View
 {
-  protected static $tagStack = array();
+  protected static $tagStack = [];
   
   protected static $currentForm = null;
   
-  protected static $rowStack = array();
+  protected static $rowStack = [];
   
-  protected static $vars = array();
+  protected static $vars = [];
   
-  protected static $scripts = array();
+  protected static $scriptUrls = [];
+  protected static $cssUrls = [];
   
   public static function main($templateView, $contentView = false, $vars = array())
   {
@@ -54,7 +55,8 @@ class View
     } else if (!isset($vars['contentViewHtml'])) {
       $contentViewHtml = false;
     }
-    $scripts = self::$scripts;
+    $scriptUrls = self::$scriptUrls;
+    $cssUrls = self::$cssUrls;
     
     require($mainTpl);
   }
@@ -318,12 +320,36 @@ class View
     }
   }
   
-  public static function addScript($script)
+  public static function addScript($scriptUrl)
   {
-    if (in_array($script, self::$scripts)) {
+    if (in_array($scriptUrl, self::$scriptUrls)) {
       return;
     }
     
-    self::$scripts[] = $script;
+    self::$scriptUrls[] = $scriptUrl;
+  }
+  
+  public static function addCss($cssUrl)
+  {
+    if (in_array($cssUrl, self::$cssUrls)) {
+      return;
+    }
+    
+    self::$cssUrls[] = $cssUrl;
+  }
+  
+  public static function thumbnail($imageUrl, $w, $h, $allowCrop)
+  {
+    $image = new Image($imageUrl);
+    
+    $thumbUrl = $image->createThumbnail($w, $h, $allowCrop, false, $thumbWidth, $thumbHeight);
+    $thumb2xUrl = $image->createThumbnail($w * 2, $h * 2, $allowCrop, false, $thumb2xWidth, $thumb2xHeight);
+    
+    $srcsetHtml = '';
+    if ($thumb2xWidth > $thumbWidth && pathinfo(BASE_PATH . $imageUrl, PATHINFO_EXTENSION) != 'svg') {
+      $srcsetHtml = "srcset=\"$thumbUrl 1x,$thumb2xUrl 2x\"";
+    }
+    
+    return "<img src=\"$thumbUrl\" width=\"$thumbWidth\" height=\"$thumbHeight\"$srcsetHtml>";
   }
 }

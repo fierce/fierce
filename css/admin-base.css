@@ -58,6 +58,12 @@ a:hover {
   color: #003db6;
 }
 
+hr {
+  margin: 40px -20px;
+  border: none;
+  border-top: 1px solid #eee;
+}
+
 p.message
 {
   padding: 4px 6px;
@@ -255,6 +261,15 @@ form > div.row textarea.wysiwyg
   padding: 5px;
 }
 
+form > div.row div.CodeMirror
+{
+  border: 1px solid #aaa;
+  width: 515px;
+  display: inline-block;
+  vertical-align: top;
+}
+
+
 form > div.row div.wysiwyg-editor
 {
   display: inline-block;
@@ -263,10 +278,14 @@ form > div.row div.wysiwyg-editor
   font-size: inherit;
   width: 515px;
   margin-left: 10px;
-  height: 500px;
+
   border: 1px solid #aaa;
-  overflow: auto;
   padding: 5px;
+}
+
+form > div.row div.CodeMirror .cm-mustache
+{
+  color: #0ca;
 }
 
 form > div.row span.note
@@ -325,8 +344,9 @@ only screen and (            min-resolution: 2dppx) {
   form > div.row input[type=password],
   form > div.row select,
   form > div.row textarea,
-  form > div.buttons
-  form > div.row div.wysiwyg-editor
+  form > div.buttons,
+  form > div.row div.wysiwyg-editor,
+  form > div.row div.CodeMirror
   {
     border-width: 0.5px;
   }

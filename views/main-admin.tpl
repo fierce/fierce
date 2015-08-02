@@ -7,12 +7,24 @@
   <title><?= $pageTitle ?></title>
   
   <style type="text/css">
-    <? require BASE_PATH . 'fierce/css/admin-base.css' ?>
-    <? require BASE_PATH . 'css/admin.css' ?>
+    /* fierce/css/admin-base.css */
+    <?= file_get_contents(BASE_PATH . 'fierce/css/admin-base.css') ?>
   </style>
   
-  <? foreach ($scripts as $script): ?>
-    <script type="text/javascript" src="<?= htmlspecialchars($script) ?>" defer="defer"></script>
+  <style type="text/css">
+    /* css/admin.css */
+    <?= file_get_contents(BASE_PATH . 'css/admin.css') ?>
+  </style>
+  
+  <? foreach ($cssUrls as $cssUrl): ?>
+    <style type="text/css">
+      /* <?= $cssUrl ?> */
+      <?= file_get_contents(BASE_PATH . $cssUrl) ?>
+    </style>
+  <? endforeach ?>
+  
+  <? foreach ($scriptUrls as $script): ?>
+    <script type="text/javascript" src="<?= htmlspecialchars($scriptUrl) ?>" defer="defer"></script>
   <? endforeach ?>
 </head>
 <body>

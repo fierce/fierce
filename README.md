@@ -1,11 +1,5 @@
 # Fierce
-
-> This is free and unencumbered software released into the public domain.<br>
-> For more information, please refer to <http://unlicense.org>
-
-## About
-
-Fierce is a miminalist PHP Framework / Content Management System for mostly static websites.
+Fierce Web Framework
 
 ## Usage
 

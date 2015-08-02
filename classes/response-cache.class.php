@@ -72,7 +72,9 @@ class ResponseCache
     $entries = $db->cached_pages->find();
     foreach ($entries as $id => $row) {
       $cacheFile = BASE_PATH . ltrim($row->url, '/') . '.html';
-      unlink($cacheFile);
+      if (file_exists($cacheFile)) {
+        unlink($cacheFile);
+      }
       
       $db->cached_pages->purge($id);
     }

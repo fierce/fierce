@@ -1,5 +1,6 @@
 <? $pageTitle = $entity . ' List – ' . $formType ?>
   
+
 <h1><?= $formType ?> <?= $entity ?></h1>
 
 <? View::form([
@@ -31,3 +32,26 @@
     <input type="submit" value="Save <?= $entity ?>">
   </div>
 <? View::closeForm() ?>
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="fierce/third-party/codemirror/lib/codemirror.css">
+<script src="fierce/third-party/codemirror/lib/codemirror.js"></script>
+<script src="fierce/third-party/codemirror/addon/mode/overlay.js"></script>
+<script src="fierce/third-party/codemirror/mode/xml/xml.js"></script>
+
+
+
+
+
+
+
+
+

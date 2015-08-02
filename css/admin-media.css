@@ -1,0 +1,79 @@
+
+div.media_list_wrapper
+{
+/*  max-height: 300px;
+  overflow-y: auto;*/
+}
+
+#media_image_list div.image_cell
+{
+  margin: 10px;
+  display: inline-block;
+  width: 120px;
+  text-align: center;
+  vertical-align: top;
+}
+
+#media_image_list a
+{
+  color: inherit;
+}
+
+#media_image_list div.image_wrapper
+{
+  line-height: 80px;
+  height: 80px;
+  text-align: center;
+}
+
+#media_image_list img
+{
+  vertical-align: bottom;
+  background-color: #ddd;
+
+	background-image: -webkit-gradient(linear, 0 0, 100% 100%, color-stop(.25, #eee), color-stop(.25, transparent), to(transparent)),
+						        -webkit-gradient(linear, 0 100%, 100% 0, color-stop(.25, #eee), color-stop(.25, transparent), to(transparent)),
+						        -webkit-gradient(linear, 0 0, 100% 100%, color-stop(.75, transparent), color-stop(.75, #eee)),
+			  		        -webkit-gradient(linear, 0 100%, 100% 0, color-stop(.75, transparent), color-stop(.75, #eee));
+	background-image: -webkit-linear-gradient(45deg, #eee 25%, transparent 25%, transparent),
+						        -webkit-linear-gradient(-45deg, #eee 25%, transparent 25%, transparent),
+						        -webkit-linear-gradient(45deg, transparent 75%, #eee 75%),
+			  		        -webkit-linear-gradient(-45deg, transparent 75%, #eee 75%);
+	background-image: -moz-linear-gradient(45deg, #eee 25%, transparent 25%, transparent),
+						        -moz-linear-gradient(-45deg, #eee 25%, transparent 25%, transparent),
+						        -moz-linear-gradient(45deg, transparent 75%, #eee 75%),
+			  		        -moz-linear-gradient(-45deg, transparent 75%, #eee 75%);
+	background-image: -ms-linear-gradient(45deg, #eee 25%, transparent 25%, transparent),
+						        -ms-linear-gradient(-45deg, #eee 25%, transparent 25%, transparent),
+						        -ms-linear-gradient(45deg, transparent 75%, #eee 75%),
+			  		        -ms-linear-gradient(-45deg, transparent 75%, #eee 75%);
+	background-image: -o-linear-gradient(45deg, #eee 25%, transparent 25%, transparent),
+						        -o-linear-gradient(-45deg, #eee 25%, transparent 25%, transparent),
+						        -o-linear-gradient(45deg, transparent 75%, #eee 75%),
+			  		        -o-linear-gradient(-45deg, transparent 75%, #eee 75%);
+	background-image: linear-gradient(45deg, #eee 25%, transparent 25%, transparent),
+						        linear-gradient(-45deg, #eee 25%, transparent 25%, transparent),
+						        linear-gradient(45deg, transparent 75%, #eee 75%),
+			  		        linear-gradient(-45deg, transparent 75%, #eee 75%);
+
+  background-size: 15px 15px;
+  border: 1px solid #ddd;
+}
+
+#media_image_list span.name
+{
+  display: block;
+  margin-top: 10px;
+  font-size: 13px;
+}
+
+@media 
+only screen and (-webkit-min-device-pixel-ratio: 2),
+only screen and (   min--moz-device-pixel-ratio: 2),
+only screen and (        min-device-pixel-ratio: 2),
+only screen and (            min-resolution: 2dppx) {
+  #media_image_list img
+  {
+    border-width: 0.5px;
+  }
+}
