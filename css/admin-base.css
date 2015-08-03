@@ -207,6 +207,7 @@ form.medium > h2:first-child
 form > div.row
 {
   margin: 10px;
+  display: table;
 }
 
 form > div.row:first-child
@@ -216,9 +217,14 @@ form > div.row:first-child
 
 form > div.row > label
 {
-  display: inline-block;
+  display: table-cell;
   width: 150px;
   color: #999;
+}
+
+form > div.row > .field
+{
+  display: table-cell;
 }
 
 form > div.row input[type=text], form > div.row input[type=password]
@@ -271,35 +277,57 @@ form > div.row textarea.full
   height: 500px;
 }
 
+form > div.wysiwyg_row
+{
+  display: block;
+}
+
+form > div.wysiwyg_row label
+{
+  display: block;
+}
+
+form > div.wysiwyg_row .field
+{
+  display: block;
+  width: 100%;
+  height: 600px;
+  border-collapse: collapse;
+  border: 1px solid #aaa;
+}
+
+form > div.wysiwyg_row .field .wysiwyg_cell
+{
+  display: inline-block;
+  margin: 0;
+  width: 50%;
+  height: 600px;
+  overflow: auto;
+}
+
 form > div.row textarea.wysiwyg
 {
+  display: none;
   font-family: monospace;
   font-size: 12px;
-  width: 515px;
-  height: 500px;
   padding: 5px;
 }
 
 form > div.row div.CodeMirror
 {
-  border: 1px solid #aaa;
-  width: 515px;
-  display: inline-block;
   vertical-align: top;
+  font-size: 12px;
+  font-family: monospace;
+  border-right: 1px solid #aaa;
 }
 
 
 form > div.row div.wysiwyg-editor
-{
-  display: inline-block;
+{  
   vertical-align: top;
   font-famly: inherit;
   font-size: inherit;
-  width: 515px;
-  margin-left: 10px;
-
-  border: 1px solid #aaa;
-  padding: 5px;
+  padding-left: 10px;
 }
 
 form > div.row div.CodeMirror .cm-mustache
@@ -362,8 +390,9 @@ only screen and (            min-resolution: 2dppx) {
   form > div.row select,
   form > div.row textarea,
   form > div.buttons,
-  form > div.row div.wysiwyg-editor,
-  form > div.row div.CodeMirror
+  form > div.wysiwyg_row .field,
+  form > div.row div.CodeMirror,
+  form > div.row div.wysiwyg-editor
   {
     border-width: 0.5px;
   }

@@ -195,14 +195,23 @@ class View
       }
     }
     
-    print '<div class="row">';
+    $rowClass = 'row';
+    if (isset($params['class'])) {
+      foreach (explode(' ', $params['class']) as $class) {
+        $rowClass .= " {$class}_row";
+      }
+    }
+    
+    print "<div class=\"$rowClass\">";
     print "<label for=\"{$name}_field\">" . htmlspecialchars($displayName) . '</label>' . "\n";
+    print "<div class=\"field\">";
   }
   
   public static function closeRow()
   {
     $params = array_pop(self::$rowStack);
-
+    
+    print "</div>\n";
     if (isset($params['note'])) {
       print '<span class="note">' . htmlspecialchars($params['note']) . '</span>';
     }

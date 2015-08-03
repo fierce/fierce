@@ -6,15 +6,22 @@
     this.textareaEl = textareaEl
     this.textareaEl.addEventListener('input', this.textareaInput.bind(this))
     
-    // load wysiwyg view
+    // create wysiwyg view
     this.wysiwygEl = document.createElement('div')
     this.wysiwygEl.className = 'wysiwyg-editor'
     this.wysiwygEl.innerHTML = this.textareaEl.value
     
-    // this.wysiwygEl.contentEditable = true
-    // this.wysiwygEl.addEventListener('input', this.wysiwygInput.bind(this))
+    // create code/preview cells
+    var codeCell = document.createElement('div')
+    codeCell.className = 'wysiwyg_cell wysiwyg_code_cell'
+    textareaEl.parentNode.appendChild(codeCell)
+    codeCell.appendChild(this.textareaEl);
     
-    this.textareaEl.parentNode.appendChild(this.wysiwygEl)
+    var previewCell = document.createElement('div')
+    previewCell.className = 'wysiwyg_cell wysiwyg_preview_cell'
+    codeCell.parentNode.appendChild(previewCell)
+    
+    previewCell.appendChild(this.wysiwygEl)
     
     // load CodeMirror
     CodeMirror.defineMode("mustache", function(config, parserConfig) {
@@ -65,10 +72,7 @@
     
     return result
   }
-  WysiwygFieldController.prototype.wysiwygInput = function()
-  {
-    this.textareaEl.value = this.wysiwygEl.innerHTML
-  }
+  
   WysiwygFieldController.prototype.textareaInput = function()
   {
     this.wysiwygEl.innerHTML = this.textareaEl.value
