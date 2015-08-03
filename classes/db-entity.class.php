@@ -90,6 +90,15 @@ class DBEntity
     }
   }
   
+  public function idExists($id)
+  {
+    switch ($this->type) {
+      case 'file':
+        $file = "$this->dataDir/$id.json";
+        return file_exists($file);
+    }
+  }
+  
   
   
   public function write($id, $row, $allowOverwrite = false)
