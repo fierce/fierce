@@ -22,6 +22,7 @@ h1
   margin: 10px 0 20px 0;
   font-weight: 500;
   font-size: 22px;
+  color: #152436;
 }
 
 h2
@@ -29,6 +30,7 @@ h2
   margin: 20px 0 10px 0;
   font-weight: 500;
   font-size: 17px;
+  color: #152436;
 }
 
 h3
@@ -36,6 +38,7 @@ h3
   margin: 20px 0 10px 0;
   font-weight: 500;
   font-size: 15px;
+  color: #152436;
 }
 
 h4
@@ -43,6 +46,7 @@ h4
   margin: 20px 0 10px 0;
   font-weight: 400;
   font-size: 15px;
+  color: #152436;
 }
 
 p
@@ -52,10 +56,7 @@ p
 
 a {
   text-decoration: none;
-  color: #258df6;
-}
-a:hover {
-  color: #003db6;
+  color: #1684d0;
 }
 
 hr {
@@ -83,8 +84,26 @@ div#header
   padding: 17px 20px 13px 20px;
   text-align: right;
   
-  background-color: #fafafa;
-  border-bottom: 1px solid #eee;
+  background-color: #152436;
+  color: #fff;
+}
+
+div#header #login-status span.username
+{
+  opacity: 0.8;
+}
+
+div#header a
+{
+  border: none;
+  color: #fff !important;
+  background-color: transparent;
+  margin: 20px 10px;
+}
+
+div#header a.current
+{
+  text-decoration: underline;
 }
 
 div#nav
@@ -107,17 +126,17 @@ div.buttons
 {
   padding: 1px 6px 0px 6px;
   
-  color: #000;
-  background-color: #eee;
+  color: #fff;
+  background-color: #1684d0;
   border-radius: 2px;
-  border: 1px solid #aaa;
+  border: none;
   
   font-family: inherit;
   font-size: inherit;
   cursor: pointer;
 }
 .buttons a:active, .buttons input[type=submit]:active {
-  background-color: #ddd;
+  background-color: #152436;
 }
 
 table.grid
@@ -149,7 +168,7 @@ table.grid > thead > tr > th
 table.grid > thead > tr > th,
 table.grid > tbody > tr:last-child > td
 {
-  border-color: #000;
+  border-color: #152436;
 }
 
 table.grid > thead > tr > th.buttons,
@@ -177,7 +196,7 @@ table#page_list th.name
 form.medium
 {
   width: 100%;
-  border-top: 1px solid #000;
+  border-top: 1px solid #152436;
 }
 
 form.medium > h2:first-child
@@ -309,7 +328,7 @@ form > div.row span.note:after
 form > div.buttons
 {
   margin-top: 20px;
-  border-top: 1px solid #000;
+  border-top: 1px solid #152436;
   padding-top: 5px;
 }
 
@@ -334,8 +353,6 @@ only screen and (        min-device-pixel-ratio: 2),
 only screen and (            min-resolution: 2dppx) {
   div.header,
   p.message,
-  .buttons a,
-  .buttons input[type=submit],
   table.grid > div.row > span,
   table.grid > div.headings > span,
   table.grid > div.headings > span,

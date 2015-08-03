@@ -32,7 +32,7 @@
 <? if ($user = Auth::loggedInUser()): ?>
 <div id="header" class="buttons">
   <div id="login-status">
-    <?= htmlspecialchars($user->email) ?>
+    <span class="username"><?= htmlspecialchars($user->email) ?></span>
     <a href="login?do=logout">Log Out</a>
   </div>
   
