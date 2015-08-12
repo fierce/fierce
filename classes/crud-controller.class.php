@@ -29,8 +29,14 @@ class CrudController extends PageController
   
   public function defaultAction()
   {
+    global $db;
+    
     $entity = $this->entity;
-    $items = $entity::all('modified');
+    
+    $items = $db->$entity->getIndexRows('crud');
+    if (!$items) {
+      $items = $entity::all('modified');
+    }
     
     $displayField = array_keys($this->listFields)[0];
     
