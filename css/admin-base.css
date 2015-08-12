@@ -235,7 +235,7 @@ form > div.row input[type=text], form > div.row input[type=password]
   border: 1px solid #aaa;
   padding: 2px 4px;
   
-  width: 200px;
+  width: 280px;
 }
 
 form > div.row input.large[type=text]
