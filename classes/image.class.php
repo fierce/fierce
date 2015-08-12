@@ -1,5 +1,7 @@
 <?
 
+namespace F;
+
 class Image
 {
   public function __construct($url)
@@ -28,7 +30,7 @@ class Image
     
     // create destination width/height
     if ($allowCrop) {
-      throw new exception('not yet implemented');
+      throw new \exception('not yet implemented');
     }
     $destWidth = ($origWidth > $origHeight) ? $w : round($origWidth * ($h / $origHeight));
     $destHeight = ($origWidth < $origHeight) ? $h : round($origHeight * ($w / $origWidth));
@@ -53,7 +55,7 @@ class Image
         $sourceImage = imagecreatefromgif(BASE_PATH . $this->url);
         break;
       default:
-        throw new exception('invalid type');
+        throw new \exception('invalid type');
     }
     
     imagealphablending($thumbImage, false);
@@ -72,7 +74,7 @@ class Image
         imagepng($thumbImage, BASE_PATH . $url, 9);
         break;
       default:
-        throw new exception('invalid type');
+        throw new \exception('invalid type');
     }
     
     return $url;

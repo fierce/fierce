@@ -1,5 +1,7 @@
 <?
 
+namespace F;
+
 /**
  * 
  * Fierce Web Framework
@@ -12,7 +14,7 @@
 
 class UsersController extends CrudController
 {
-  public $entity = 'User';
+  public $entity = 'F\User';
   
   public $listFields = [
     'name' => 'Name',

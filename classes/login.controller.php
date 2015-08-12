@@ -1,5 +1,7 @@
 <?
 
+namespace F;
+
 /**
  * 
  * Fierce Web Framework

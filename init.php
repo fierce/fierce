@@ -1,5 +1,7 @@
 <?
 
+namespace F;
+
 /**
  * 
  * Fierce Web Framework
@@ -20,10 +22,10 @@ define('REQUEST_URL', $matches[2]);
 require BASE_PATH . 'fierce-config.php';
 
 if (!defined('AUTH_SALT')) {
-  throw new exception('Auth salt must be defined');
+  throw new \exception('Auth salt must be defined');
 }
 if (AUTH_SALT == '8d6f6390017eb415bcf468a050d893628e40d12f') {
-  throw new exception('Cannot use the example AUTH_SALT. Make your own with `random | sha1`!');
+  throw new \exception('Cannot use the example AUTH_SALT. Make your own with `random | sha1`!');
 }
 
 // function to print out a variable for debugging
@@ -52,6 +54,7 @@ foreach ($classFiles as $file) {
   $className = strtolower($className);
   $className = preg_replace('/\.class$/', '', $className);
   $className = preg_replace('/[^a-z]/', '', $className);
+  $className = 'f\\' . $className;
   
   $autoloadClasses[$className] = $file;
 }
@@ -66,6 +69,8 @@ foreach ($classFiles as $file) {
   $autoloadClasses[$className] = $file;
 }
 spl_autoload_register(function($className) use ($autoloadClasses) {
+  $className = strtolower($className);
+
   $file = @$autoloadClasses[strtolower($className)];
   if (!$file) {
     return;

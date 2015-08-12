@@ -1,3 +1,5 @@
+<? namespace F ?>
+
 <? $pageTitle = 'Media' ?>
 
 <? View::addCss('fierce/css/admin-media.css') ?>

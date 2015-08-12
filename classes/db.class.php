@@ -1,5 +1,7 @@
 <?
 
+namespace F;
+
 /**
  * 
  * Fierce Web Framework
@@ -28,12 +30,15 @@ class DB
 //         $this->pdo = new PDO($pathOrDsn, $username, $passsword);
 //         break;
       default:
-        throw new exception('invalid type ' . $type);
+        throw new \exception('invalid type ' . $type);
     }
   }
   
   public function __get($entity)
   {
+    $entity = strtolower($entity);
+    $entity = preg_replace('/^f\\\/', '', $entity);
+    
     return $this->$entity = new DBEntity($this, $entity);
   }
   

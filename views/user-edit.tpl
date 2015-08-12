@@ -1,3 +1,5 @@
+<? namespace F ?>
+
 <? $pageTitle = $entity . ' List – ' . $formType ?>
   
 <h1><?= $formType ?> <?= $entity ?></h1>

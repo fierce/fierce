@@ -1,5 +1,7 @@
 <?
 
+namespace F;
+
 /**
  * 
  * Fierce Web Framework
@@ -20,7 +22,7 @@ if ($url != '/') {
 
 try {
   $page = $db->page->byId(sha1($url));
-} catch (Exception $e) {
+} catch (\Exception $e) {
   $page = $db->page->byId(sha1('/404'));
 }
 

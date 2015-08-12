@@ -1,3 +1,5 @@
+<? namespace F ?>
+
 <!DOCTYPE html>
 <html>
 <head>

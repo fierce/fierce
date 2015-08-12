@@ -1,5 +1,7 @@
 <?
 
+namespace F;
+
 class MigrationsController extends PageController
 {
   public $mainTpl = 'main-admin.tpl';

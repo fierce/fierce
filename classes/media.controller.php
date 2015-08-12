@@ -1,5 +1,7 @@
 <?
 
+namespace F;
+
 class MediaController extends PageController
 {
   public $mainTpl = 'main-admin.tpl';

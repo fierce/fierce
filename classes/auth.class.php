@@ -1,5 +1,7 @@
 <?
 
+namespace F;
+
 /**
  * 
  * Fierce Web Framework
@@ -79,7 +81,7 @@ class Auth
     $sessionId = preg_replace('/[^a-z0-9]/', '', $_COOKIE['u']);
     try {
       $loginSession = $db->login_session->byId($sessionId);
-    } catch (Exception $e) {
+    } catch (\Exception $e) {
       self::logout();
       return null;
     }
@@ -138,7 +140,7 @@ class Auth
     $id = sha1(strtolower($email) . AUTH_SALT);
     try {
       $user = $db->user->byId($id);
-    } catch (Exception $e) {
+    } catch (\Exception $e) {
       return false;
     }
     
@@ -146,7 +148,7 @@ class Auth
     // load all recorded login failures
     try {
       $userLoginFailuresRow = $db->login_failures->byId($id);
-    } catch (Exception $e) {
+    } catch (\Exception $e) {
       $userLoginFailuresRow = (object)['failures' => []];
     }
     // drop all failures older than 20 mintues

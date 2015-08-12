@@ -1,5 +1,7 @@
 <?
 
+namespace F;
+
 /**
  * 
  * Fierce Web Framework
@@ -83,7 +85,7 @@ class DBEntity
       case 'file':
         $file = "$this->dataDir/$id.json";
         if (!file_exists($file)) {
-          throw new exception('Invalid ID');
+          throw new \exception('Invalid ID');
         }
         
         return file_get_contents($file);
@@ -106,7 +108,7 @@ class DBEntity
     $file = "$this->dataDir/$id.json";
     
     if (!$allowOverwrite && file_exists($file)) {
-      throw new exception('cannot write to ' . $this->entity . ':' . $id . ' – already exists.');
+      throw new \exception('cannot write to ' . $this->entity . ':' . $id . ' – already exists.');
     }
     
     file_put_contents($file, json_encode($row, JSON_PRETTY_PRINT));

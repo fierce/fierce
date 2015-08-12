@@ -1,5 +1,7 @@
 <?
 
+namespace F;
+
 /**
  * 
  * Fierce Web Framework
@@ -12,7 +14,7 @@
 
 class PagesController extends CrudController
 {
-  public $entity = 'Page';
+  public $entity = 'F\Page';
   
   public $listFields = [
     'name' => 'Name',

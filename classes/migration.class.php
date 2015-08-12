@@ -1,10 +1,12 @@
 <?
 
+namespace F;
+
 class Migration
 {
   function run()
   {
-    throw new exception('subclass must implement this');
+    throw new \exception('subclass must implement this');
   }
   
   function log($str)

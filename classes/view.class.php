@@ -1,5 +1,7 @@
 <?
 
+namespace F;
+
 /**
  * 
  * Fierce Web Framework
@@ -37,7 +39,7 @@ class View
       $mainTpl = BASE_PATH . 'fierce/views/' . $templateView;
     }
     if (!file_exists($mainTpl)) {
-      throw new exception('Can\'t find view ' . $templateView);
+      throw new \exception('Can\'t find view ' . $templateView);
     }
     
     if ($contentView) {
@@ -46,7 +48,7 @@ class View
         $contentTpl = BASE_PATH . 'fierce/views/' . $contentView;
       }
       if (!file_exists($contentTpl)) {
-        throw new exception('Can\'t find view ' . $contentView);
+        throw new \exception('Can\'t find view ' . $contentView);
       }
       
       ob_start();
@@ -80,7 +82,7 @@ class View
       $tpl = BASE_PATH . 'fierce/views/' . $view;
     }
     if (!file_exists($tpl)) {
-      throw new exception('Can\'t find view ' . $view);
+      throw new \exception('Can\'t find view ' . $view);
     }
     
     require($tpl);
@@ -114,7 +116,7 @@ class View
         $expectedName = 'null';
       }
       
-      throw new exception("Unexpected close tag '$name', expected '$expectedName'.");
+      throw new \exception("Unexpected close tag '$name', expected '$expectedName'.");
     }
     
     print "</$name>";

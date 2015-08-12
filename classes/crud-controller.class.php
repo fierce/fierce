@@ -1,5 +1,7 @@
 <?
 
+namespace F;
+
 /**
  * 
  * Fierce Web Framework
@@ -16,12 +18,22 @@ class CrudController extends PageController
   public $listFields = [];
   public $mainTpl = 'main-admin.tpl';
   
+  public $noun = false;
+  public $nounPlural = false;
+  
   public function __construct()
   {
     Auth::requireAdmin();
     
+    if (!$this->noun) {
+      $this->noun = preg_replace('/^.+\\\/', '', $this->entity);
+    }
+    if (!$this->nounPlural) {
+      $this->nounPlural = $this->noun . 's';
+    }
+    
     if (!$this->displayName) {
-      $this->displayName = 'Manage ' . $this->entity . 's';
+      $this->displayName = 'Manage ' . $this->nounPlural;
     }
     
     parent::__construct();

@@ -1,9 +1,9 @@
-<? $pageTitle = $entity . ' List' ?>
+<? $pageTitle = $noun . ' List' ?>
 
-<h1><?= $entity ?> List</h1>
+<h1><?= $noun ?> List</h1>
 
 <div class="buttons">
-  <a href="<?= $controller->url('add') ?>">Add <?= $entity ?></a>
+  <a href="<?= $controller->url('add') ?>">Add <?= $noun ?></a>
 </div>
 
 <table class="grid" id="<?= strtolower($entity) ?>_list">
