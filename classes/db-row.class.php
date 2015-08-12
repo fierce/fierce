@@ -101,7 +101,7 @@ class DBRow
     $this->row->modified = time();
     
     // save
-    $db->$entity->archive($this->id);
+    $db->$entity->archive($this->id, false);
     $db->$entity->write($this->id, $this->row);
     
   }
@@ -112,5 +112,5 @@ class DBRow
     $entity = strtolower(get_called_class());
     
     $db->$entity->archive($this->id);
-  }  
+  }
 }

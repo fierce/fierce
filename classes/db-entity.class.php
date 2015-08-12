@@ -110,9 +110,84 @@ class DBEntity
     }
     
     file_put_contents($file, json_encode($row, JSON_PRETTY_PRINT));
+    
+    $this->rebuildIndexes();
   }
   
-  public function archive($id)
+  public function writeIndex($name, $columns, $sort)
+  {
+    $entity = $this->entity;
+    
+    $rows = $entity::all($sort);
+    
+    $indexRows = [];
+    foreach ($rows as $row) {
+      $indexRow = (object)[
+        'id' => $row->id
+      ];
+      
+      foreach ($columns as $column) {
+        $indexRow->$column = $row->$column;
+      }
+      
+      $indexRows[] = $indexRow;
+    }
+    
+    $indexDir = $this->dataDir . 'indexes/';
+    if (!is_dir($indexDir)) {
+      mkdir($indexDir, 0777, true);
+    }
+    
+    $index = (object)[
+      'columns' => $columns,
+      'sort' => $sort,
+      'rows' => $indexRows
+    ];
+    
+    $file = "$indexDir$name.json";
+    file_put_contents($file, json_encode($index, JSON_PRETTY_PRINT));
+  }
+  
+  public function rebuildIndexes()
+  {
+    $entity = $this->entity;
+    
+    $indexDir = $this->dataDir . 'indexes/';
+    if (!is_dir($indexDir)) {
+      return;
+    }
+    
+    $files = glob("$indexDir*.json");
+
+    foreach ($files as $file) {
+      $name = pathinfo($file, PATHINFO_FILENAME);
+      $index = json_decode(file_get_contents($file));
+      
+      $this->writeIndex($name, $index->columns, $index->sort);
+    }
+  }
+  
+  public function getIndex($name)
+  {
+    $file = "{$this->dataDir}indexes/$name.json";
+    if (!file_exists($file)) {
+      return null;
+    }
+    
+    return json_decode(file_get_contents($file));
+  }
+  
+  public function getIndexRows($name)
+  {
+    $index = $this->getIndex($name);
+    if (!$index) {
+      return null;
+    }
+    
+    return $index->rows;
+  }
+  
+  public function archive($id, $rebuildIndexes=true)
   {
     $file = "$this->dataDir/$id.json";
     if (!file_exists($file)) {
@@ -123,6 +198,10 @@ class DBEntity
     $archivefile = "$this->dataDir/archive/$timestamp-$id.json";
     
     rename($file, $archivefile);
+    
+    if ($rebuildIndexes) {
+      $this->rebuildIndexes();
+    }
   }
   
   public function purge($id)
@@ -132,5 +211,7 @@ class DBEntity
     if (file_exists($file)) {
       unlink($file);
     }
+    
+    $this->rebuildIndexes();
   }
 }
