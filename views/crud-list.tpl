@@ -19,7 +19,7 @@
     <? foreach ($items as $item): ?>
       <tr>
         <? foreach ($listFields as $field => $name): ?>
-          <td class="<?= $field ?>"><?= htmlspecialchars($item->$field) ?></td>
+          <td class="<?= $field ?>"><?= preg_match('/_html$/', $field) ? $item->$field : htmlspecialchars($item->$field) ?></td>
         <? endforeach; ?>
         
         <td class="buttons">
