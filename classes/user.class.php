@@ -116,7 +116,7 @@ class User
     
     // apply new id (email may have changed)
     $oldId = $this->id;
-    $this->id = sha1(strtolower($this->row->email) . AUTH_SALT);
+    $this->id = sha1(strtolower($this->row->email) . F_AUTH_SALT);
     $this->row->id = $this->id;
     
     // misc fields
@@ -136,7 +136,7 @@ class User
     }
     
     // hash everything
-    $this->row->signature = sha1($this->row->id . $this->row->type . $this->row->email . $this->row->password . AUTH_SALT);
+    $this->row->signature = sha1($this->row->id . $this->row->type . $this->row->email . $this->row->password . F_AUTH_SALT);
     
     $db->user->archive($oldId);
     $db->user->write($this->id, $this->row);

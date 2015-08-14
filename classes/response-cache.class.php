@@ -22,6 +22,10 @@ class ResponseCache
       return;
     }
     
+    if (defined('F_DISABLE_CACHE') && DISABLE_CACHE) {
+      return;
+    }
+    
     $cacheSeed = sha1(serialize([
       REQUEST_URL
     ]));

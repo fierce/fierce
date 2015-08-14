@@ -21,11 +21,11 @@ define('REQUEST_URL', $matches[2]);
 
 require BASE_PATH . 'fierce-config.php';
 
-if (!defined('AUTH_SALT')) {
+if (!defined('F_AUTH_SALT')) {
   throw new \exception('Auth salt must be defined');
 }
-if (AUTH_SALT == '8d6f6390017eb415bcf468a050d893628e40d12f') {
-  throw new \exception('Cannot use the example AUTH_SALT. Make your own with `random | sha1`!');
+if (F_AUTH_SALT == '8d6f6390017eb415bcf468a050d893628e40d12f') {
+  throw new \exception('Cannot use the example F_AUTH_SALT. Make your own with `random | sha1`!');
 }
 
 // function to print out a variable for debugging

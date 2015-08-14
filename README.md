@@ -29,7 +29,12 @@ Create a `fierce-config.php` file:
 ```php
 <?
 
-define('AUTH_SALT', '8d6f6390017eb415bcf468a050d893628e40d12f'); // generate this for your own site with `random | shasum` in Terminal
+define('F_AUTH_SALT', '8d6f6390017eb415bcf468a050d893628e40d12f'); // generate this for your own site with `random | shasum` in Terminal
+
+if ($_SERVER['HTTP_HOST'] == 'localhost') {
+  define('F_DISABLE_CACHE', true);
+}
+
 
 
 ```

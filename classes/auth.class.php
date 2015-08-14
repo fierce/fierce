@@ -96,20 +96,20 @@ class Auth
     $user = $db->user->byId($loginSession->user);
     
     // verify login session (block privilege escalation by a database injection)
-    if ($loginSession->hash != sha1($loginSession->user . $user->password . $loginSession->last_active . AUTH_SALT)){
+    if ($loginSession->hash != sha1($loginSession->user . $user->password . $loginSession->last_active . F_AUTH_SALT)){
       self::logout();
       return null;
     }
     
     // verify user hash
-    if ($user->signature != sha1($user->id . $user->type . $user->email . $user->password . AUTH_SALT)) {
+    if ($user->signature != sha1($user->id . $user->type . $user->email . $user->password . F_AUTH_SALT)) {
       self::logout();
       return null;
     }
     
     // record activity on the login session
     $loginSession->last_active = time();
-    $loginSession->hash = sha1($loginSession->user . $user->password . $loginSession->last_active . AUTH_SALT);
+    $loginSession->hash = sha1($loginSession->user . $user->password . $loginSession->last_active . F_AUTH_SALT);
     $db->login_session->write($sessionId, $loginSession, true);
     
     // and finally, log them in
@@ -137,7 +137,7 @@ class Auth
     global $db;
     
     // find user
-    $id = sha1(strtolower($email) . AUTH_SALT);
+    $id = sha1(strtolower($email) . F_AUTH_SALT);
     try {
       $user = $db->user->byId($id);
     } catch (\Exception $e) {
@@ -177,7 +177,7 @@ class Auth
     }
     
     // verify user hash
-    $expectedSignature = sha1($user->id . $user->type . $user->email . $user->password . AUTH_SALT);
+    $expectedSignature = sha1($user->id . $user->type . $user->email . $user->password . F_AUTH_SALT);
     if ($user->signature != $expectedSignature) {
       $userLoginFailuresRow->failures[] = time();
       $db->login_failures->write($id, $userLoginFailuresRow, true);
@@ -189,7 +189,7 @@ class Auth
       'user' => $id,
       'last_active' => time()
     ];
-    $session->hash = sha1($session->user . $hashForDatabase . $session->last_active . AUTH_SALT);
+    $session->hash = sha1($session->user . $hashForDatabase . $session->last_active . F_AUTH_SALT);
     $db->login_session->write($hashForCookie, $session, true);
     setcookie('u', $hashForCookie, 0, '/');
     
