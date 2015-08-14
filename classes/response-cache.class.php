@@ -22,7 +22,7 @@ class ResponseCache
       return;
     }
     
-    if (defined('F_DISABLE_CACHE') && DISABLE_CACHE) {
+    if (defined('F_DISABLE_CACHE') && F_DISABLE_CACHE) {
       return;
     }
     
