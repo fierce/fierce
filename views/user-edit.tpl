@@ -16,7 +16,7 @@
   
   <? View::selectRow([
     'name' => 'type',
-    'options' => ['admin', 'root']
+    'options' => ['admin' => 'Admin', 'root' => 'Developer']
   ]) ?>
   
   <? View::fieldRow([
