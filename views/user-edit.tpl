@@ -1,8 +1,8 @@
 <? namespace F ?>
 
-<? $pageTitle = $entity . ' List – ' . $formType ?>
+<? $pageTitle = $noun . ' List – ' . $formType ?>
   
-<h1><?= $formType ?> <?= $entity ?></h1>
+<h1><?= $formType ?> <?= $noun ?></h1>
 
 <? View::form([
   'action' => $formType == 'Add' ? $controller->url('add-submit') : $controller->url('edit-submit', ['id' => $item->id]),
@@ -12,6 +12,11 @@
 ]) ?>
   <? View::fieldRow([
     'name' => 'name'
+  ]) ?>
+  
+  <? View::selectRow([
+    'name' => 'type',
+    'options' => ['admin', 'root']
   ]) ?>
   
   <? View::fieldRow([
@@ -26,6 +31,6 @@
   ]) ?>
   
   <div class="buttons">
-    <input type="submit" value="Save <?= $entity ?>">
+    <input type="submit" value="Save <?= $noun ?>">
   </div>
 <? View::closeForm() ?>
