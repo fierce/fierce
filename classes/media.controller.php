@@ -11,7 +11,7 @@ class MediaController extends PageController
     Auth::requireAdmin();
     
     if (!$this->displayName) {
-      $this->displayName = 'Manage Images/CSS/JavaScript';
+      $this->displayName = 'Manage Images';
     }
     
     parent::__construct();
@@ -27,26 +27,6 @@ class MediaController extends PageController
       }
       
       $imageItems[] = (object)[
-        'name' => basename($file),
-        'path' => $file,
-        'url' => str_replace(BASE_PATH, '', $file)
-      ];
-    }
-    
-    $cssFiles = glob(BASE_PATH . 'css/*.css');
-    $cssItems = array();
-    foreach ($cssFiles as $file) {
-      $cssItems[] = (object)[
-        'name' => basename($file),
-        'path' => $file,
-        'url' => str_replace(BASE_PATH, '', $file)
-      ];
-    }
-    
-    $jsFiles = glob(BASE_PATH . 'scripts/*.js');
-    $jsItems = array();
-    foreach ($jsFiles as $file) {
-      $jsItems[] = (object)[
         'name' => basename($file),
         'path' => $file,
         'url' => str_replace(BASE_PATH, '', $file)
