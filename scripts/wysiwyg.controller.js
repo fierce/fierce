@@ -4,7 +4,6 @@
   {
     // load text area
     this.textareaEl = textareaEl
-    this.textareaEl.addEventListener('input', this.textareaInput.bind(this))
     
     // create wysiwyg view
     this.wysiwygEl = document.createElement('div')
@@ -47,18 +46,26 @@
     });
     
     var delay;
-    // Initialize CodeMirror editor with a nice html5 canvas demo.
     this.codeMirrorEditor.on("change", function() {
-      clearTimeout(delay);
-      delay = setTimeout(updatePreview, 10);
-    });
+      if (!this.updatingCodeMirror) {
+        updatePreview()
+        clearTimeout(delay);
+        delay = setTimeout(updatePreview, 10);
+      }
+    }.bind(this));
     
     updatePreview = function() {
-      this.textareaEl.value = this.codeMirrorEditor.getValue();
+      var html = this.codeMirrorEditor.getValue()
+      this.textareaEl.value = html
       
-      this.textareaInput();
+      this.wysiwygEl.innerHTML = html
     }.bind(this)
     setTimeout(updatePreview, 10);
+    
+    // init wysiwyg field
+    this.wysiwygEl.contentEditable = true
+    this.wysiwygEl.addEventListener('input', this.wysiwygInput.bind(this))
+    this.wysiwygEl.addEventListener('keypress', this.wysiwygKeypress.bind(this))
   }
   WysiwygFieldController.prototype.unescapeHTML = function(html)
   {
@@ -73,9 +80,57 @@
     return result
   }
   
-  WysiwygFieldController.prototype.textareaInput = function()
+  WysiwygFieldController.prototype.wysiwygInput = function()
   {
-    this.wysiwygEl.innerHTML = this.textareaEl.value
+    var html = this.wysiwygEl.innerHTML
+    
+    this.textareaEl.value = html
+    
+    this.updatingCodeMirror = true
+    this.codeMirrorEditor.setValue(html)
+    this.updatingCodeMirror = false
+  }
+  
+  WysiwygFieldController.prototype.wysiwygKeypress = function(ev)
+  {
+    // return
+    if (ev.keyCode == '13' && !ev.shiftKey) {
+      ev.preventDefault()
+      
+      document.execCommand('insertParagraph', false)
+      document.execCommand('formatBlock', false, 'p')
+      
+      return
+    }
+    if (ev.keyCode == '13' && ev.shiftKey) {
+      ev.preventDefault()
+      
+      var docFragment = document.createDocumentFragment();
+  
+
+      //add the br, or p, or something else
+      newEle = document.createElement('br');
+      docFragment.appendChild(newEle);
+
+      //make the br replace selection
+      var range = window.getSelection().getRangeAt(0);
+      range.deleteContents();
+      range.insertNode(docFragment);
+
+      //create a new range
+      range = document.createRange();
+      range.setStartAfter(newEle);
+      range.collapse(true);
+
+      //make the cursor there
+      var sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+      
+      this.wysiwygInput()
+      
+      return
+    }
   }
   
   document.addEventListener('DOMContentLoaded', function() {
