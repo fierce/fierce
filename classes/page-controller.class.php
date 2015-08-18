@@ -21,7 +21,9 @@ class PageController
   public function __construct()
   {
     if (!$this->displayName) {
-      $this->displayName = preg_replace('/Controller$/', '', get_class($this));
+      $this->displayName = get_class($this);
+      $this->displayName = preg_replace('/Controller$/', '', $this->displayName);
+      $this->displayName = preg_replace('/^.+\\\/', '', $this->displayName);
     }
   }
   

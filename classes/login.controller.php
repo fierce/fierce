@@ -17,6 +17,11 @@ class LoginController extends PageController
   public function __construct()
   {
     ResponseCache::disable();
+    
+    if (!$this->displayName) {
+      $this->displayName = 'Login Form';
+    }
+    
     parent::__construct();
   }
   public function defaultAction()

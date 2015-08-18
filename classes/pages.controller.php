@@ -28,7 +28,7 @@ class PagesController extends CrudController
     global $autoloadClasses;
     
     $classOptions = [
-      'PageController' => 'Plain Page'
+      'F\PageController' => 'Plain Page'
     ];
     foreach ($autoloadClasses as $class => $file) {
       if (pathinfo(pathinfo($file, PATHINFO_FILENAME), PATHINFO_EXTENSION) != 'controller') {
