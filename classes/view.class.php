@@ -101,7 +101,7 @@ class View
     print $html;
   }
   
-  public static function openTag($name, $params)
+  public static function openTag($name, $params=[])
   {
     self::$tagStack[] = $name;
     
@@ -284,6 +284,42 @@ class View
     self::openRow($params);
     
     self::photoField($params);
+    
+    self::closeRow();
+  }
+  
+  public static function tagField($params)
+  {
+    View::addScript('fierce/scripts/tag-field.controller.js');
+    
+    $params['class'] = trim('tag_field large ' . @$params['class']);
+    
+    $inputParams = $params;
+    unset($inputParams['options']);
+    
+    self::field($inputParams);
+    
+    self::openTag('ul', ['id' => $params['name'] . '_tags', 'class' => 'tag_list']);
+    
+    $options = [];
+    if (isset($params['options'])) {
+      $options = $params['options'];
+    }
+    
+    foreach ($options as $option) {
+      self::openTag('li');
+      print htmlspecialchars($option);
+      self::closeTag('li');
+    }
+    
+    self::closeTag('ul');
+  }
+  
+  public static function tagFieldRow($params)
+  {
+    self::openRow($params);
+    
+    self::tagField($params);
     
     self::closeRow();
   }

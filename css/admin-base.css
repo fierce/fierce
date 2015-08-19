@@ -287,6 +287,30 @@ form .photo_preview_wrapper img
   max-height: 130px;
 }
 
+form ul.tag_list
+{
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  width: 510px;
+}
+
+form ul.tag_list > li
+{
+  display: inline-block;
+  list-style-type: none;
+  
+  margin: 4px 4px 4px 0;
+  padding: 1px 8px 0px 8px;
+  
+  border-radius: 2px;
+  background-color: #eee;
+  
+  font-size: 12px;
+  
+  cursor: pointer;
+}
+
 form > div.wysiwyg_row
 {
   display: block;
