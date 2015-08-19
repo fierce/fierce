@@ -71,8 +71,11 @@ class CrudController extends PageController
   {
     $entity = $this->entity;
     $item = $entity::createNew();
-
-    $item->setData($_POST);
+    
+    $postData = $_POST;
+    $this->beforeSave($item, $postData);
+    
+    $item->setData($postData);
     $item->save();
     
     $this->afterSave($item);
@@ -102,7 +105,10 @@ class CrudController extends PageController
     $entity = $this->entity;
     $item = $entity::createById(@$_GET['id']);
     
-    $item->setData($_POST);
+    $postData = $_POST;
+    $this->beforeSave($item, $postData);
+    
+    $item->setData($postData);
     $item->save();
     
     $this->afterSave($item);
@@ -120,6 +126,10 @@ class CrudController extends PageController
     $this->afterSave($item);
     
     HTTP::redirect($this->url());
+  }
+  
+  public function beforeSave($item, &$data)
+  {
   }
   
   public function afterSave($item)
