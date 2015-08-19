@@ -250,6 +250,44 @@ class View
     self::closeRow();
   }
   
+  public static function photoField($params)
+  {
+    View::addScript('fierce/scripts/photo-field.controller.js');
+    
+    $params['type'] = 'file';
+    $params['class'] = trim('photo_upload ' . @$params['class']);
+    if (!isset($params['id'])) {
+      $id = $params['name'];
+      $id = str_replace('[', '_', $id);
+      $id = str_replace(']', '', $id);
+      $id .= '_upload_field';
+      $params['id'] = $id;
+    }
+    
+    self::field($params);
+    
+    self::field(['type' => 'hidden', 'name' => $params['name']]);
+    
+    self::openTag('div', ['id' => $params['name'] . '_preview_wrapper', 'class' => 'photo_preview_wrapper']);
+    
+    $src = '';
+    if (!isset($params['value'])) {
+      $src = self::formFieldValue($params['name'] . '_src');
+    }
+    self::tag('img', ['id' => $params['name'] . '_preview', 'src' => $src]);
+    
+    self::closeTag('div');
+  }
+  
+  public static function photoFieldRow($params)
+  {
+    self::openRow($params);
+    
+    self::photoField($params);
+    
+    self::closeRow();
+  }
+  
   public static function select($params)
   {
     if (!isset($params['id'])) {

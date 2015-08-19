@@ -277,6 +277,16 @@ form > div.row textarea.full
   height: 500px;
 }
 
+form .photo_preview_wrapper
+{
+  margin-top: 10px;
+}
+
+form .photo_preview_wrapper img
+{
+  max-height: 130px;
+}
+
 form > div.wysiwyg_row
 {
   display: block;
