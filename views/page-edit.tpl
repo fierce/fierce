@@ -1,7 +1,6 @@
 <? namespace F ?>
 
 <? $pageTitle = $noun . ' List – ' . $formType ?>
-  
 
 <h1><?= $formType ?> <?= $noun ?></h1>
 
@@ -27,33 +26,13 @@
   
   <? View::textareaRow([
     'name' => 'content',
-    'class' => 'full wysiwyg'
+    'class' => 'wysiwyg full'
   ]) ?>
+  
+  <script type="text/javascript" src="fierce/third-party/ckeditor/ckeditor.js"></script>  
+
   
   <div class="buttons">
     <input type="submit" value="Save <?= $noun ?>">
   </div>
 <? View::closeForm() ?>
-
-
-
-
-
-
-
-
-
-
-<link rel="stylesheet" href="fierce/third-party/codemirror/lib/codemirror.css">
-<script src="fierce/third-party/codemirror/lib/codemirror.js"></script>
-<script src="fierce/third-party/codemirror/addon/mode/overlay.js"></script>
-<script src="fierce/third-party/codemirror/mode/xml/xml.js"></script>
-
-
-
-
-
-
-
-
-

@@ -227,6 +227,13 @@ form > div.row > .field
   display: table-cell;
 }
 
+form > div.full_row > .field
+{
+  display: block;
+  width: 100%;
+  margin-top: 5px;
+}
+
 form > div.row input[type=text], form > div.row input[type=password]
 {
   font-family: inherit;

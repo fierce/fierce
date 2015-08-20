@@ -4,7 +4,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <base href="<?= BASE_URL ?>">
+  <base href="<?= BASE_URL ?>" id="base_href">
   
   <title><?= $pageTitle ?></title>
   
