@@ -22,8 +22,15 @@ require('pluginconfig.php');
     
     <link rel="stylesheet" href="styles.css">
     
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script src="http://ibm.bplaced.com/imageuploader/plugininfo.js"></script>
+    <script src="jquery.min.js"></script>
+    <script>
+    
+    var pluginname = "Image Uploader and Browser for CKEditor";
+    var pluginversion = "2.6";
+    var pluginchangelog = "";
+    var plugindwonload = "http://ckeditor.com/addon/imageuploader";
+    
+    </script>
     <script src="dist/jquery.lazyload.min.js"></script>
     
     <script>
@@ -32,13 +39,13 @@ require('pluginconfig.php');
         function showImage(imgSrc,imgStyle) {
             var imgSrc = imgSrc;
             var imgStyle = imgStyle;
-            $("#imageFSimg").attr('src', imgSrc);
+            $("#imageFSimg").attr('src', '../../../../../images/' + imgSrc);
             $("#imageFSimg").attr('style', 'max-width:' + imgStyle + 'px');
             
             $("#imageFullSreen").fadeToggle(300);
             $("#background").fadeToggle(300);
             
-            $("#imgActionUse").attr("onclick","useImage('" + imgSrc + "')");
+            $("#imgActionUse").attr("onclick","useImage('images/" + imgSrc + "')");
             $("#imgActionDelete").attr("onclick","window.location.href = 'imgdelete.php?img=" + imgSrc + "'");
             $("#imgActionDownload").attr("href", imgSrc);
             
@@ -54,8 +61,7 @@ require('pluginconfig.php');
             }
             var funcNum = getUrlParam( 'CKEditorFuncNum' );
             var imgSrc = imgSrc;
-            var ckpath = 'ckeditor/plugins/imageuploader/';
-            var fileUrl = ckpath + imgSrc;
+            var fileUrl = imgSrc;
             window.opener.CKEDITOR.tools.callFunction( funcNum, fileUrl );
             window.close();
         }
@@ -80,12 +86,12 @@ require('pluginconfig.php');
         var currentpluginver = "<?php echo $currentpluginver; ?>"
         
         // check if new version is available
-        $( document ).ready(function() {
-            if (currentpluginver != pluginversion) {
-                $("#updates").fadeIn( 550 );
-                $('#updates').html("A new version of "+ pluginname +" ("+ pluginversion +") is available. <a target=\"_blank\" href=\""+ plugindwonload +"\">Download it now!</a>");
-            };
-        });
+//         $( document ).ready(function() {
+//             if (currentpluginver != pluginversion) {
+//                 $("#updates").fadeIn( 550 );
+//                 $('#updates').html("A new version of "+ pluginname +" ("+ pluginversion +") is available. <a target=\"_blank\" href=\""+ plugindwonload +"\">Download it now!</a>");
+//             };
+//         });
         
         // call jquery lazy load
         $(function() {
@@ -93,11 +99,11 @@ require('pluginconfig.php');
         }); 
         
         // ajax request to register the plugin for better support
-        $.ajax({
-          method: "POST",
-          url: "http://ibm.bplaced.com/imageuploader/register.php",
-          data: { root: "<?php echo $root; ?>", link: "<?php echo $link; ?>", ver: ""+ currentpluginver +"" }
-        })
+//         $.ajax({
+//           method: "POST",
+//           url: "http://ibm.bplaced.com/imageuploader/register.php",
+//           data: { root: "<?php echo $root; ?>", link: "<?php echo $link; ?>", ver: ""+ currentpluginver +"" }
+//         })
         
         $( document ).ready(function() {
             var elem = '#uploadpathEditable';
@@ -134,20 +140,11 @@ require('pluginconfig.php');
 <body ontouchstart="">
     
 <div id="header">
-  <!--
-    <a class="headerA" href="http://imageuploaderforckeditor.altervista.org/" target="_blank"><b>Image Browser</b> for CKEditor</a><br> 
-    -->
     <button class="headerBtn" onclick="window.close();"><img src="img/cd-icon-close.png" class="headerIcon"> Close</button>
-    <!--
-    <button class="headerBtn" onclick="location.reload();"><img src="img/cd-icon-refresh.png" class="headerIcon"> Refresh</button>
-    -->
     <button class="headerBtn" onclick="uploadImg();"><img src="img/cd-icon-upload.png" class="headerIcon"> Upload</button>
-    <!--
-    <button class="headerBtn" onclick="pluginSettings();"><img src="img/cd-icon-settings.png" class="headerIcon"> Settings</button>
-    -->
 </div>
     
-<div id="updates"></div>
+<div id="updates" style="display: none;"></div>
 
 <?php
 
@@ -163,7 +160,8 @@ require('pluginconfig.php');
         usort($files, create_function('$a,$b', 'return filemtime($a) - filemtime($b);'));
         for($i=count($files)-1; $i >= 0; $i--):
             $image = $files[$i];
-            $imgname = $bodytag = str_replace($useruploadpath, "", $image);
+            
+            $imgname = str_replace($useruploadpath, "", $image);
             $size = getimagesize($image);
             $image_height = $size[0];
             $file_size_byte = filesize($image);
@@ -172,8 +170,8 @@ require('pluginconfig.php');
 
         ?>
 
-            <div class="fileDiv" onclick="showImage('<?php echo $image; ?>','<?php echo $image_height; ?>');">
-                <div class="imgDiv"><img class="fileImg lazy" data-original="<?php echo $image; ?>"></div>
+            <div class="fileDiv" onclick="showImage('<?php echo $imgname; ?>','<?php echo $image_height; ?>');">
+                <div class="imgDiv"><img class="fileImg lazy" src="../../../../../images/<?php echo $imgname; ?>"></div>
                 <p class="fileDescription"><?php echo $imgname; ?></p>
                 <p class="fileTime"><?php echo date ("F d Y H:i", filemtime($image)); ?></p>
                 <p class="fileTime"><?php echo $file_size_kilobyte_rounded; ?> KB</p>
@@ -185,15 +183,7 @@ require('pluginconfig.php');
     }
 
 ?>
-    
-    <!--
-<div class="fileDiv" onclick="window.location.href = 'http://imageuploaderforckeditor.altervista.org';">
-    <div class="imgDiv">Image Uploader for CKEditor</div>
-    <p class="fileDescription">&copy; 2015 by Moritz Maleck</p>
-    <p class="fileTime">imageuploaderforckeditor.altervista.org</p>
-    <p class="fileTime">180 KB</p>
-</div>
--->
+
     
 <div id="imageFullSreen">
     <div class="buttonBar">

@@ -2,8 +2,8 @@
 // For licensing, see LICENSE.md
 
 CKEDITOR.plugins.add( 'imageuploader', {
-    init: function( editor ) {
-        editor.config.filebrowserUploadUrl = '../plugins/imageuploader/imgupload.php';
-        editor.config.filebrowserBrowseUrl = '../plugins/imageuploader/imgbrowser.php';
-    }
+  init: function( editor ) {
+    editor.config.filebrowserUploadUrl = 'fierce/third-party/ckeditor/plugins/imageuploader/imgupload.php';
+    editor.config.filebrowserBrowseUrl = 'fierce/third-party/ckeditor/plugins/imageuploader/imgbrowser.php';
+  }
 });

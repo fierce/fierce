@@ -10,7 +10,8 @@
     
     CKEDITOR.config.extraPlugins = 'codemirror,image2,widget,lineutils,imageuploader';
     
-    CKEDITOR.config.height = 400;
+    CKEDITOR.config.height = 400
+    CKEDITOR.config.baseHref = document.getElementById('base_href').href
     
     CKEDITOR.config.toolbarGroups = [
 		    { name: 'styles', groups: [ 'styles' ] },
