@@ -5,6 +5,17 @@ div.media_list_wrapper
   overflow-y: auto;*/
 }
 
+div.buttons
+{
+  float: right;
+  margin: 0 0 20px 0;
+}
+
+#media_image_list
+{
+  margin-bottom: 20px;
+}
+
 #media_image_list div.image_cell
 {
   margin: 10px;

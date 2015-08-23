@@ -16,11 +16,6 @@ class PagesController extends CrudController
 {
   public $entity = 'F\Page';
   
-  public $listFields = [
-    'name' => 'Name',
-    'url' => 'URL'
-  ];
-  
   public $editTpl = 'page-edit.tpl'; 
   
   public function beforeEditOrAdd($item)

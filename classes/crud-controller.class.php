@@ -15,7 +15,7 @@ namespace F;
 class CrudController extends PageController
 {
   public $entity = false;
-  public $listFields = [];
+  public $listFields = ['name' => 'Name'];
   public $mainTpl = 'main-admin.tpl';
   
   public $noun = false;

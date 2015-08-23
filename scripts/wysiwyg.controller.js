@@ -8,7 +8,7 @@
     if ( CKEDITOR.env.ie && CKEDITOR.env.version < 9 )
 	    CKEDITOR.tools.enableHtml5Elements( document );
     
-    CKEDITOR.config.extraPlugins = 'codemirror,image2,widget,lineutils,imageuploader';
+    CKEDITOR.config.extraPlugins = 'codemirror,image2,widget,lineutils,fierce-image-select';
     
     CKEDITOR.config.height = 400
     CKEDITOR.config.baseHref = document.getElementById('base_href').href

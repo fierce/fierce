@@ -4,24 +4,19 @@
 
 <? View::addCss('fierce/css/admin-media.css') ?>
 
-<h1>Manage Images</h1>
-
 <div class="buttons">
   <a href="javascript:void(0)" onclick="alert('not yet implemented')">Add Image</a>
 </div>
 
+<h1><?= htmlspecialchars($displayName) ?></h1>
+
 <div class="media_list_wrapper">
   <table class="grid" id="media_image_list">
-    <thead>
-      <tr>
-        <th>&nbsp;</span>
-      </tr>
-    </thead>
     <tbody>
       <tr>
         <td>
           <? foreach ($imageItems as $item): ?>
-            <div class="image_cell">
+            <div class="image_cell" data-url="<?= ltrim($item->url, '/') ?>">
               <a href="<?= ltrim($item->url, '/') ?>">
                 <div class="image_wrapper">
                   <?= View::thumbnail($item->url, 70, 70, false) ?>
