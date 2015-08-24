@@ -17,6 +17,19 @@ class PagesController extends CrudController
   public $entity = 'F\Page';
   
   public $editTpl = 'page-edit.tpl'; 
+  public $mode = 'sidebar';
+  
+  public $categories = [
+    'main' => 'Main Navigation',
+    'not_linked' => 'Not Linked'
+  ];
+  
+  public $categoryField = 'admin_category';
+  
+  public function __construct()
+  {
+    parent::__construct();
+  }
   
   public function beforeEditOrAdd($item)
   {

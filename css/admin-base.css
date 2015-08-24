@@ -135,14 +135,48 @@ div.buttons
   font-size: inherit;
   cursor: pointer;
 }
-.buttons a:active, .buttons input[type=submit]:active {
+.buttons a:active, .buttons input[type=submit]:active, .buttons a.grey:active {
   background-color: #152436;
+}
+
+.buttons a.grey, .sidebar_wrapper div.sidebar .buttons a.grey
+{
+  background-color: #eee;
+  color: #000;
+}
+
+.buttons a.grey:hover
+{
+  background-color: #1684d0;
+}
+
+div.sidebar_wrapper div.sidebar
+{
+  display: table-cell;
+  width: 230px;
+}
+
+div.sidebar_wrapper div.sidebar a
+{
+  color: inherit;
+}
+
+div.sidebar_wrapper div.sidebar .buttons a
+{
+  color: #fff;
+  font-size: 11px;
+}
+
+div.sidebar_wrapper div.content
+{
+  display: table-cell;
+  padding-left: 40px;
 }
 
 table.grid
 {
   font-family: inherit;
-  font-size: inherity;
+  font-size: inherit;
   width: 100%;
   border-collapse: collapse;
 }
@@ -175,8 +209,19 @@ table.grid > thead > tr > th.buttons,
 table.grid > tbody > tr > td.buttons
 {
   text-align: right;
-  width: 200px;
+  width: 250px;
 }
+
+div.sidebar_wrapper div.sidebar table.grid > thead > tr > th.buttons,
+div.sidebar_wrapper div.sidebar table.grid > tbody > tr > td.buttons
+{
+  text-align: right;
+  width: 50px;
+}
+
+
+
+
 
 table.grid > tbody > tr > td.buttons a:last-child
 {

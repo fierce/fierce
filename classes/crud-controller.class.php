@@ -16,10 +16,14 @@ class CrudController extends PageController
 {
   public $entity = false;
   public $listFields = ['name' => 'Name'];
-  public $mainTpl = 'main-admin.tpl';
+  
+  public $mode = 'normal';
+  public $categoryField = false;
   
   public $noun = false;
   public $nounPlural = false;
+  
+  public $mainTpl = 'main-admin.tpl';
   
   public function __construct()
   {
@@ -52,19 +56,43 @@ class CrudController extends PageController
     
     $displayField = array_keys($this->listFields)[0];
     
-    $this->display('crud-list.tpl', get_defined_vars());
+    if ($this->mode == 'sidebar') {
+      $crudContentTpl = false;
+      $this->display('crud-sidebar.tpl', get_defined_vars());
+    } else {
+      $this->display('crud-list.tpl', get_defined_vars());
+    }
   }
   
   public function addAction()
   {
+    global $db;
+    
     $entity = $this->entity;
     $item = $entity::createNew();
+    
+    if ($this->categoryField) {
+      $categoryField = $this->categoryField;
+      $item->$categoryField = @$_GET['category'];
+    }
     
     $this->beforeEditOrAdd($item);
     
     $formType = 'Add';
-
-    $this->display($this->editTpl, get_defined_vars());
+    
+    if ($this->mode == 'sidebar') {
+      $items = $db->$entity->getIndexRows('crud');
+      if (!$items) {
+        $items = $entity::all('modified');
+      }
+      
+      $displayField = array_keys($this->listFields)[0];
+      
+      $crudContentTpl = $this->editTpl;
+      $this->display('crud-sidebar.tpl', get_defined_vars());
+    } else {
+      $this->display($this->editTpl, get_defined_vars());
+    }
   }
   
   public function addSubmitAction()
@@ -80,11 +108,17 @@ class CrudController extends PageController
     
     $this->afterSave($item);
     
-    HTTP::redirect($this->url());
+    if ($this->mode == 'sidebar') {
+      HTTP::redirect($this->url('edit', ['id' => $item->id]));
+    } else {
+      HTTP::redirect($this->url());
+    }
   }
   
   public function editAction()
   {
+    global $db;
+    
     $entity = $this->entity;
     $item = $entity::createById(@$_GET['id']);
     
@@ -92,7 +126,19 @@ class CrudController extends PageController
     
     $formType = 'Edit';
     
-    $this->display($this->editTpl, get_defined_vars());
+    if ($this->mode == 'sidebar') {
+      $items = $db->$entity->getIndexRows('crud');
+      if (!$items) {
+        $items = $entity::all('modified');
+      }
+      
+      $displayField = array_keys($this->listFields)[0];
+      
+      $crudContentTpl = $this->editTpl;
+      $this->display('crud-sidebar.tpl', get_defined_vars());
+    } else {
+      $this->display($this->editTpl, get_defined_vars());
+    }
   }
   
   public function beforeEditOrAdd($item)
@@ -113,7 +159,11 @@ class CrudController extends PageController
     
     $this->afterSave($item);
     
-    HTTP::redirect($this->url());
+    if ($this->mode == 'sidebar') {
+      HTTP::redirect($this->url('edit', ['id' => $item->id]));
+    } else {
+      HTTP::redirect($this->url());
+    }
   }
   
   public function deleteAction()

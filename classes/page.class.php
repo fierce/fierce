@@ -14,6 +14,21 @@ namespace F;
 
 class Page extends DBRow
 {
+  public function __get($key)
+  {
+    switch ($key) {
+      case 'admin_category';
+        if (@$this->nav_position) {
+          return 'main';
+        }
+        if (@$this->is_user_page) {
+          return 'not_linked';
+        }
+        return 'system';
+      default:
+        return parent::__get($key);
+    }
+  }
   
   public function save()
   {

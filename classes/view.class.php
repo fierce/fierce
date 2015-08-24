@@ -27,10 +27,17 @@ class View
   
   public static function main($templateView, $contentView = false, $vars = array())
   {
+    $blockedVars = ['templateView', 'contentView', 'vars', 'var', 'value'];
     foreach (self::$vars as $var => $value) {
+      if (in_array($var, $blockedVars)) {
+        continue;
+      }
       $$var = $value;
     }
     foreach ($vars as $var => $value) {
+      if (in_array($var, $blockedVars)) {
+        continue;
+      }
       $$var = $value;
     }
     
@@ -61,6 +68,33 @@ class View
     $cssUrls = self::$cssUrls;
     
     require($mainTpl);
+  }
+  
+  public static function renderTpl($contentView, $vars)
+  {
+    $blockedVars = ['templateView', 'contentView', 'vars', 'var', 'value'];
+    foreach (self::$vars as $var => $value) {
+      if (in_array($var, $blockedVars)) {
+        continue;
+      }
+      $$var = $value;
+    }
+    foreach ($vars as $var => $value) {
+      if (in_array($var, $blockedVars)) {
+        continue;
+      }
+      $$var = $value;
+    }
+    
+    $contentTpl = BASE_PATH . 'views/' . $contentView;
+    if (!file_exists($contentTpl)) {
+      $contentTpl = BASE_PATH . 'fierce/views/' . $contentView;
+    }
+    if (!file_exists($contentTpl)) {
+      throw new \exception('Can\'t find view ' . $contentView);
+    }
+    
+    require($contentTpl);
   }
   
   public static function set($key, $value)
