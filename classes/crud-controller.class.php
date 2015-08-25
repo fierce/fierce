@@ -10,6 +10,8 @@
  * 
  */
 
+namespace F;
+
 class CrudController extends PageController
 {
   public $entity = false;
@@ -22,6 +24,9 @@ class CrudController extends PageController
   public $nounPlural = false;
   
   public $mainTpl = 'main-admin.tpl';
+  
+  public $listTpl = 'crud-list.tpl';
+  public $editTpl = false;
   
   public function __construct()
   {
@@ -58,7 +63,7 @@ class CrudController extends PageController
       $crudContentTpl = false;
       $this->display('crud-sidebar.tpl', get_defined_vars());
     } else {
-      $this->display('crud-list.tpl', get_defined_vars());
+      $this->display($this->listTpl, get_defined_vars());
     }
   }
   

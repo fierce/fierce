@@ -143,6 +143,7 @@ div.buttons
 {
   background-color: #eee;
   color: #000;
+  margin-right: 3px;
 }
 
 .buttons a.grey:hover
@@ -153,7 +154,7 @@ div.buttons
 div.sidebar_wrapper div.sidebar
 {
   display: table-cell;
-  width: 230px;
+  width: 220px;
 }
 
 div.sidebar_wrapper div.sidebar a
@@ -167,10 +168,20 @@ div.sidebar_wrapper div.sidebar .buttons a
   font-size: 11px;
 }
 
+div.sidebar_wrapper div.sidebar tr.sidebar_active
+{
+  background-color: #1684d0;
+}
+
+div.sidebar_wrapper div.sidebar tr.sidebar_active a
+{
+  color: #fff;
+}
+
 div.sidebar_wrapper div.content
 {
   display: table-cell;
-  padding-left: 40px;
+  padding-left: 30px;
 }
 
 table.grid

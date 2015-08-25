@@ -1,11 +1,5 @@
 
-div.media_list_wrapper
-{
-/*  max-height: 300px;
-  overflow-y: auto;*/
-}
-
-div.buttons
+div.media-buttons
 {
   float: right;
   margin: 0 0 20px 0;
@@ -76,6 +70,12 @@ div.buttons
   display: block;
   margin-top: 10px;
   font-size: 13px;
+}
+
+#add_image_button_upload
+{
+  position: absolute;
+  left: -10000px;
 }
 
 @media 

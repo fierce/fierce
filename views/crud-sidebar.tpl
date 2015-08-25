@@ -21,7 +21,7 @@
               
               <? $foundItems = true ?>
               
-              <tr>
+              <tr<? if ($sidebarItem->id == @$item->id): ?> class="sidebar_active"<? endif ?>>
                 <? foreach ($listFields as $field => $name): ?>
                   <td class="<?= $field ?>">
                     <a href="<?= $controller->url('edit', ['id' => $sidebarItem->id]) ?>">
