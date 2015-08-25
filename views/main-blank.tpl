@@ -10,7 +10,7 @@
   
   <style type="text/css">
     /* Fierce/css/plain.css */
-    <?= file_get_contents(BASE_PATH . 'Fierce/css/plain.css') ?>
+    <?= file_get_contents(FIERCE_PATH . 'css/plain.css') ?>
   </style>
   
   <? foreach ($cssUrls as $cssUrl): ?>

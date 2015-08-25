@@ -43,7 +43,7 @@ class View
     
     $mainTpl = BASE_PATH . 'views/' . $templateView;
     if (!file_exists($mainTpl)) {
-      $mainTpl = BASE_PATH . 'Fierce/views/' . $templateView;
+      $mainTpl = FIERCE_PATH . 'views/' . $templateView;
     }
     if (!file_exists($mainTpl)) {
       throw new \exception('Can\'t find view ' . $templateView);
@@ -52,7 +52,7 @@ class View
     if ($contentView) {
       $contentTpl = BASE_PATH . 'views/' . $contentView;
       if (!file_exists($contentTpl)) {
-        $contentTpl = BASE_PATH . 'Fierce/views/' . $contentView;
+        $contentTpl = FIERCE_PATH . 'views/' . $contentView;
       }
       if (!file_exists($contentTpl)) {
         throw new \exception('Can\'t find view ' . $contentView);
@@ -88,7 +88,7 @@ class View
     
     $contentTpl = BASE_PATH . 'views/' . $contentView;
     if (!file_exists($contentTpl)) {
-      $contentTpl = BASE_PATH . 'Fierce/views/' . $contentView;
+      $contentTpl = FIERCE_PATH . 'views/' . $contentView;
     }
     if (!file_exists($contentTpl)) {
       throw new \exception('Can\'t find view ' . $contentView);
@@ -113,7 +113,7 @@ class View
     
     $tpl = BASE_PATH . 'views/' . $view;
     if (!file_exists($tpl)) {
-      $tpl = BASE_PATH . 'Fierce/views/' . $view;
+      $tpl = FIERCE_PATH . 'views/' . $view;
     }
     if (!file_exists($tpl)) {
       throw new \exception('Can\'t find view ' . $view);

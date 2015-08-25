@@ -10,7 +10,7 @@
   
   <style type="text/css">
     /* Fierce/css/admin-base.css */
-    <?= file_get_contents(BASE_PATH . 'Fierce/css/admin-base.css') ?>
+    <?= file_get_contents(FIERCE_PATH . 'css/admin-base.css') ?>
   </style>
   
   <style type="text/css">

@@ -17,7 +17,8 @@
 namespace Fierce;
 
 // config
-define('BASE_PATH', dirname(__DIR__) . '/');
+define('FIERCE_PATH', __DIR__ . '/');
+define('BASE_PATH', dirname(dirname(dirname(__DIR__))) . '/');
 
 preg_match('#^(/[^/]+)(.*)#', $_SERVER['REQUEST_URI'], $matches);
 define('BASE_URL', 'http://' . $_SERVER['SERVER_NAME'] . $matches[1] . '/');
@@ -71,7 +72,7 @@ spl_autoload_register(function($className) {
   }
   
   $fileName = str_replace('\\', '/', $namespaceMatches[2]) . '.php';
-  require_once BASE_PATH . 'Fierce/classes/' . $fileName;
+  require_once FIERCE_PATH . 'classes/' . $fileName;
 });
 
 // connect to database

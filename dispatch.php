@@ -18,7 +18,7 @@
 
 namespace Fierce; 
 
-require './init.php';
+require __DIR__ . '/init.php';
 
 // find the page
 $url = parse_url(REQUEST_URL, PHP_URL_PATH);
