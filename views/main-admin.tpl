@@ -9,8 +9,8 @@
   <title><?= $pageTitle ?></title>
   
   <style type="text/css">
-    /* fierce/css/admin-base.css */
-    <?= file_get_contents(BASE_PATH . 'fierce/css/admin-base.css') ?>
+    /* Fierce/css/admin-base.css */
+    <?= file_get_contents(BASE_PATH . 'Fierce/css/admin-base.css') ?>
   </style>
   
   <style type="text/css">

@@ -43,7 +43,7 @@ class View
     
     $mainTpl = BASE_PATH . 'views/' . $templateView;
     if (!file_exists($mainTpl)) {
-      $mainTpl = BASE_PATH . 'fierce/views/' . $templateView;
+      $mainTpl = BASE_PATH . 'Fierce/views/' . $templateView;
     }
     if (!file_exists($mainTpl)) {
       throw new \exception('Can\'t find view ' . $templateView);
@@ -52,7 +52,7 @@ class View
     if ($contentView) {
       $contentTpl = BASE_PATH . 'views/' . $contentView;
       if (!file_exists($contentTpl)) {
-        $contentTpl = BASE_PATH . 'fierce/views/' . $contentView;
+        $contentTpl = BASE_PATH . 'Fierce/views/' . $contentView;
       }
       if (!file_exists($contentTpl)) {
         throw new \exception('Can\'t find view ' . $contentView);
@@ -88,7 +88,7 @@ class View
     
     $contentTpl = BASE_PATH . 'views/' . $contentView;
     if (!file_exists($contentTpl)) {
-      $contentTpl = BASE_PATH . 'fierce/views/' . $contentView;
+      $contentTpl = BASE_PATH . 'Fierce/views/' . $contentView;
     }
     if (!file_exists($contentTpl)) {
       throw new \exception('Can\'t find view ' . $contentView);
@@ -113,7 +113,7 @@ class View
     
     $tpl = BASE_PATH . 'views/' . $view;
     if (!file_exists($tpl)) {
-      $tpl = BASE_PATH . 'fierce/views/' . $view;
+      $tpl = BASE_PATH . 'Fierce/views/' . $view;
     }
     if (!file_exists($tpl)) {
       throw new \exception('Can\'t find view ' . $view);
@@ -286,7 +286,7 @@ class View
   
   static public function photoField($params)
   {
-    View::addScript('fierce/scripts/photo-field.controller.js');
+    View::addScript('Fierce/scripts/photo-field.controller.js');
     
     $params['type'] = 'file';
     $params['class'] = trim('photo_upload ' . @$params['class']);
@@ -324,7 +324,7 @@ class View
   
   static public function tagField($params)
   {
-    View::addScript('fierce/scripts/tag-field.controller.js');
+    View::addScript('Fierce/scripts/tag-field.controller.js');
     
     $params['class'] = trim('tag_field large ' . @$params['class']);
     
@@ -435,7 +435,7 @@ class View
     self::closeRow();
     
     if (strpos(@$params['class'], 'wysiwyg') !== false) {
-      self::addScript('fierce/scripts/wysiwyg.controller.js');
+      self::addScript('Fierce/scripts/wysiwyg.controller.js');
     }
   }
   

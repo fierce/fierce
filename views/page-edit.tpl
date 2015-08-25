@@ -40,7 +40,7 @@
     'class' => 'wysiwyg full'
   ]) ?>
   
-  <script type="text/javascript" src="fierce/third-party/ckeditor/ckeditor.js"></script>  
+  <script type="text/javascript" src="Fierce/third-party/ckeditor/ckeditor.js"></script>  
 
   
   <div class="buttons">

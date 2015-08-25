@@ -2,8 +2,8 @@
 
 <? $pageTitle = 'Media' ?>
 
-<? View::addCss('fierce/css/admin-media.css') ?>
-<? View::addScript('fierce/scripts/admin-media.js') ?>
+<? View::addCss('Fierce/css/admin-media.css') ?>
+<? View::addScript('Fierce/scripts/admin-media.js') ?>
 
 <div class="buttons media-buttons">
   <a href="javascript:void(0)" id="add_image_button">Add Image</a>

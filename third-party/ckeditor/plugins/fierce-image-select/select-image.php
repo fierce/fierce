@@ -11,7 +11,7 @@ class CKEditorMediaController extends MediaController
   
   public function defaultAction()
   {
-    View::addScript('fierce/third-party/ckeditor/plugins/fierce-image-select/scripts/ckeditor-media.controller.js');
+    View::addScript('Fierce/third-party/ckeditor/plugins/fierce-image-select/scripts/ckeditor-media.controller.js');
     
     parent::defaultAction();
   }

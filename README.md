@@ -21,7 +21,7 @@ RewriteRule ^(.*)$ - [L,QSA]
 
 # redirect all other traffic to the dispatcher
 RewriteCond %{REQUEST_URI} !dispatch.php$
-RewriteRule ^(/?)(.*)$ $1fierce/dispatch.php [L,QSA]
+RewriteRule ^(/?)(.*)$ $1Fierce/dispatch.php [L,QSA]
 ```
 
 Create a `fierce-config.php` file:

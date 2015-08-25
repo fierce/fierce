@@ -38,7 +38,7 @@
         { name: 'Button',    element: 'a',    attributes: { 'class': 'button' } }
     ] );
   
-    CKEDITOR.config.contentsCss = [CKEDITOR.config.contentsCss, document.getElementById('base_href').href + 'fierce/third-party/ckeditor/css/contents.css']
+    CKEDITOR.config.contentsCss = [CKEDITOR.config.contentsCss, document.getElementById('base_href').href + 'Fierce/third-party/ckeditor/css/contents.css']
     
     CKEDITOR.config.codemirror = {
       showFormatButton: false,
