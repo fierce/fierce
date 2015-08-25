@@ -1,4 +1,4 @@
-<? namespace F ?>
+<? namespace Fierce ?>
 
 <!DOCTYPE html>
 <html>

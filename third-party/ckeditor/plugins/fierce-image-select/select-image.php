@@ -1,6 +1,6 @@
 <?
 
-namespace F;
+namespace Fierce;
 
 require realpath('../../../../init.php');
 

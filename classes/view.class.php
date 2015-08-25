@@ -10,7 +10,7 @@
  * 
  */
 
-namespace F;
+namespace Fierce;
 
 class View
 {

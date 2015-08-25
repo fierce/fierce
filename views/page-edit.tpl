@@ -1,4 +1,4 @@
-<? namespace F ?>
+<? namespace Fierce ?>
 
 <? if ($formType == 'Add'): ?>
   <h1>Add <?= $noun ?></h1>

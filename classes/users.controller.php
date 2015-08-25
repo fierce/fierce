@@ -10,11 +10,11 @@
  * 
  */
 
-namespace F;
+namespace Fierce;
 
 class UsersController extends CrudController
 {
-  public $entity = 'F\User';
+  public $entity = 'Fierce\User';
   
   public $listFields = [
     'name' => 'Name',

@@ -10,11 +10,11 @@
  * 
  */
 
-namespace F;
+namespace Fierce;
 
 class PagesController extends CrudController
 {
-  public $entity = 'F\Page';
+  public $entity = 'Fierce\Page';
   
   public $editTpl = 'page-edit.tpl'; 
   public $mode = 'sidebar';
@@ -36,7 +36,7 @@ class PagesController extends CrudController
     global $autoloadClasses;
     
     $classOptions = [
-      'F\PageController' => 'Plain Page'
+      'Fierce\PageController' => 'Plain Page'
     ];
     foreach ($autoloadClasses as $class => $file) {
       if (pathinfo(pathinfo($file, PATHINFO_FILENAME), PATHINFO_EXTENSION) != 'controller') {

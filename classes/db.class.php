@@ -10,7 +10,7 @@
  * 
  */
 
-namespace F;
+namespace Fierce;
 
 class DB
 {
@@ -37,7 +37,7 @@ class DB
   public function __get($entity)
   {
     $entity = strtolower($entity);
-    $entity = preg_replace('/^f\\\/', '', $entity);
+    $entity = preg_replace('/^Fierce\\\/', '', $entity);
     
     return $this->$entity = new DBEntity($this, $entity);
   }

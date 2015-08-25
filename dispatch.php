@@ -16,7 +16,7 @@
   * be written to a static html file.
   */
 
-namespace F; 
+namespace Fierce; 
 
 require './init.php';
 

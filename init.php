@@ -14,7 +14,7 @@
  * This file initializes the Fierce environment.
  */
 
-namespace F;
+namespace Fierce;
 
 // config
 define('BASE_PATH', dirname(__DIR__) . '/');
@@ -58,7 +58,7 @@ foreach ($classFiles as $file) {
   $className = strtolower($className);
   $className = preg_replace('/\.class$/', '', $className);
   $className = preg_replace('/[^a-z]/', '', $className);
-  $className = 'f\\' . $className;
+  $className = 'fierce\\' . $className;
   
   $autoloadClasses[$className] = $file;
 }
@@ -72,6 +72,7 @@ foreach ($classFiles as $file) {
   
   $autoloadClasses[$className] = $file;
 }
+
 spl_autoload_register(function($className) use ($autoloadClasses) {
   $className = strtolower($className);
 

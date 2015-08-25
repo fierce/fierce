@@ -1,6 +1,6 @@
 <?php
 
-namespace F;
+namespace Fierce;
 
 class MediaController extends PageController
 {

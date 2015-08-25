@@ -1,4 +1,4 @@
-<? namespace F ?>
+<? namespace Fierce ?>
 
 <? $pageTitle = $noun . ' List – ' . $formType ?>
   
