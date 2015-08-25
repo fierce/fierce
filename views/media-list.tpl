@@ -3,9 +3,11 @@
 <? $pageTitle = 'Media' ?>
 
 <? View::addCss('fierce/css/admin-media.css') ?>
+<? View::addScript('fierce/scripts/admin-media.js') ?>
 
-<div class="buttons">
-  <a href="javascript:void(0)" onclick="alert('not yet implemented')">Add Image</a>
+<div class="buttons media-buttons">
+  <a href="javascript:void(0)" id="add_image_button">Add Image</a>
+  <input type="file" id="add_image_button_upload" accept="image/*">
 </div>
 
 <h1><?= htmlspecialchars($displayName) ?></h1>
@@ -39,8 +41,4 @@
       </tr>
     </tbody>
   </table>
-</div>
-
-<div class="buttons">
-  <a href="javascript:void(0)" onclick="alert('not yet implemented')">Add Image</a>
 </div>
