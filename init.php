@@ -35,7 +35,9 @@ if (F_AUTH_SALT == '8d6f6390017eb415bcf468a050d893628e40d12f') {
 // function to print out a variable for debugging
 function dp($var, $exit=true)
 {
-  ResponseCache::disable();
+  if (class_exists('Fierce\\ResponseCache')) {
+    ResponseCache::disable();
+  }
   
   print '<pre style="border: 1px solid red; font-family:monospace; display: inline-block; padding: 4px 10px">';
   print htmlspecialchars(print_r($var, true));
@@ -49,39 +51,27 @@ function dp($var, $exit=true)
 
 
 // setup autoload
-global $autoloadClasses;
-$autoloadClasses = array();
-
-$classFiles = glob(BASE_PATH . "fierce/classes/*.php");
-foreach ($classFiles as $file) {
-  $className = pathinfo($file, PATHINFO_FILENAME);
-  $className = strtolower($className);
-  $className = preg_replace('/\.class$/', '', $className);
-  $className = preg_replace('/[^a-z]/', '', $className);
-  $className = 'fierce\\' . $className;
-  
-  $autoloadClasses[$className] = $file;
-}
-
-$classFiles = glob(BASE_PATH . "classes/*.php");
-foreach ($classFiles as $file) {
-  $className = pathinfo($file, PATHINFO_FILENAME);
-  $className = strtolower($className);
-  $className = preg_replace('/\.class$/', '', $className);
-  $className = preg_replace('/[^a-z]/', '', $className);
-  
-  $autoloadClasses[$className] = $file;
-}
-
-spl_autoload_register(function($className) use ($autoloadClasses) {
-  $className = strtolower($className);
-
-  $file = @$autoloadClasses[strtolower($className)];
-  if (!$file) {
+spl_autoload_register(function($className) {
+  // no dots or slashes allowed in a class name (could be code injection attack)
+  if (strpos($className, '.') !== false || strpos($className, '/') !== false) {
     return;
   }
   
-  require_once $file;
+  // find namespace
+  $hasNamespace = preg_match('/^([^\\\\]+)\\\\(.*)/', $className, $namespaceMatches);
+  
+  if (!$hasNamespace) {
+    $fileName = str_replace('\\', '/', $className);
+    require_once BASE_PATH . 'classes/' . $className . '.php';
+    return;
+  }
+  
+  if ($namespaceMatches[1] != 'Fierce') {
+    return;
+  }
+  
+  $fileName = str_replace('\\', '/', $namespaceMatches[2]) . '.php';
+  require_once BASE_PATH . 'Fierce/classes/' . $fileName;
 });
 
 // connect to database
