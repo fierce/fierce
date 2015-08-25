@@ -23,7 +23,7 @@
 		    { name: 'document', groups: [ 'mode', 'document', 'doctools' ] },
 	    ];
     
-    CKEDITOR.config.removeButtons = 'Save,NewPage,Preview,Print,Templates,PasteFromWord,SelectAll,Scayt,Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,Find,Replace,CreateDiv,BidiLtr,BidiRtl,Language,Flash,Smiley,PageBreak,Iframe,ShowBlocks,About,Maximize,Font,FontSize,Format';
+    CKEDITOR.config.removeButtons = 'Save,NewPage,Preview,Print,Templates,PasteFromWord,SelectAll,Scayt,Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,Find,Replace,CreateDiv,BidiLtr,BidiRtl,Language,Flash,Smiley,PageBreak,Iframe,ShowBlocks,About,Maximize,Font,FontSize,Format,Blockquote';
     
     CKEDITOR.stylesSet.add( 'default', [
         // Block Styles
@@ -39,6 +39,13 @@
     ] );
   
     CKEDITOR.config.contentsCss = [CKEDITOR.config.contentsCss, document.getElementById('base_href').href + 'fierce/third-party/ckeditor/css/contents.css']
+    
+    CKEDITOR.config.codemirror = {
+      showFormatButton: false,
+      showCommentButton: false,
+      showUncommentButton: false,
+      showAutoCompleteButton: false
+    }
     
 	  CKEDITOR.replace( this.textareaEl );
   }
