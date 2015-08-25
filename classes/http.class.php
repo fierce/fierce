@@ -1,6 +1,4 @@
-<?
-
-namespace F;
+<?php
 
 /**
  * 
@@ -11,6 +9,8 @@ namespace F;
  * For more information, please refer to http://unlicense.org
  * 
  */
+
+namespace F;
 
 class HTTP
 {

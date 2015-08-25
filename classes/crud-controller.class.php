@@ -1,6 +1,4 @@
-<?
-
-namespace F;
+<?php
 
 /**
  * 

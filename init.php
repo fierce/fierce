@@ -1,6 +1,4 @@
-<?
-
-namespace F;
+<?php
 
 /**
  * 
@@ -11,6 +9,12 @@ namespace F;
  * For more information, please refer to http://unlicense.org
  * 
  */
+
+/**
+ * This file initializes the Fierce environment.
+ */
+
+namespace F;
 
 // config
 define('BASE_PATH', dirname(__DIR__) . '/');

@@ -1,6 +1,4 @@
-<?
-
-namespace F;
+<?php
 
 /**
  * 
@@ -10,7 +8,15 @@ namespace F;
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to http://unlicense.org
  * 
- */ 
+ */
+ 
+ /**
+  * This file takes an incoming request, searches the database for a page entry,
+  * creates a controller and executes it – hopefully capturing the response to
+  * be written to a static html file.
+  */
+
+namespace F; 
 
 require './init.php';
 
