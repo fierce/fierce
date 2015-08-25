@@ -25,7 +25,7 @@ class View
   protected static $scriptUrls = [];
   protected static $cssUrls = [];
   
-  public static function main($templateView, $contentView = false, $vars = array())
+  static public function main($templateView, $contentView = false, $vars = array())
   {
     $blockedVars = ['templateView', 'contentView', 'vars', 'var', 'value'];
     foreach (self::$vars as $var => $value) {
@@ -70,7 +70,7 @@ class View
     require($mainTpl);
   }
   
-  public static function renderTpl($contentView, $vars)
+  static public function renderTpl($contentView, $vars)
   {
     $blockedVars = ['templateView', 'contentView', 'vars', 'var', 'value'];
     foreach (self::$vars as $var => $value) {
@@ -97,12 +97,12 @@ class View
     require($contentTpl);
   }
   
-  public static function set($key, $value)
+  static public function set($key, $value)
   {
     self::$vars[$key] = $value;
   }
   
-  public static function includeView($view, $vars = array())
+  static public function includeView($view, $vars = array())
   {
     foreach (self::$vars as $var => $value) {
       $$var = $value;
@@ -122,7 +122,7 @@ class View
     require($tpl);
   }
   
-  public static function tag($name, $params)
+  static public function tag($name, $params)
   {
     $html = "<$name";
     foreach ($params as $param => $value) {
@@ -135,14 +135,14 @@ class View
     print $html;
   }
   
-  public static function openTag($name, $params=[])
+  static public function openTag($name, $params=[])
   {
     self::$tagStack[] = $name;
     
     self::tag($name, $params);
   }
   
-  public static function closeTag($name)
+  static public function closeTag($name)
   {
     $expectedName = array_pop(self::$tagStack);
     if ($expectedName != $name) {
@@ -181,7 +181,7 @@ class View
     return $value;
   }
   
-  public static function form($params)
+  static public function form($params)
   {
     // default values
     $params['method'] = 'post';
@@ -205,14 +205,14 @@ class View
     self::openTag('form', $params, true);
   }
   
-  public static function closeForm()
+  static public function closeForm()
   {
     self::$currentForm = null;
     
     self::closeTag('form');
   }
   
-  public static function openRow(&$params)
+  static public function openRow(&$params)
   {
     self::$rowStack[] = $params;
     
@@ -243,7 +243,7 @@ class View
     print "<div class=\"field\">";
   }
   
-  public static function closeRow()
+  static public function closeRow()
   {
     $params = array_pop(self::$rowStack);
     
@@ -255,7 +255,7 @@ class View
     print '</div>';
   }
   
-  public static function field($params)
+  static public function field($params)
   {
     if (!isset($params['id'])) {
       $id = $params['name'];
@@ -275,7 +275,7 @@ class View
     self::tag('input', $params);
   }
   
-  public static function fieldRow($params)
+  static public function fieldRow($params)
   {
     self::openRow($params);
     
@@ -284,7 +284,7 @@ class View
     self::closeRow();
   }
   
-  public static function photoField($params)
+  static public function photoField($params)
   {
     View::addScript('fierce/scripts/photo-field.controller.js');
     
@@ -313,7 +313,7 @@ class View
     self::closeTag('div');
   }
   
-  public static function photoFieldRow($params)
+  static public function photoFieldRow($params)
   {
     self::openRow($params);
     
@@ -322,7 +322,7 @@ class View
     self::closeRow();
   }
   
-  public static function tagField($params)
+  static public function tagField($params)
   {
     View::addScript('fierce/scripts/tag-field.controller.js');
     
@@ -349,7 +349,7 @@ class View
     self::closeTag('ul');
   }
   
-  public static function tagFieldRow($params)
+  static public function tagFieldRow($params)
   {
     self::openRow($params);
     
@@ -358,7 +358,7 @@ class View
     self::closeRow();
   }
   
-  public static function select($params)
+  static public function select($params)
   {
     if (!isset($params['id'])) {
       $id = $params['name'];
@@ -397,7 +397,7 @@ class View
     self::closeTag('select');
   }
   
-  public static function selectRow($params)
+  static public function selectRow($params)
   {
     self::openRow($params);
     
@@ -406,7 +406,7 @@ class View
     self::closeRow();
   }
   
-  public static function textarea($params)
+  static public function textarea($params)
   {
     if (!isset($params['id'])) {
       $id = $params['name'];
@@ -426,7 +426,7 @@ class View
     self::closeTag('textarea');
   }
   
-  public static function textareaRow($params)
+  static public function textareaRow($params)
   {
     self::openRow($params);
     
@@ -439,7 +439,7 @@ class View
     }
   }
   
-  public static function addScript($scriptUrl)
+  static public function addScript($scriptUrl)
   {
     if (in_array($scriptUrl, self::$scriptUrls)) {
       return;
@@ -448,7 +448,7 @@ class View
     self::$scriptUrls[] = $scriptUrl;
   }
   
-  public static function addCss($cssUrl)
+  static public function addCss($cssUrl)
   {
     if (in_array($cssUrl, self::$cssUrls)) {
       return;
@@ -457,7 +457,7 @@ class View
     self::$cssUrls[] = $cssUrl;
   }
   
-  public static function thumbnail($imageUrl, $w, $h, $allowCrop)
+  static public function thumbnail($imageUrl, $w, $h, $allowCrop)
   {
     $image = new Image($imageUrl);
     

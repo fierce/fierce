@@ -17,7 +17,7 @@ class DBRow
   protected $id;
   protected $row;
   
-  public static function all($sort=null)
+  static public function all($sort=null)
   {
     global $db;
     $entity = strtolower(get_called_class());
@@ -36,7 +36,7 @@ class DBRow
     return $items;
   }
   
-  public static function createById($id)
+  static public function createById($id)
   {
     global $db;
     $entity = strtolower(get_called_class());
@@ -52,7 +52,7 @@ class DBRow
     return $item;
   }
   
-  public static function createNew()
+  static public function createNew()
   {
     global $db;
     $entity = strtolower(get_called_class());

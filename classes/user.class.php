@@ -22,7 +22,7 @@ class User
     'new_password' => 'New Password'
   ];
   
-  public static function all($sort=null)
+  static public function all($sort=null)
   {
     global $db;
     
@@ -40,7 +40,7 @@ class User
     return $users;
   }
   
-  public static function createById($id)
+  static public function createById($id)
   {
     global $db;
     
@@ -55,7 +55,7 @@ class User
     return $user;
   }
   
-  public static function createNew()
+  static public function createNew()
   {
     global $db;
     

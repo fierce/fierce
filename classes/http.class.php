@@ -14,7 +14,7 @@ namespace F;
 
 class HTTP
 {
-  public static function redirect($url)
+  static public function redirect($url)
   {
     $url = BASE_URL . ltrim($url, '/');
     ResponseCache::disable();

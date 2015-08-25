@@ -16,7 +16,7 @@ class Auth
 {
   private static $loggedInUser = null;
   
-  public static function requireAdmin()
+  static public function requireAdmin()
   {
     if (!self::haveAdmin()) {
       if ($_SERVER['REQUEST_METHOD'] != 'GET') {
@@ -28,7 +28,7 @@ class Auth
     ResponseCache::disable();
   }
   
-  public static function haveAdmin()
+  static public function haveAdmin()
   {
     if (!$user = self::loggedInUser()) {
       return false;
@@ -41,7 +41,7 @@ class Auth
     return true;
   }
   
-  public static function requireRoot()
+  static public function requireRoot()
   {
     if (!self::haveRoot()) {
       if ($_SERVER['REQUEST_METHOD'] != 'GET') {
@@ -53,7 +53,7 @@ class Auth
     ResponseCache::disable();
   }
   
-  public static function haveRoot()
+  static public function haveRoot()
   {
     if (!$user = self::loggedInUser()) {
       return false;
@@ -66,7 +66,7 @@ class Auth
     return true;
   }
   
-  public static function loggedInUser()
+  static public function loggedInUser()
   {
     global $db;
     
@@ -117,7 +117,7 @@ class Auth
     return $user;
   }
   
-  public static function logout()
+  static public function logout()
   {
     global $db;
     
@@ -132,7 +132,7 @@ class Auth
     self::$loggedInUser = null;
   }
   
-  public static function attemptLogin($email, $password)
+  static public function attemptLogin($email, $password)
   {
     global $db;
     

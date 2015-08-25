@@ -16,7 +16,7 @@ class ResponseCache
 {
   static public $willCache = false;
   
-  public static function start()
+  static public function start()
   {
     if ($_SERVER['REQUEST_METHOD'] != 'GET') {
       return;
@@ -34,7 +34,7 @@ class ResponseCache
     self::$willCache = true;
   }
   
-  public static function saveCacheIfEnabled()
+  static public function saveCacheIfEnabled()
   {
     global $db;
     
@@ -63,7 +63,7 @@ class ResponseCache
     ], true);
   }
   
-  public static function disable()
+  static public function disable()
   {
     if (self::$willCache) {
       ob_end_flush();
@@ -71,7 +71,7 @@ class ResponseCache
     self::$willCache = false;
   }
   
-  public static function flushAll()
+  static public function flushAll()
   {
     global $db;
     

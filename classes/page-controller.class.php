@@ -27,7 +27,7 @@ class PageController
     }
   }
   
-  public static function run($page)
+  static public function run($page)
   {
     $controllerClass = get_called_class();
     $controller = new $controllerClass();
