@@ -16,9 +16,16 @@
   * be written to a static html file.
   */
 
-namespace Fierce; 
+namespace Fierce;
 
+// init composer
+$autoloader = require dirname(dirname(__DIR__)) . '/autoload.php';
+
+// init fierce
 require __DIR__ . '/init.php';
+
+// setup autoloader for global scope
+$autoloader->addPsr4(false, BASE_PATH . 'classes/');
 
 // find the page
 $url = parse_url(REQUEST_URL, PHP_URL_PATH);

@@ -50,31 +50,5 @@ function dp($var, $exit=true)
   }
 }
 
-
-
-// setup autoload
-spl_autoload_register(function($className) {
-  // no dots or slashes allowed in a class name (could be code injection attack)
-  if (strpos($className, '.') !== false || strpos($className, '/') !== false) {
-    return;
-  }
-  
-  // find namespace
-  $hasNamespace = preg_match('/^([^\\\\]+)\\\\(.*)/', $className, $namespaceMatches);
-  
-  if (!$hasNamespace) {
-    $fileName = str_replace('\\', '/', $className);
-    require_once BASE_PATH . 'classes/' . $className . '.php';
-    return;
-  }
-  
-  if ($namespaceMatches[1] != 'Fierce') {
-    return;
-  }
-  
-  $fileName = str_replace('\\', '/', $namespaceMatches[2]) . '.php';
-  require_once FIERCE_PATH . 'classes/' . $fileName;
-});
-
 // connect to database
 $db = new DB('file', BASE_PATH . 'data/');
