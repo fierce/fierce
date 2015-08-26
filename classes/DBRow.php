@@ -20,7 +20,7 @@ class DBRow
   static public function all($sort=null)
   {
     global $db;
-    $entity = strtolower(get_called_class());
+    $entity = get_called_class();
     
     $rows = $db->$entity->find([], '-modified');
     

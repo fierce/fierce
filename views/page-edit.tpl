@@ -40,9 +40,6 @@
     'class' => 'wysiwyg full'
   ]) ?>
   
-  <script type="text/javascript" src="Fierce/third-party/ckeditor/ckeditor.js"></script>  
-
-  
   <div class="buttons">
     <input type="submit" value="Save <?= $noun ?>">
   </div>

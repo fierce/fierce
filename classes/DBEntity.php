@@ -24,7 +24,11 @@ class DBEntity
     $this->type = $db->type;
     $this->entity = $entity;
     
-    $this->dataDir = "{$db->dataPath}$this->entity/";
+    $this->dataEntity = preg_replace('/.*\\\\/', '', strtolower($entity));
+    
+    $this->dataDir = "{$db->dataPath}$this->dataEntity/";
+    
+    
     $this->archiveDir = "$this->dataDir/archive/";
     
     if (!is_dir($this->archiveDir)) {
@@ -152,8 +156,6 @@ class DBEntity
   
   public function rebuildIndexes()
   {
-    $entity = $this->entity;
-    
     $indexDir = $this->dataDir . 'indexes/';
     if (!is_dir($indexDir)) {
       return;

@@ -435,7 +435,8 @@ class View
     self::closeRow();
     
     if (strpos(@$params['class'], 'wysiwyg') !== false) {
-      self::addScript('Fierce/scripts/wysiwyg.controller.js');
+      self::addScript(FIERCE_SRC . 'scripts/wysiwyg.controller.js');
+      self::addScript(FIERCE_SRC . 'third-party/ckeditor/ckeditor.js');
     }
   }
   

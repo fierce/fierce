@@ -4,7 +4,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <base href="<?= BASE_URL ?>" id="base_href">
+  <base href="<?= BASE_URL ?>" id="base_href" data-fierce-base="<?= BASE_URL . FIERCE_SRC ?>">
   
   <title><?= $pageTitle ?></title>
   

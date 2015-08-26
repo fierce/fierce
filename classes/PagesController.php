@@ -38,16 +38,7 @@ class PagesController extends CrudController
     $classOptions = [
       'Fierce\PageController' => 'Plain Page'
     ];
-    foreach ($autoloadClasses as $class => $file) {
-      if (pathinfo(pathinfo($file, PATHINFO_FILENAME), PATHINFO_EXTENSION) != 'controller') {
-        continue;
-      }
-      
-      $controller = new $class();
-      
-      $classOptions[$class] = $controller->displayName;
-    }
-    
+        
     View::set('classOptions', $classOptions);
   }
   

@@ -19,6 +19,7 @@ namespace Fierce;
 // config
 define('FIERCE_PATH', __DIR__ . '/');
 define('BASE_PATH', dirname(dirname(dirname(__DIR__))) . '/');
+define('FIERCE_SRC', str_replace(BASE_PATH, '', FIERCE_PATH));
 
 preg_match('#^(/[^/]+)(.*)#', $_SERVER['REQUEST_URI'], $matches);
 define('BASE_URL', 'http://' . $_SERVER['SERVER_NAME'] . $matches[1] . '/');
