@@ -286,7 +286,7 @@ class View
   
   static public function photoField($params)
   {
-    View::addScript('Fierce/scripts/photo-field.controller.js');
+    View::addScript(FIERCE_SRC . '/scripts/photo-field.controller.js');
     
     $params['type'] = 'file';
     $params['class'] = trim('photo_upload ' . @$params['class']);
@@ -324,7 +324,7 @@ class View
   
   static public function tagField($params)
   {
-    View::addScript('Fierce/scripts/tag-field.controller.js');
+    View::addScript(FIERCE_SRC . 'scripts/tag-field.controller.js');
     
     $params['class'] = trim('tag_field large ' . @$params['class']);
     
