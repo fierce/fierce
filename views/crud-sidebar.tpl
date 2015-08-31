@@ -29,14 +29,6 @@
                     </a>
                   </td>
                 <? endforeach ?>
-                
-                <td class="buttons">
-                  <a href="javascript:void(0)" confirmedHref="<?= $controller->url('delete', ['id' => $sidebarItem->id]) ?>" onclick="
-                    if (confirm('Are you sure you want to delete <?= addslashes(htmlspecialchars(@$sidebarItem->$displayField)) ?>?')) {
-                      this.setAttribute('href', this.getAttribute('confirmedHref'))
-                    }
-                  " class="grey">Delete </a>
-                </td>
               </tr>
             <? endforeach ?>
             <tr>
@@ -51,6 +43,10 @@
   </div>
 
   <div class="content">
-    <? if ($crudContentTpl) View::renderTpl($crudContentTpl, get_defined_vars()) ?>
+    <? if ($crudContentTpl): ?>
+      <? View::renderTpl($crudContentTpl, get_defined_vars()) ?>
+    <? else: ?>
+
+    <? endif ?>
   </div>
 </div>

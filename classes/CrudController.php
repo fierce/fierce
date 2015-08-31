@@ -48,14 +48,7 @@ class CrudController extends PageController
   
   public function defaultAction()
   {
-    global $db;
-    
-    $entity = $this->entity;
-    
-    $items = $db->$entity->getIndexRows('crud');
-    if (!$items) {
-      $items = $entity::all('modified');
-    }
+    $items = $this->items();
     
     $displayField = array_keys($this->listFields)[0];
     
@@ -132,7 +125,7 @@ class CrudController extends PageController
     if ($this->mode == 'sidebar') {
       $items = $db->$entity->getIndexRows('crud');
       if (!$items) {
-        $items = $entity::all('modified');
+        $items = $entity::all('nav_position');
       }
       
       $displayField = array_keys($this->listFields)[0];
@@ -142,6 +135,20 @@ class CrudController extends PageController
     } else {
       $this->display($this->editTpl, get_defined_vars());
     }
+  }
+  
+  public function items()
+  {
+    global $db;
+    
+    $entity = $this->entity;
+    
+    $items = $db->$entity->getIndexRows('crud');
+    if (!$items) {
+      $items = $entity::all('modified');
+    }
+    
+    return $items;
   }
   
   public function beforeEditOrAdd($item)

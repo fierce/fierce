@@ -22,7 +22,7 @@ class DBRow
     global $db;
     $entity = get_called_class();
     
-    $rows = $db->$entity->find([], '-modified');
+    $rows = $db->$entity->find([], $sort);
     
     $items = array();
     foreach ($rows as $id => $row) {

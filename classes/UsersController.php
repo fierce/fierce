@@ -25,8 +25,6 @@ class UsersController extends CrudController
   
   public function __construct()
   {
-    Auth::requireRoot();
-    
     parent::__construct();
   }
 }

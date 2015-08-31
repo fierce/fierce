@@ -31,6 +31,20 @@ class PagesController extends CrudController
     parent::__construct();
   }
   
+  public function items()
+  {
+    global $db;
+    
+    $entity = $this->entity;
+    
+    $items = $db->$entity->getIndexRows('crud');
+    if (!$items) {
+      $items = $entity::all('nav_position');
+    }
+    
+    return $items;
+  }
+  
   public function beforeEditOrAdd($item)
   {
     global $autoloadClasses;

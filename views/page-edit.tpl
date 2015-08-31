@@ -15,7 +15,11 @@
 
   <? 
     if ($item->admin_category == 'main') {
-      View::field(['type' => 'hidden', 'name' => 'nav_position', 'value' => '100000']);
+      View::field([
+        'type' => 'hidden',
+        'name' => 'nav_position',
+        'value' => ($formType == 'Add') ? '100000' : $item->nav_position
+      ]);
     } else if ($item->admin_category == 'not_linked') {
       View::field(['type' => 'hidden', 'name' => 'is_user_page', 'value' => true]);
     }
@@ -41,6 +45,11 @@
   ]) ?>
   
   <div class="buttons">
+    <a href="javascript:void(0)" confirmedHref="<?= $controller->url('delete', ['id' => $item->id]) ?>" onclick="
+          if (confirm('Are you sure you want to delete this page?')) {
+            this.setAttribute('href', this.getAttribute('confirmedHref'))
+          }
+        " class="grey" style="float: left;">Delete this Page</a>
     <input type="submit" value="Save <?= $noun ?>">
   </div>
 <? View::closeForm() ?>

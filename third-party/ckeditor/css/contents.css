@@ -1,8 +1,18 @@
-.button {
+.button
+{
   background-color: #eee;
   border: 1px solid #aaa;
   border-radius: 3px;
   padding: 2px 8px;
   color: #000;
   text-decoration: none;
+}
+
+div.column
+{
+  outline: 1px dashed #ccc;
+  display: inline-block;
+  width: 25%;
+  margin-right: 5%;
+  text-align: center;
 }

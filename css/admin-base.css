@@ -159,18 +159,22 @@ div.sidebar_wrapper div.sidebar
 
 div.sidebar_wrapper div.sidebar a
 {
+  display: block;
   color: inherit;
+  position: relative;
 }
 
 div.sidebar_wrapper div.sidebar .buttons a
 {
   color: #fff;
   font-size: 11px;
+  display: inline;
 }
 
 div.sidebar_wrapper div.sidebar tr.sidebar_active
 {
   background-color: #1684d0;
+  border-radius: 4px;
 }
 
 div.sidebar_wrapper div.sidebar tr.sidebar_active a
@@ -226,7 +230,6 @@ table.grid > tbody > tr > td.buttons
 div.sidebar_wrapper div.sidebar table.grid > thead > tr > th.buttons,
 div.sidebar_wrapper div.sidebar table.grid > tbody > tr > td.buttons
 {
-  text-align: right;
   width: 50px;
 }
 

@@ -10,6 +10,10 @@
     
     CKEDITOR.config.extraPlugins = 'codemirror,image2,widget,lineutils,fierce-image-select';
     
+    // these two lines make *all* HTML valid
+//    CKEDITOR.config.allowedContent = true
+//    CKEDITOR.config.extraAllowedContent = '*[*];*(*);*{*}';
+    
     CKEDITOR.config.height = 400
     CKEDITOR.config.baseHref = document.getElementById('base_href').href
     
@@ -23,7 +27,7 @@
 		    { name: 'document', groups: [ 'mode', 'document', 'doctools' ] },
 	    ];
     
-    CKEDITOR.config.removeButtons = 'Save,NewPage,Preview,Print,Templates,PasteFromWord,SelectAll,Scayt,Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,Find,Replace,CreateDiv,BidiLtr,BidiRtl,Language,Flash,Smiley,PageBreak,Iframe,ShowBlocks,About,Maximize,Font,FontSize,Format,Blockquote';
+    CKEDITOR.config.removeButtons = 'Save,NewPage,Preview,Print,Templates,PasteFromWord,SelectAll,Scayt,Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,Find,Replace,BidiLtr,BidiRtl,Language,Flash,Smiley,PageBreak,Iframe,ShowBlocks,About,Maximize,Font,FontSize,Format,Blockquote';
     
     CKEDITOR.stylesSet.add( 'default', [
         // Block Styles
@@ -33,9 +37,8 @@
         { name: 'Sub-Heading', element: 'h3' },
     
         // Inline Styles
-        { name: 'Marker: Yellow',   element: 'span',    styles: { 'background-color': 'Yellow' } },
-        { name: 'Marker: Green',    element: 'span',    styles: { 'background-color': 'Lime' } },
-        { name: 'Button',    element: 'a',    attributes: { 'class': 'button' } }
+        { name: 'Button',    element: 'a',    attributes: { 'class': 'button' } },
+        { name: 'Column',    element: 'div',    attributes: { 'class': 'column' } }
     ] );
   
   

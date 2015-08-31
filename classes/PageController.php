@@ -78,9 +78,14 @@ class PageController
       ResponseCache::disable();
     }
     
+    if (isset($this->page->main_tpl)) {
+      $this->mainTpl = $this->page->main_tpl;
+    }
+    
     View::main($this->mainTpl, false, [
       'pageTitle' => $this->page->name,
-      'contentViewHtml' => $this->page->content
+      'contentViewHtml' => $this->page->content,
+      'page' => $this->page
     ]);
   }
 }

@@ -2,6 +2,8 @@
 
 namespace Fierce;
 
+
+require realpath('../../../../../../autoload.php');
 require realpath('../../../../init.php');
 
 class CKEditorMediaController extends MediaController
