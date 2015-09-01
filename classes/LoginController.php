@@ -31,6 +31,7 @@ class LoginController extends PageController
     ];
     $message = false;
     
+    $pageTitle = 'Log In';
     $this->display('login.tpl', get_defined_vars());
   }
   

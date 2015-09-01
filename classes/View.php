@@ -25,49 +25,44 @@ class View
   protected static $scriptUrls = [];
   protected static $cssUrls = [];
   
+  protected static $twig = false;
+  
+  static protected function initTwig()
+  {
+    if (self::$twig) {
+      return;
+    }
+    
+    $loader = new \Twig_Loader_Filesystem([
+      BASE_PATH . 'views/',
+      FIERCE_PATH . 'views/'
+    ]);
+    
+    self::$twig = new \Twig_Environment($loader);
+    
+    self::$twig->addTokenParser(new Tag\NavParser());
+    self::$twig->addTokenParser(new Tag\Parser('include_css', 'Fierce\\Tag\\IncludeCssNode'));
+    self::$twig->addTokenParser(new Tag\Parser('include_script', 'Fierce\\Tag\\IncludeScriptNode'));
+    self::$twig->addTokenParser(new Tag\Parser('field', 'Fierce\\Tag\\FieldNode'));
+    self::$twig->addTokenParser(new Tag\FormParser());
+  }
+  
   static public function main($templateView, $contentView = false, $vars = array())
   {
-    $blockedVars = ['templateView', 'contentView', 'vars', 'var', 'value'];
-    foreach (self::$vars as $var => $value) {
-      if (in_array($var, $blockedVars)) {
-        continue;
-      }
-      $$var = $value;
-    }
-    foreach ($vars as $var => $value) {
-      if (in_array($var, $blockedVars)) {
-        continue;
-      }
-      $$var = $value;
-    }
+    self::initTwig();
+
+    $twigVars = array_merge(self::$vars, $vars);
     
-    $mainTpl = BASE_PATH . 'views/' . $templateView;
-    if (!file_exists($mainTpl)) {
-      $mainTpl = FIERCE_PATH . 'views/' . $templateView;
-    }
-    if (!file_exists($mainTpl)) {
-      throw new \exception('Can\'t find view ' . $templateView);
-    }
-    
+
     if ($contentView) {
-      $contentTpl = BASE_PATH . 'views/' . $contentView;
-      if (!file_exists($contentTpl)) {
-        $contentTpl = FIERCE_PATH . 'views/' . $contentView;
-      }
-      if (!file_exists($contentTpl)) {
-        throw new \exception('Can\'t find view ' . $contentView);
-      }
-      
-      ob_start();
-      require($contentTpl);
-      $contentViewHtml = ob_get_clean();
+      $twigVars['contentViewHtml'] = self::$twig->render($contentView, $twigVars);
     } else if (!isset($vars['contentViewHtml'])) {
-      $contentViewHtml = false;
+      $twigVars['contentViewHtml'] = false;
     }
     $scriptUrls = self::$scriptUrls;
     $cssUrls = self::$cssUrls;
     
-    require($mainTpl);
+    print self::$twig->render($templateView, $twigVars);
   }
   
   static public function renderTpl($contentView, $vars)
