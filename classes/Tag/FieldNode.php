@@ -62,18 +62,26 @@ class FieldNode extends Node
     } else if (FormNode::$currentForm && FormNode::$currentForm->hasNode('data')) {
       $dataNode = FormNode::$currentForm->getNode('data');
       
+      $this->compiler
+        ->write('$formData = ')
+        ->subcompile($dataNode)
+        ->raw(";\n")
+      ;
+      $this->compiler
+        ->write('$fieldName = ')
+        ->subcompile($this->getNode('name'))
+        ->raw(";\n")
+      ;
       
-      // TODO: compile $dataNode into something like:
-      
-      
-      
-      // print twig_escape_filter($context['loginData']->username);
+      $this->compiler
+        ->write("print ' value=\"' . ")
+      	->raw('(isset($formData->$fieldName) ? htmlspecialchars($formData->$fieldName) : "")')
+      	->raw(" . '\"';\n")
+      ;
     }
     
     $this->compiler
       ->write("print \">\\n\";\n")
     ;
-    
-//     dp($this->compiler->getSource());
   }
 }
