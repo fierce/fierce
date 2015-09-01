@@ -27,7 +27,7 @@ class FieldNode extends Node
       $dataNode = FormNode::$currentForm->getNode('data');
       
       // TODO: compile $dataNode into something like:
-      print twig_escape_filter($context['loginData']->username);
+      // print twig_escape_filter($context['loginData']->username);
     }
     
     $this->openTag('input', $attributes);
