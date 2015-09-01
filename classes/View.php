@@ -44,6 +44,7 @@ class View
     self::$twig->addTokenParser(new Tag\Parser('include_css', 'Fierce\\Tag\\IncludeCssNode'));
     self::$twig->addTokenParser(new Tag\Parser('include_script', 'Fierce\\Tag\\IncludeScriptNode'));
     self::$twig->addTokenParser(new Tag\Parser('field', 'Fierce\\Tag\\FieldNode'));
+    self::$twig->addTokenParser(new Tag\Parser('field_row', 'Fierce\\Tag\\FieldRowNode'));
     self::$twig->addTokenParser(new Tag\FormParser());
   }
   

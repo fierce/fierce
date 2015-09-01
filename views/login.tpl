@@ -5,25 +5,14 @@
 {% endif %}
 
 {% form action='login?do=submit' class='medium' data=loginData %}
-  
   {% field name='return' type='hidden' %}
   
-    <? View::field([
-      'name' => 'return',
-      'type' => 'hidden'
-    ]) ?>
-    
-    <? View::fieldRow([
-      'name' => 'email',
-    ]) ?>
-    <? View::fieldRow([
-      'name' => 'password',
-      'type' => 'password'
-    ]) ?>
+  {% field_row name='email' %}
+  {% field_row name='password' type='password' %}
   
-    <div class="buttons">
-      <input type="submit" value="Continue">
-    </div>
+  <div class="buttons">
+    <input type="submit" value="Continue">
+  </div>
 {% endform %}
 
 <script type="text/javascript">
