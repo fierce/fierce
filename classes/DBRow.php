@@ -74,6 +74,16 @@ class DBRow
     return $this->row->$key;
   }
   
+  public function __isset($key)
+  {
+    switch ($key) {
+      case 'id':
+        return true;
+    }
+    
+    return isset($this->row->$key);
+  }
+  
   public function setData($data)
   {
     if (is_array($data)) {

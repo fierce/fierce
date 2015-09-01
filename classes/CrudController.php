@@ -52,6 +52,8 @@ class CrudController extends PageController
     
     $displayField = array_keys($this->listFields)[0];
     
+    $this->pageTitle = $this->noun . ' List';
+    
     if ($this->mode == 'sidebar') {
       $crudContentTpl = false;
       $this->display('crud-sidebar.tpl', get_defined_vars());

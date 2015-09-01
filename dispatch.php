@@ -32,9 +32,11 @@ $url = parse_url(REQUEST_URL, PHP_URL_PATH);
 if ($url != '/') {
   $url = rtrim($url, '/');
 }
+define('CONTROLLER_URL', $url);
+unset($url);
 
 try {
-  $page = $db->page->byId(sha1($url));
+  $page = $db->page->byId(sha1(CONTROLLER_URL));
 } catch (\Exception $e) {
   $page = $db->page->byId(sha1('/404'));
 }

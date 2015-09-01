@@ -46,13 +46,23 @@ class View
     self::$twig->addTokenParser(new Tag\Parser('field', 'Fierce\\Tag\\FieldNode'));
     self::$twig->addTokenParser(new Tag\Parser('field_row', 'Fierce\\Tag\\FieldRowNode'));
     self::$twig->addTokenParser(new Tag\FormParser());
+    
+    self::$twig->addFilter(new \Twig_SimpleFilter('ltrim', 'ltrim'));
   }
   
   static public function main($templateView, $contentView = false, $vars = array())
   {
     self::initTwig();
 
-    $twigVars = array_merge(self::$vars, $vars);
+    $twigVars = array_merge([
+      'BASE_URL' => BASE_URL,
+      'FIERCE_SRC' => FIERCE_SRC,
+      'BASE_PATH' => BASE_PATH,
+      'FIERCE_PATH' => FIERCE_PATH,
+      'REQUEST_URL' => REQUEST_URL,
+      'CONTROLLER_URL' => CONTROLLER_URL,
+      'loggedInUser' => Auth::loggedInUser()
+    ], self::$vars, $vars);
     
 
     if ($contentView) {
