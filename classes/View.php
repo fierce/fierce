@@ -38,7 +38,16 @@ class View
       FIERCE_PATH . 'views/'
     ]);
     
-    self::$twig = new \Twig_Environment($loader);
+    if (!F_DISABLE_CACHE) {
+      $cacheDir = BASE_PATH . 'tmp/twig_cache/';
+      if (!is_dir($cacheDir)) {
+        mkdir($cacheDir, 0777, true);
+      }
+    }
+    
+    self::$twig = new \Twig_Environment($loader, [
+      'cache' => F_DISABLE_CACHE ? false : $cacheDir
+    ]);
     
     self::$twig->addTokenParser(new Tag\NavParser());
     self::$twig->addTokenParser(new Tag\Parser('include_css', 'Fierce\\Tag\\IncludeCssNode'));

@@ -25,6 +25,10 @@ define('REQUEST_URL', $matches[2]);
 
 require BASE_PATH . 'fierce-config.php';
 
+if (!defined('F_DISABLE_CACHE')) {
+  define('F_DISABLE_CACHE', false);
+}
+
 if (!defined('F_AUTH_SALT')) {
   throw new exception('Auth salt must be defined');
 }
