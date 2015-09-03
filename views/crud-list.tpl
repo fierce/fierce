@@ -21,7 +21,7 @@
         {% endfor %}
         
         <td class="buttons">
-          {% if item.url %}
+          {% if item.url is defined %}
             <a href="{{ item.url|trim('/') }}">View</a>
           {% endif %}
           <a href="{{ controller.url('edit', {'id': item.id}) }}">Edit</a>
@@ -35,4 +35,3 @@
     {% endfor %}
   </tbody>
 </table>
-

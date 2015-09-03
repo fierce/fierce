@@ -21,6 +21,12 @@ class UsersController extends CrudController
     'email' => 'Email'
   ];
   
+  public $editFields = [
+    'name',
+    'email',
+    'new_password'
+  ];
+  
   public $editTpl = 'user-edit.tpl';
   
   public function __construct()
@@ -28,4 +34,3 @@ class UsersController extends CrudController
     parent::__construct();
   }
 }
-

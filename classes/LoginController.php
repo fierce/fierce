@@ -1,4 +1,4 @@
-<?
+<?php
 
 namespace Fierce;
 
@@ -26,9 +26,13 @@ class LoginController extends PageController
   }
   public function defaultAction()
   {
-    $loginData = (object)[
-      'return' => @$_GET['return']
-    ];
+    $loginData = new FormData([
+      'email',
+      'password',
+      'return'
+    ]);
+    $loginData->retrieve();
+    
     $message = false;
     
     $pageTitle = 'Log In';
@@ -37,7 +41,12 @@ class LoginController extends PageController
   
   public function submitAction()
   {
-    $loginData = (object)array_merge($_POST, $_GET);
+    $loginData = new FormData([
+      'email',
+      'password',
+      'return'
+    ]);
+    $loginData->retrieve();
     
     $success = Auth::attemptLogin(@$loginData->email, @$loginData->password);
     
@@ -47,6 +56,7 @@ class LoginController extends PageController
       HTTP::redirect(@$loginData->return);
     }
     
+    $pageTitle = 'Log In';
     $this->display('login.tpl', get_defined_vars());
   }
   

@@ -14,6 +14,7 @@ namespace Fierce\Tag;
 
 class IncludeScriptNode extends Node
 {
+  public static $tagName = 'include_script';
   public static $keyValuePairs = false;
   public static $singleValue = true;
   

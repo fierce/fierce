@@ -43,17 +43,24 @@ class Node extends \Twig_Node
       $this->compiler
         ->write("print ' $name=\"'")
       ;
-      if (is_string($value)) {
-        $this->compiler
-          ->raw(" . \"" . addslashes(htmlspecialchars($value)) . "\"")
-        ;
-      } else if (is_a($value, 'Twig_Node')) {
+      if (is_a($value, 'Twig_Node')) {
+        $valueEscapedNode = new \Twig_Node_Expression_Filter(
+          $value,
+          new \Twig_Node_Expression_Constant('escape', $this->lineno),
+          new \Twig_Node([
+            new \Twig_Node_Expression_Constant('html', $this->lineno)
+          ]),
+          $this->lineno
+        );
+        
         $this->compiler
           ->raw(' . ')
-          ->subcompile($value)
+          ->subcompile($valueEscapedNode)
         ;
       } else {
-        throw new \exception("invalid value " . print_r($value, true));
+        $this->compiler
+          ->raw(" . \"" . addslashes(htmlspecialchars((string)$value)) . "\"")
+        ;
       }
       $this->compiler
         ->raw(" . '\"';\n")

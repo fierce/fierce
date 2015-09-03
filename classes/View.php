@@ -46,14 +46,15 @@ class View
     }
     
     self::$twig = new \Twig_Environment($loader, [
-      'cache' => F_DISABLE_CACHE ? false : $cacheDir
+      'cache' => F_DISABLE_CACHE ? false : $cacheDir,
+      'strict_variables' => true
     ]);
     
     self::$twig->addTokenParser(new Tag\NavParser());
-    self::$twig->addTokenParser(new Tag\Parser('include_css', 'Fierce\\Tag\\IncludeCssNode'));
-    self::$twig->addTokenParser(new Tag\Parser('include_script', 'Fierce\\Tag\\IncludeScriptNode'));
-    self::$twig->addTokenParser(new Tag\Parser('field', 'Fierce\\Tag\\FieldNode'));
-    self::$twig->addTokenParser(new Tag\Parser('field_row', 'Fierce\\Tag\\FieldRowNode'));
+    self::$twig->addTokenParser(new Tag\Parser('Fierce\\Tag\\IncludeCssNode'));
+    self::$twig->addTokenParser(new Tag\Parser('Fierce\\Tag\\IncludeScriptNode'));
+    self::$twig->addTokenParser(new Tag\Parser('Fierce\\Tag\\FieldNode'));
+    self::$twig->addTokenParser(new Tag\Parser('Fierce\\Tag\\FieldRowNode'));
     self::$twig->addTokenParser(new Tag\FormParser());
     
     self::$twig->addFilter(new \Twig_SimpleFilter('ltrim', 'ltrim'));
@@ -70,7 +71,9 @@ class View
       'FIERCE_PATH' => FIERCE_PATH,
       'REQUEST_URL' => REQUEST_URL,
       'CONTROLLER_URL' => CONTROLLER_URL,
-      'loggedInUser' => Auth::loggedInUser()
+      'loggedInUser' => Auth::loggedInUser(),
+      'cssUrls' => self::$cssUrls,
+      'scriptUrls' => self::$scriptUrls
     ], self::$vars, $vars);
     
 
@@ -79,8 +82,6 @@ class View
     } else if (!isset($vars['contentViewHtml'])) {
       $twigVars['contentViewHtml'] = false;
     }
-    $scriptUrls = self::$scriptUrls;
-    $cssUrls = self::$cssUrls;
     
     print self::$twig->render($templateView, $twigVars);
   }

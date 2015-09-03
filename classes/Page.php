@@ -30,6 +30,15 @@ class Page extends DBRow
     }
   }
   
+  public function __isset($key)
+  {
+    switch ($key) {
+      case 'admin_category':
+        return true;
+    }
+    return parent::__get($key);
+  }
+  
   public function save()
   {
     global $db;

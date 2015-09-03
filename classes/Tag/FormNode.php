@@ -14,14 +14,24 @@ namespace Fierce\Tag;
 
 class FormNode extends \Twig_Node
 {
-  public static $currentForm = null;
+  public static $tagName = 'form';
   
   public function compile(\Twig_Compiler $compiler)
   {
-    if (self::$currentForm) {
-      throw new exception('cannot nest forms');
+    $compiler
+      
+    ;
+    if ($this->hasNode('data')) {
+      $compiler
+        ->write("\$context['fierceCurrentFormData'] = ")
+        ->subcompile($this->getNode('data'))
+        ->raw(";\n");
+      ;
+    } else {
+      $compiler
+        ->write("\$context['fierceCurrentFormData'] = null;\n")
+      ;
     }
-    self::$currentForm = $this;
     
     $compiler
       ->write("print '<form method=\"post\"';\n")
@@ -57,7 +67,8 @@ class FormNode extends \Twig_Node
         print "</form>\n";
       ')
     ;
-    
-    self::$currentForm = null;
+    $compiler
+      ->write("unset(\$context['fierceCurrentFormData']);\n");
+    ;
   }
 }

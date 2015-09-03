@@ -14,6 +14,8 @@ namespace Fierce\Tag;
 
 class FieldRowNode extends FieldNode
 {
+  public static $tagName = 'field_row';
+  
   public function compileTag()
   {
     $this->openTag('div', [

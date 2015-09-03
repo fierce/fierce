@@ -14,6 +14,7 @@ namespace Fierce\Tag;
 
 class NavNode extends \Twig_Node
 {
+  public static $tagName = 'nav';
   public function __construct($line, $tag = null)
   {
     parent::__construct([], [], $line, $tag);

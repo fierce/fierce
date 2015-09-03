@@ -14,8 +14,10 @@ namespace Fierce\Tag;
 
 class IncludeCssNode extends Node
 {
+  public static $tagName = 'include_css';
   public static $keyValuePairs = false;
   public static $singleValue = true;
+
   
   public function compileTag()
   {

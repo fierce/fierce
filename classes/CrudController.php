@@ -52,12 +52,15 @@ class CrudController extends PageController
     
     $displayField = array_keys($this->listFields)[0];
     
-    $this->pageTitle = $this->noun . ' List';
-    
     if ($this->mode == 'sidebar') {
+      $this->pageTitle = $this->nounPlural;
+      
+      $item = false;
       $crudContentTpl = false;
       $this->display('crud-sidebar.tpl', get_defined_vars());
     } else {
+      $this->pageTitle = $this->noun . ' List';
+      
       $this->display($this->listTpl, get_defined_vars());
     }
   }
@@ -68,6 +71,7 @@ class CrudController extends PageController
     
     $entity = $this->entity;
     $item = $entity::createNew();
+    $formData = new FormData($this->editFields);
     
     if ($this->categoryField) {
       $categoryField = $this->categoryField;
@@ -77,6 +81,9 @@ class CrudController extends PageController
     $this->beforeEditOrAdd($item);
     
     $formType = 'Add';
+    $formAction = $this->url('add-submit', ['id' => $item->id]);
+    
+    $this->pageTitle = 'Add ' . $this->noun;
     
     if ($this->mode == 'sidebar') {
       $items = $db->$entity->getIndexRows('crud');
@@ -120,9 +127,15 @@ class CrudController extends PageController
     $entity = $this->entity;
     $item = $entity::createById(@$_GET['id']);
     
+    $formData = new FormData($this->editFields);
+    $formData->setValues($item);
+    
     $this->beforeEditOrAdd($item);
     
     $formType = 'Edit';
+    $formAction = $this->url('edit-submit', ['id' => $item->id]);
+    
+    $this->pageTitle = 'Edit ' . $this->noun;
     
     if ($this->mode == 'sidebar') {
       $items = $db->$entity->getIndexRows('crud');

@@ -17,9 +17,9 @@ class Parser extends \Twig_TokenParser
   protected $tagName;
   protected $nodeClass;
   
-  public function __construct($tagName, $nodeClass)
+  public function __construct($nodeClass)
   {
-    $this->tagName = $tagName;
+    $this->tagName = $nodeClass::$tagName;
     $this->nodeClass = $nodeClass;
   }
   

@@ -24,6 +24,12 @@ class PagesController extends CrudController
     'not_linked' => 'Not Linked'
   ];
   
+  public $editFields = [
+    'name',
+    'url',
+    'content'
+  ];
+  
   public $categoryField = 'admin_category';
   
   public function __construct()
