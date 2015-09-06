@@ -171,17 +171,13 @@ div.sidebar_wrapper div.sidebar
   display: block;
 }
 
-.dd-list .sidebar_active
+.dd-list .sidebar_active > .dd-content
 {
   background-color: #1684d0;
-}
-
-.dd-list .sidebar_active .dd-content
-{
   border-color: #1684d0;
 }
 
-.dd-list .sidebar_active a
+.dd-list .sidebar_active > .dd-content a
 {
   color: #fff;
 }
