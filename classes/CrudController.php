@@ -17,9 +17,6 @@ class CrudController extends PageController
   public $entity = false;
   public $listFields = ['name' => 'Name'];
   
-  public $mode = 'normal';
-  public $categoryField = false;
-  
   public $noun = false;
   public $nounPlural = false;
   
@@ -52,17 +49,9 @@ class CrudController extends PageController
     
     $displayField = array_keys($this->listFields)[0];
     
-    if ($this->mode == 'sidebar') {
-      $this->pageTitle = $this->nounPlural;
-      
-      $item = false;
-      $crudContentTpl = false;
-      $this->display('crud-sidebar.tpl', get_defined_vars());
-    } else {
-      $this->pageTitle = $this->noun . ' List';
-      
-      $this->display($this->listTpl, get_defined_vars());
-    }
+    $this->pageTitle = $this->noun . ' List';
+    
+    $this->display($this->listTpl, get_defined_vars());
   }
   
   public function addAction()
@@ -73,11 +62,6 @@ class CrudController extends PageController
     $item = $entity::createNew();
     $formData = new FormData($this->editFields);
     
-    if ($this->categoryField) {
-      $categoryField = $this->categoryField;
-      $item->$categoryField = @$_GET['category'];
-    }
-    
     $this->beforeEditOrAdd($item);
     
     $formType = 'Add';
@@ -85,19 +69,7 @@ class CrudController extends PageController
     
     $this->pageTitle = 'Add ' . $this->noun;
     
-    if ($this->mode == 'sidebar') {
-      $items = $db->$entity->getIndexRows('crud');
-      if (!$items) {
-        $items = $entity::all('modified');
-      }
-      
-      $displayField = array_keys($this->listFields)[0];
-      
-      $crudContentTpl = $this->editTpl;
-      $this->display('crud-sidebar.tpl', get_defined_vars());
-    } else {
-      $this->display($this->editTpl, get_defined_vars());
-    }
+    $this->display($this->editTpl, get_defined_vars());
   }
   
   public function addSubmitAction()
@@ -113,11 +85,7 @@ class CrudController extends PageController
     
     $this->afterSave($item);
     
-    if ($this->mode == 'sidebar') {
-      HTTP::redirect($this->url('edit', ['id' => $item->id]));
-    } else {
-      HTTP::redirect($this->url());
-    }
+    HTTP::redirect($this->url());
   }
   
   public function editAction()
@@ -137,19 +105,7 @@ class CrudController extends PageController
     
     $this->pageTitle = 'Edit ' . $this->noun;
     
-    if ($this->mode == 'sidebar') {
-      $items = $db->$entity->getIndexRows('crud');
-      if (!$items) {
-        $items = $entity::all('nav_position');
-      }
-      
-      $displayField = array_keys($this->listFields)[0];
-      
-      $crudContentTpl = $this->editTpl;
-      $this->display('crud-sidebar.tpl', get_defined_vars());
-    } else {
-      $this->display($this->editTpl, get_defined_vars());
-    }
+    $this->display($this->editTpl, get_defined_vars());
   }
   
   public function items()
@@ -184,11 +140,7 @@ class CrudController extends PageController
     
     $this->afterSave($item);
     
-    if ($this->mode == 'sidebar') {
-      HTTP::redirect($this->url('edit', ['id' => $item->id]));
-    } else {
-      HTTP::redirect($this->url());
-    }
+    HTTP::redirect($this->url('edit', ['id' => $item->id]));
   }
   
   public function deleteAction()
