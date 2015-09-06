@@ -30,9 +30,21 @@ class NavNode extends \Twig_Node
         $navPages = Fierce\Page::all(\'nav_position\');
         
         print "<ul id=\\"nav\\">\n";
+        $lastRight = 0;
+        $navDepth = 0;
         foreach ($navPages as $navPage) {
-          if (!@$navPage->nav_position) {
+          if (@$navPage->nav != \'main\') {
             continue;
+          }
+          
+          if ($navPage->nav_position > $lastRight) {
+            foreach (range($lastRight + 1, $navPage->nav_position) as $index) {
+              if ($index != $lastRight + 1) {
+                print "</ul>\n";
+                print "</li>\n";
+                $navDepth--;
+              }
+            }
           }
           
           $name = htmlspecialchars($navPage->name);
@@ -45,10 +57,24 @@ class NavNode extends \Twig_Node
           
           $classHtml = $navPage->url == REQUEST_URL ? \' class="current"\' : \'\';
           
-          print "<li{$classHtml}><a href=\"$href\">$name</a></li>\n";
+          print "<li{$classHtml}><a href=\"$href\">$name</a>";
+          
+          if ($navPage->nav_position_right - $navPage->nav_position > 1) {
+            print "<ul>\n";
+            $navDepth++;
+          } else {
+            print "</li>\n";
+          }
+          
+          $lastRight = $navPage->nav_position_right;
         }
-        print "</ul>\n";
+        while ($navDepth >= 0) {
+          print "</ul>\n";
+          $navDepth--;
+        }
       ')
     ;
+    
+//     dp($compiler->getSource());
   }
 }
