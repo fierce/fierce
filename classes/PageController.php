@@ -33,10 +33,14 @@ class PageController
     $controller = new $controllerClass();
     $controller->page = $page;
     
-    $action = preg_replace('/[^a-z0-9_]/', '', strtolower(@$_GET['do']));
+    $action = @$_GET['do'];
     if (!$action) {
       $action = 'default';
     }
+    $action = preg_replace('/[^a-z0-9_]+/', ' ', $action);
+    $action = ucwords($action);
+    $action = str_replace(' ', '', $action);
+    $action[0] = strtolower($action[0]);
     $action .= 'Action';
     
     $controller->$action();

@@ -49,7 +49,7 @@ class PagesController extends CrudController
 
   public function defaultAction()
   {
-    $itemsByCategory = $this->itemsByCategory();
+    $this->prepareSidebarList();
     
     $displayField = array_keys($this->listFields)[0];
     
@@ -57,7 +57,30 @@ class PagesController extends CrudController
     
     $item = false;
     $crudContentTpl = false;
-    $this->display('crud-sidebar.tpl', get_defined_vars());
+    $this->display('admin-pages.tpl', get_defined_vars());
+  }
+  
+  public function updatePositionsAction()
+  {
+    $positionsByCategory = $_POST['page_list'];
+    
+    foreach ($positionsByCategory as $nav => $positionsJson) {
+      $positions = json_decode($positionsJson);
+      
+      foreach ($positions as $position) {
+        $page = Page::createById($position->id);
+        
+        $page->setData([
+          'nav' => $nav,
+          'nav_position' => $position->position,
+          'nav_position_right' => $position->position_right
+        ]);
+        
+        $page->save();
+      }
+    }
+    
+    HTTP::redirect($_GET['return']);
   }
   
   public function addAction()
@@ -68,7 +91,10 @@ class PagesController extends CrudController
     $item = $entity::createNew();
     $formData = new FormData($this->editFields);
     
-    $item->admin_category = @$_GET['category'];
+    $item->setData([
+      'nav' => @$_GET['category'],
+      'nav_position' => 1000000
+    ]);
     
     $this->beforeEditOrAdd($item);
     
@@ -77,12 +103,12 @@ class PagesController extends CrudController
     
     $this->pageTitle = 'Add ' . $this->noun;
     
-    $itemsByCategory = $this->itemsByCategory();
+    $this->prepareSidebarList();
     
     $displayField = array_keys($this->listFields)[0];
     
     $crudContentTpl = $this->editTpl;
-    $this->display('crud-sidebar.tpl', get_defined_vars());
+    $this->display('admin-pages.tpl', get_defined_vars());
   }
   
   public function addSubmitAction()
@@ -118,15 +144,15 @@ class PagesController extends CrudController
     
     $this->pageTitle = 'Edit ' . $this->noun;
     
-    $itemsByCategory = $this->itemsByCategory();
+    $this->prepareSidebarList();
     
     $displayField = array_keys($this->listFields)[0];
     
     $crudContentTpl = $this->editTpl;
-    $this->display('crud-sidebar.tpl', get_defined_vars());
+    $this->display('admin-pages.tpl', get_defined_vars());
   }
   
-  public function itemsByCategory()
+  public function prepareSidebarList()
   {
     global $db;
     
@@ -140,14 +166,14 @@ class PagesController extends CrudController
     ];
     
     foreach ($items as $item) {
-      if (!isset($itemsByCategory[$item->admin_category])) {
+      if (!isset($item->nav) && !isset($itemsByCategory[@$item->nav])) {
         continue;
       }
       
-      $itemsByCategory[$item->admin_category]->items[] = $item;
+      $itemsByCategory[$item->nav]->items[] = $item;
     }
     
-    return $itemsByCategory;
+    View::set('itemsByCategory', $itemsByCategory);
   }
   
   public function beforeEditOrAdd($item)
