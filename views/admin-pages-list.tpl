@@ -11,6 +11,7 @@
           {% for i in lastRight + 1 .. sidebarItem.nav_position %}
             {% if not loop.first %}
               </ol>
+              </li>
               {% set navDepth = navDepth - 1 %}
             {% endif %}
           {% endfor %}
@@ -24,8 +25,9 @@
             {% if sidebarItem.nav_position_right - sidebarItem.nav_position > 1 %}
               <ol class="dd-list">
               {% set navDepth = navDepth + 1 %}
+            {% else %}
+              </li>
             {% endif %}
-          </li>
           {% set lastRight = sidebarItem.nav_position_right %}
         {% endfor %}
         {% for i in navDepth .. 0 %}
