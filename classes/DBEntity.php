@@ -57,9 +57,9 @@ class DBEntity
           
           uasort($rows, function($a, $b) use ($asc, $key) {
             if ($asc) {
-              return strcmp(@$a->$key, @$b->$key);
+              return strnatcmp(@$a->$key, @$b->$key);
             } else {
-              return strcmp(@$b->$key, @$a->$key);
+              return strnatcmp(@$b->$key, @$a->$key);
             }
           });
         }

@@ -14,6 +14,8 @@ namespace Fierce;
 
 class LoginController extends PageController
 {
+  public $mainTpl = 'main-admin.tpl';
+  
   public function __construct()
   {
     ResponseCache::disable();
@@ -64,6 +66,7 @@ class LoginController extends PageController
   {
     Auth::logout();
     
+    $pageTitle = 'Logout';
     $this->display('logout.tpl', get_defined_vars());
   }
 }

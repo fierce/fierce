@@ -1,8 +1,8 @@
 
 body
 {
-  margin: 70px auto;
-  padding: 0 20px;
+  margin: 0 0 80px 0;
+  padding: 0;
   
   
   color: #000;
@@ -76,16 +76,38 @@ p.message
 
 div#header
 {
-  position: absolute;
-  top: -20px;
-  left: 0;
-  right: 0;
-  height: 20px;
-  padding: 17px 20px 13px 20px;
-  text-align: right;
+  display: table;
+  
+  width: 100%;
   
   background-color: #152436;
   color: #fff;
+}
+
+div#header #nav,
+div#header #header-title,
+div#header #login-status
+{
+  display: table-cell;
+  
+  padding: 20px 10px;
+}
+
+div#header #nav
+{
+  
+}
+
+div#header #header-title
+{
+  text-align: center;
+  padding-left: 40px;
+  padding-right: 40px;
+}
+
+div#header #login-status
+{
+  text-align: right;
 }
 
 div#header #login-status span.username
@@ -99,6 +121,7 @@ div#header a
   color: #fff !important;
   background-color: transparent;
   margin: 20px 10px;
+  white-space: nowrap;
 }
 
 div#header a.current
@@ -106,14 +129,9 @@ div#header a.current
   text-decoration: underline;
 }
 
-div#nav
+div#content
 {
-  float: left;
-}
-
-div#login-status
-{
-  float: right;
+  margin: 20px;
 }
 
 div.buttons
@@ -162,6 +180,11 @@ div.sidebar_wrapper div.sidebar
   display: table-cell;
   width: 220px;
   vertical-align: top;
+}
+
+div.sidebar_wrapper div.sidebar h1:first-child
+{
+  margin-top: 0;
 }
 
 .dd-list .dd-content a,
