@@ -64,6 +64,7 @@ class LoginController extends PageController
   {
     Auth::logout();
     
+    $pageTitle = 'Logout';
     $this->display('logout.tpl', get_defined_vars());
   }
 }
