@@ -5,7 +5,7 @@
 {% endif %}
 
 {% form action=formAction class='medium' data=formData onsubmit="if (document.getElementById('email_field').value == '') {alert('Email is a required field.'); return false; }" %}
-  
+  {% field name='nav' type='hidden' %}
   {% field_row name='name' %}
   {% field_row name='url' class='large' %}
   

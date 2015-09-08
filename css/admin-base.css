@@ -169,10 +169,17 @@ div.buttons
   background-color: #1684d0;
 }
 
+div.sidebar_wrapper
+{
+  display: table;
+  width: 100%;
+}
+
 div.sidebar_wrapper div.sidebar
 {
   display: table-cell;
   width: 220px;
+  vertical-align: top;
 }
 
 div.sidebar_wrapper div.sidebar h1:first-child
@@ -180,27 +187,20 @@ div.sidebar_wrapper div.sidebar h1:first-child
   margin-top: 0;
 }
 
-div.sidebar_wrapper div.sidebar a
+.dd-list .dd-content a,
+.dd-dragel a /* drag items are moved out of the list while being dragged */
 {
-  display: block;
   color: inherit;
-  position: relative;
+  display: block;
 }
 
-div.sidebar_wrapper div.sidebar .buttons a
-{
-  color: #fff;
-  font-size: 11px;
-  display: inline;
-}
-
-div.sidebar_wrapper div.sidebar tr.sidebar_active
+.dd-list .sidebar_active > .dd-content
 {
   background-color: #1684d0;
-  border-radius: 4px;
+  border-color: #1684d0;
 }
 
-div.sidebar_wrapper div.sidebar tr.sidebar_active a
+.dd-list .sidebar_active > .dd-content a
 {
   color: #fff;
 }
@@ -209,6 +209,7 @@ div.sidebar_wrapper div.content
 {
   display: table-cell;
   padding-left: 30px;
+  vertical-align: top;
 }
 
 table.grid

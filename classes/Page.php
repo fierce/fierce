@@ -17,14 +17,6 @@ class Page extends DBRow
   public function __get($key)
   {
     switch ($key) {
-      case 'admin_category';
-        if (@$this->nav_position) {
-          return 'main';
-        }
-        if (@$this->is_user_page) {
-          return 'not_linked';
-        }
-        return 'system';
       default:
         return parent::__get($key);
     }
@@ -32,11 +24,7 @@ class Page extends DBRow
   
   public function __isset($key)
   {
-    switch ($key) {
-      case 'admin_category':
-        return true;
-    }
-    return parent::__get($key);
+    return parent::__isset($key);
   }
   
   public function save()
