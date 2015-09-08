@@ -21,7 +21,8 @@ class PagesController extends CrudController
   public $editFields = [
     'name',
     'url',
-    'content'
+    'content',
+    'nav'
   ];
   
   public $noun = false;
@@ -73,7 +74,8 @@ class PagesController extends CrudController
         $page->setData([
           'nav' => $nav,
           'nav_position' => $position->position,
-          'nav_position_right' => $position->position_right
+          'nav_position_right' => $position->position_right,
+          'nav_position_depth' => $position->depth
         ]);
         
         $page->save();
@@ -91,9 +93,8 @@ class PagesController extends CrudController
     $item = $entity::createNew();
     $formData = new FormData($this->editFields);
     
-    $item->setData([
-      'nav' => @$_GET['category'],
-      'nav_position' => 1000000
+    $formData->setValues([
+      'nav' => isset($_GET['category']) ? $_GET['category'] : 'not_linked'
     ]);
     
     $this->beforeEditOrAdd($item);
@@ -118,6 +119,22 @@ class PagesController extends CrudController
     
     $postData = $_POST;
     $this->beforeSave($item, $postData);
+    
+    // set nav position
+    $largestPosition = 0;
+    $existingPages = \Fierce\Page::all();
+    foreach ($existingPages as $existingPage) {
+      if (@$existingPage->nav != $postData['nav']) {
+        continue;
+      }
+      
+      if ($existingPage->nav_position_right > $largestPosition) {
+        $largestPosition = $existingPage->nav_position_right;
+      }
+    }
+    $postData['nav_position'] = $largestPosition + 1;
+    $postData['nav_position_right'] = $largestPosition + 2;
+    $postData['nav_position_depth'] = 0;
     
     $item->setData($postData);
     $item->save();

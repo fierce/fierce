@@ -4,41 +4,50 @@
   <div class="dd" id="page_list_{{ categoryValue }}">
     {% if category.items %}
       <ol class="dd-list">
-        {% set lastRight = 0 %}
         {% set navDepth = 0 %}
-        {% for sidebarItem in category.items %}
-          {% if sidebarItem.nav_position > lastRight %}
-          {% for i in lastRight + 1 .. sidebarItem.nav_position %}
-            {% if not loop.first %}
-              </ol>
-              </li>
-              {% set navDepth = navDepth - 1 %}
-            {% endif %}
-          {% endfor %}
+        {% for navPage in category.items %}
+          
+          {# no change to depth? close the list item we just left open #}
+          {% if not loop.first and navPage.nav_position_depth == navDepth %}
+            </li>
           {% endif %}
           
-          <li data-id="{{ sidebarItem.id }}" class="dd-item {% if item and sidebarItem.id == item.id %}sidebar_active{% endif %}">
+          {# increase depth? #}
+          {% if navPage.nav_position_depth > navDepth %}
+            {% for i in (navPage.nav_position_depth - navDepth) .. 0 %}
+              {% if not loop.first %}
+                <ol class="dd-list">
+                {% set navDepth = navDepth + 1 %}
+              {% endif %}
+            {% endfor %}
+          {% endif %}
+          
+          {# reduce depth? #}
+          {% if navPage.nav_position_depth < navDepth %}
+            {% for i in (navDepth - navPage.nav_position_depth) .. 0 %}
+              {% if not loop.first %}
+                </li></ol>
+                {% set navDepth = navDepth - 1 %}
+              {% endif %}
+            {% endfor %}
+            </li>
+          {% endif %}
+          
+          {# now generate the actual nav item #}
+          <li data-id="{{ navPage.id }}" class="dd-item {% if item and navPage.id == item.id %}sidebar_active{% endif %}">
             <div class="dd-handle"></div><div class="dd-content">
-              <a href="{{ controller.url('edit', {'id': sidebarItem.id}) }}">{{ sidebarItem.name }}</a>
+              <a href="{{ controller.url('edit', {'id': navPage.id}) }}">{{ navPage.name }}</a>
             </div>
-            
-            {% if sidebarItem.nav_position_right - sidebarItem.nav_position > 1 %}
-              <ol class="dd-list">
-              {% set navDepth = navDepth + 1 %}
-            {% else %}
-              </li>
-            {% endif %}
-          {% set lastRight = sidebarItem.nav_position_right %}
         {% endfor %}
         {% for i in navDepth .. 0 %}
-          </ol>
+          </li></ol>
         {% endfor %}
     {% else %}
       <div class="dd-empty"></div>
     {% endif %}
   </div>
   <div class="buttons">
-    <a href="{{ controller.url('add', {'category': categoryValue}) }}" class="button grey">Add Page</a>
+    <a href="{{ controller.url('add', {'nav': categoryValue}) }}" class="button grey">Add Page</a>
   </div>
 {% endfor %}
 
@@ -54,17 +63,18 @@ $(document).ready(function()
     
     nestable.on('change', function(e) {
       
-      function saveChangesToInput(listEl, items, position) {
+      function saveChangesToInput(listEl, items, position, depth) {
         $(listEl).children('li').each(function() {
           var item = {
             'id': this.getAttribute('data-id'),
-            'position': position
+            'position': position,
+            'depth': depth
           }
           items.push(item)
           position++
           
           $(this).children('ol').each(function() {
-            position = saveChangesToInput(this, items, position)
+            position = saveChangesToInput(this, items, position, depth + 1)
           })
           
           item.position_right = position
@@ -79,9 +89,10 @@ $(document).ready(function()
       $('.dd').each(function() {
         var items = []
         var position = 1
+        var depth = 0
         
         $(this).children('ol').each(function() {
-          position = saveChangesToInput(this, items, position)
+          position = saveChangesToInput(this, items, position, depth)
           position++
         })
         
