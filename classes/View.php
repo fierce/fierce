@@ -63,18 +63,17 @@ class View
   static public function main($templateView, $contentView = false, $vars = array())
   {
     self::initTwig();
-
-    $twigVars = array_merge([
-      'BASE_URL' => BASE_URL,
-      'FIERCE_SRC' => FIERCE_SRC,
-      'BASE_PATH' => BASE_PATH,
-      'FIERCE_PATH' => FIERCE_PATH,
-      'REQUEST_URL' => REQUEST_URL,
-      'CONTROLLER_URL' => CONTROLLER_URL,
-      'loggedInUser' => Auth::loggedInUser(),
-      'cssUrls' => self::$cssUrls,
-      'scriptUrls' => self::$scriptUrls
-    ], self::$vars, $vars);
+    
+    $twigVars = array_merge(
+      get_defined_constants(),
+      [
+        'loggedInUser' => Auth::loggedInUser(),
+        'cssUrls' => self::$cssUrls,
+        'scriptUrls' => self::$scriptUrls
+      ],
+      self::$vars,
+      $vars
+    );
     
 
     if ($contentView) {
