@@ -55,6 +55,8 @@ class View
     self::$twig->addTokenParser(new Tag\Parser('Fierce\\Tag\\IncludeScriptNode'));
     self::$twig->addTokenParser(new Tag\Parser('Fierce\\Tag\\FieldNode'));
     self::$twig->addTokenParser(new Tag\Parser('Fierce\\Tag\\FieldRowNode'));
+    self::$twig->addTokenParser(new Tag\Parser('Fierce\\Tag\\WysiwygNode'));
+    self::$twig->addTokenParser(new Tag\Parser('Fierce\\Tag\\WysiwygRowNode'));
     self::$twig->addTokenParser(new Tag\FormParser());
     
     self::$twig->addFilter(new \Twig_SimpleFilter('ltrim', 'ltrim'));
