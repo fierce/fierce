@@ -9,8 +9,7 @@
   {% field_row name='name' %}
   {% field_row name='url' class='large' %}
   
-  {% field_row name='content' %}
-  {#% wysiwyg_row name='content' %#}
+  {% wysiwyg_row name='content' %}
   
   <div class="buttons">
     <a href="javascript:void(0)" confirmedHref="{{ controller.url('delete', {'id': item.id}) }}" onclick="
