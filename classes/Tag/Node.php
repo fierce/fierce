@@ -109,6 +109,56 @@ class Node extends \Twig_Node
         ;
       } else if (is_a($content, 'Twig_Node')) {
         $this->compiler
+          ->subcompile(new \Twig_Node_Expression_Filter(
+            $content,
+            new \Twig_Node_Expression_Constant('escape', $this->lineno),
+            new \Twig_Node([
+              new \Twig_Node_Expression_Constant('html', $this->lineno)
+            ]),
+            $this->lineno
+          ))
+        ;
+      } else {
+        throw new \exception("invalid content " . print_r($content, true));
+      }
+    }
+    
+    $this->compiler
+      ->raw(";\n")
+    ;
+  }
+  
+  /**
+   * @param $contents string or node or array of strings/nodes
+   */
+  public function raw($contents)
+  {
+    if (!is_array($contents)) {
+      $contents = [$contents];
+    }
+    if (count($contents) == 0) {
+      return;
+    }
+    
+    $this->compiler
+      ->write("print ")
+    ;
+    
+    $isFirst = true;
+    foreach ($contents as $content) {
+      if ($isFirst) {
+        $isFirst = false;
+      } else {
+        $this->compiler
+          ->raw(" . ")
+        ;
+      }
+      if (is_string($content)) {
+        $this->compiler
+          ->raw("\"" . addslashes($content) . "\"")
+        ;
+      } else if (is_a($content, 'Twig_Node')) {
+        $this->compiler
           ->subcompile($content)
         ;
       } else {
