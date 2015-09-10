@@ -70,8 +70,8 @@ class View
       get_defined_constants(),
       [
         'loggedInUser' => Auth::loggedInUser(),
-        'cssUrls' => self::$cssUrls,
-        'scriptUrls' => self::$scriptUrls
+        'cssUrls' => &self::$cssUrls,
+        'scriptUrls' => &self::$scriptUrls
       ],
       self::$vars,
       $vars
