@@ -73,7 +73,11 @@ class NavNode extends \Twig_Node
       
       $name = htmlspecialchars($navPage->name);
       
-      print '<li><a href="' . $href . '">' . $name . '</a>';
+      $isCurrent = REQUEST_URL == $navPage->url;
+      
+      $classHtml = $isCurrent ? ' class="current"' : '';
+      
+      print '<li' . $classHtml . '><a href="' . $href . '">' . $name . '</a>';
       
       $first = false;
     }
