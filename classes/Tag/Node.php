@@ -34,7 +34,7 @@ class Node extends \Twig_Node
     unset($this->compiler);
   }
   
-  public function openTag($name, $params=[])
+  public function openTag($name, $params=[], $trailingNewline=true)
   {
     $this->compiler
       ->write("print '<" . $name . "';\n")
@@ -67,14 +67,14 @@ class Node extends \Twig_Node
       ;
     }
     $this->compiler
-      ->write("print \">\\n\";\n")
+      ->write("print \">" . ($trailingNewline ? "\\n" : '') . "\";\n")
     ;
   }
   
-  public function closeTag($name)
+  public function closeTag($name, $trailingNewline=true)
   {
     $this->compiler
-      ->write("print \"</" . $name . ">\\n\";\n")
+      ->write("print \"</" . $name . ">" . ($trailingNewline ? "\\n" : '') . "\";\n")
     ;
   }
   

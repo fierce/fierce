@@ -22,7 +22,7 @@ class FieldRowNode extends FieldNode
       'class' => 'row'
     ]);
     
-    $this->openTag('label');
+    $this->openTag('label', [], false);
     
     if ($this->hasNode('label')) {
       $this->text($this->getNode('label'));
