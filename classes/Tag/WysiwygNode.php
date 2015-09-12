@@ -28,7 +28,7 @@ class WysiwygNode extends FieldNode
     $this->text($this->valueNode());
     $this->closeTag('textarea');
     
-    \Fierce\View::addScript(FIERCE_SRC . 'scripts/wysiwyg.controller.js');
-    \Fierce\View::addScript(FIERCE_SRC . 'third-party/ckeditor/ckeditor.js');
+    $this->requireScript(FIERCE_SRC . 'scripts/wysiwyg.controller.js');
+    $this->requireScript(FIERCE_SRC . 'third-party/ckeditor/ckeditor.js');
   }
 }
