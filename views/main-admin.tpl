@@ -29,10 +29,6 @@
     </div>
   {% endif %}
   
-  <div id="header-title">
-    {{ SITE_NAME }}
-  </div>
-  
   {% if loggedInUser %}
     <div id="login-status">
       <span class="username">{{ loggedInUser.email }}</span>
