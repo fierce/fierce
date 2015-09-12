@@ -23,13 +23,13 @@ class FormNode extends \Twig_Node
     ;
     if ($this->hasNode('data')) {
       $compiler
-        ->write("\$context['fierceCurrentFormData'] = ")
+        ->write("\$context['_fierce_current_form_data'] = ")
         ->subcompile($this->getNode('data'))
         ->raw(";\n");
       ;
     } else {
       $compiler
-        ->write("\$context['fierceCurrentFormData'] = null;\n")
+        ->write("\$context['_fierce_current_form_data'] = null;\n")
       ;
     }
     
@@ -68,7 +68,7 @@ class FormNode extends \Twig_Node
       ')
     ;
     $compiler
-      ->write("unset(\$context['fierceCurrentFormData']);\n");
+      ->write("unset(\$context['_fierce_current_form_data']);\n");
     ;
   }
 }
