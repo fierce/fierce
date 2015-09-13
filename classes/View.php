@@ -55,6 +55,8 @@ class View
     self::$twig->addTokenParser(new Tag\Parser('Fierce\\Tag\\IncludeScriptNode'));
     self::$twig->addTokenParser(new Tag\Parser('Fierce\\Tag\\FieldNode'));
     self::$twig->addTokenParser(new Tag\Parser('Fierce\\Tag\\FieldRowNode'));
+    self::$twig->addTokenParser(new Tag\Parser('Fierce\\Tag\\SelectNode'));
+    self::$twig->addTokenParser(new Tag\Parser('Fierce\\Tag\\SelectRowNode'));
     self::$twig->addTokenParser(new Tag\Parser('Fierce\\Tag\\WysiwygNode'));
     self::$twig->addTokenParser(new Tag\Parser('Fierce\\Tag\\WysiwygRowNode'));
     self::$twig->addTokenParser(new Tag\Parser('Fierce\\Tag\\TagFieldNode'));
@@ -122,54 +124,6 @@ class View
   static public function set($key, $value)
   {
     self::$vars[$key] = $value;
-  }
-  
-  static public function select($params)
-  {
-    if (!isset($params['id'])) {
-      $id = $params['name'];
-      $id = str_replace('[', '_', $id);
-      $id = str_replace(']', '', $id);
-      $id .= '_field';
-      $params['id'] = $id;
-    }
-    
-    
-    $options = $params['options'];
-    unset($params['options']);
-    $value = self::formFieldValue($params['name']);
-    
-    self::openTag('select', $params);
-    $useNameAsValue = null;
-    foreach ($options as $optionValue => $name) {
-      if ($useNameAsValue === null) {
-        $useNameAsValue = $optionValue === 0;
-      }
-      
-      if ($useNameAsValue) {
-        $optionValue = $name;
-      }
-      
-      if ($optionValue == $value) {
-        self::openTag('option', ['value' => $optionValue, 'selected' => 'selected']);
-      } else {
-        self::openTag('option', ['value' => $optionValue]);
-      }
-      
-      print htmlspecialchars($name);
-      
-      self::closeTag('option');
-    }
-    self::closeTag('select');
-  }
-  
-  static public function selectRow($params)
-  {
-    self::openRow($params);
-    
-    self::select($params);
-    
-    self::closeRow();
   }
   
   static public function addScript($scriptUrl)
