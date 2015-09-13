@@ -57,6 +57,8 @@ class View
     self::$twig->addTokenParser(new Tag\Parser('Fierce\\Tag\\FieldRowNode'));
     self::$twig->addTokenParser(new Tag\Parser('Fierce\\Tag\\SelectNode'));
     self::$twig->addTokenParser(new Tag\Parser('Fierce\\Tag\\SelectRowNode'));
+    self::$twig->addTokenParser(new Tag\Parser('Fierce\\Tag\\TextareaNode'));
+    self::$twig->addTokenParser(new Tag\Parser('Fierce\\Tag\\TextareaRowNode'));
     self::$twig->addTokenParser(new Tag\Parser('Fierce\\Tag\\WysiwygNode'));
     self::$twig->addTokenParser(new Tag\Parser('Fierce\\Tag\\WysiwygRowNode'));
     self::$twig->addTokenParser(new Tag\Parser('Fierce\\Tag\\TagFieldNode'));
