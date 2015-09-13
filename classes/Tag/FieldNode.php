@@ -33,6 +33,10 @@ class FieldNode extends Node
   
   public function valueNode()
   {
+    if ($this->hasNode('value')) {
+      return $this->getNode('value');
+    }
+    
     return new \Twig_Node_Expression_GetAttr(
       new \Twig_Node_Expression_Name('_fierce_current_form_data', $this->lineno),
       $this->getNode('name'),
