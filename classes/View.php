@@ -59,6 +59,8 @@ class View
     self::$twig->addTokenParser(new Tag\Parser('Fierce\\Tag\\WysiwygRowNode'));
     self::$twig->addTokenParser(new Tag\Parser('Fierce\\Tag\\TagFieldNode'));
     self::$twig->addTokenParser(new Tag\Parser('Fierce\\Tag\\TagFieldRowNode'));
+    self::$twig->addTokenParser(new Tag\Parser('Fierce\\Tag\\PhotoFieldNode'));
+    self::$twig->addTokenParser(new Tag\Parser('Fierce\\Tag\\PhotoFieldRowNode'));
     self::$twig->addTokenParser(new Tag\FormParser());
     
     self::$twig->addFilter(new \Twig_SimpleFilter('ltrim', 'ltrim'));
@@ -120,44 +122,6 @@ class View
   static public function set($key, $value)
   {
     self::$vars[$key] = $value;
-  }
-  
-  static public function photoField($params)
-  {
-    View::addScript(FIERCE_SRC . '/scripts/photo-field.controller.js');
-    
-    $params['type'] = 'file';
-    $params['class'] = trim('photo_upload ' . @$params['class']);
-    if (!isset($params['id'])) {
-      $id = $params['name'];
-      $id = str_replace('[', '_', $id);
-      $id = str_replace(']', '', $id);
-      $id .= '_upload_field';
-      $params['id'] = $id;
-    }
-    
-    self::field($params);
-    
-    self::field(['type' => 'hidden', 'name' => $params['name']]);
-    
-    self::openTag('div', ['id' => $params['name'] . '_preview_wrapper', 'class' => 'photo_preview_wrapper']);
-    
-    $src = '';
-    if (!isset($params['value'])) {
-      $src = self::formFieldValue($params['name'] . '_src');
-    }
-    self::tag('img', ['id' => $params['name'] . '_preview', 'src' => $src]);
-    
-    self::closeTag('div');
-  }
-  
-  static public function photoFieldRow($params)
-  {
-    self::openRow($params);
-    
-    self::photoField($params);
-    
-    self::closeRow();
   }
   
   static public function select($params)
