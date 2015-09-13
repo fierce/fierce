@@ -33,7 +33,7 @@ class PhotoFieldNode extends FieldNode
     $this->compiler
       ->write('$context[\'_fierce_photo_field_id\'] = trim(preg_replace(\'/[^a-zA-Z0-9_]+/\', \'_\', ')
       ->subcompile($this->getNode('name'))
-      ->raw("), '_') . '_upload_field';\n")
+      ->raw("), '_') . '_field';\n")
     ;
     $uploadFieldIdNode = new \Twig_Node_Expression_Name('_fierce_photo_field_id', $this->lineno);
     
@@ -69,7 +69,6 @@ class PhotoFieldNode extends FieldNode
     // output upload field (for seleting files)
     $this->openTag('input', [
       'type' => 'file',
-      'id' => $uploadFieldIdNode,
       'class' => $classNode,
       'name' => $this->getNode('name')
     ]);
@@ -77,6 +76,7 @@ class PhotoFieldNode extends FieldNode
     // output hidden field (for actually holding the file contents)
     $this->openTag('input', [
       'type' => 'hidden',
+      'id' => $uploadFieldIdNode,
       'name' => $this->getNode('name')
     ]);
     
