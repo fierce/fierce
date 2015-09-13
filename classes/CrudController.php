@@ -62,7 +62,7 @@ class CrudController extends PageController
     $item = $entity::createNew();
     $formData = new FormData($this->editFields);
     
-    $this->beforeEditOrAdd($item);
+    $this->beforeEditOrAdd($item, $formData);
     
     $formType = 'Add';
     $formAction = $this->url('add-submit', ['id' => $item->id]);
@@ -98,7 +98,7 @@ class CrudController extends PageController
     $formData = new FormData($this->editFields);
     $formData->setValues($item);
     
-    $this->beforeEditOrAdd($item);
+    $this->beforeEditOrAdd($item, $formData);
     
     $formType = 'Edit';
     $formAction = $this->url('edit-submit', ['id' => $item->id]);
@@ -122,7 +122,7 @@ class CrudController extends PageController
     return $items;
   }
   
-  public function beforeEditOrAdd($item)
+  public function beforeEditOrAdd($item, $formData)
   {
     
   }
