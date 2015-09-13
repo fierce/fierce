@@ -88,7 +88,7 @@ class PhotoFieldNode extends FieldNode
     
     $this->openTag('img', [
       'id' => $uploadPreviewIdNode,
-      'src' => $this->valueNode()
+      'src' => $uploadPreviewSrcNode
     ]);
     
     
