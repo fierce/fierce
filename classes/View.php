@@ -96,31 +96,24 @@ class View
     print self::$twig->render($templateView, $twigVars);
   }
   
-  static public function renderTpl($contentView, $vars)
+  static public function renderTpl($contentView, $vars = array())
   {
-    $blockedVars = ['templateView', 'contentView', 'vars', 'var', 'value'];
-    foreach (self::$vars as $var => $value) {
-      if (in_array($var, $blockedVars)) {
-        continue;
-      }
-      $$var = $value;
-    }
-    foreach ($vars as $var => $value) {
-      if (in_array($var, $blockedVars)) {
-        continue;
-      }
-      $$var = $value;
-    }
+    self::initTwig();
     
-    $contentTpl = BASE_PATH . 'views/' . $contentView;
-    if (!file_exists($contentTpl)) {
-      $contentTpl = FIERCE_PATH . 'views/' . $contentView;
-    }
-    if (!file_exists($contentTpl)) {
-      throw new \exception('Can\'t find view ' . $contentView);
-    }
+    $twigVars = array_merge(
+      get_defined_constants(),
+      [
+        'loggedInUser' => Auth::loggedInUser(),
+        'authHaveRoot' => Auth::haveRoot(),
+        'cssUrls' => &self::$cssUrls,
+        'scriptUrls' => &self::$scriptUrls
+      ],
+      self::$vars,
+      $vars
+    );
     
-    require($contentTpl);
+
+    print self::$twig->render($contentView, $twigVars);
   }
   
   static public function set($key, $value)
