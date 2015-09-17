@@ -503,27 +503,3 @@ form > div.buttons input[type=submit]:active {
   background-color: #003db6;
 }
 
-
-@media 
-only screen and (-webkit-min-device-pixel-ratio: 2),
-only screen and (   min--moz-device-pixel-ratio: 2),
-only screen and (        min-device-pixel-ratio: 2),
-only screen and (            min-resolution: 2dppx) {
-  div.header,
-  p.message,
-  table.grid > div.row > span,
-  table.grid > div.headings > span,
-  table.grid > div.headings > span,
-  form.medium,
-  form > div.row input[type=text],
-  form > div.row input[type=password],
-  form > div.row select,
-  form > div.row textarea,
-  form > div.buttons,
-  form > div.wysiwyg_row .field,
-  form > div.row div.CodeMirror,
-  form > div.row div.wysiwyg-editor
-  {
-    border-width: 0.5px;
-  }
-}
