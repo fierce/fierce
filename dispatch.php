@@ -44,7 +44,11 @@ try {
 // display the page
 ResponseCache::start();
 
-$controllerClass = $page->class;
+if (isset($fierceInit)) {
+  $fierceInit();
+}
+
+$controllerClass = isset($page->class) ? $page->class : 'Fierce\PageController';
 $controllerClass::run($page);
 
 ResponseCache::saveCacheIfEnabled();
