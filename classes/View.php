@@ -86,9 +86,13 @@ class View
       $vars
     );
     
-
     if ($contentView) {
       $twigVars['contentViewHtml'] = self::$twig->render($contentView, $twigVars);
+    } else if (isset($vars['contentViewTpl'])) {
+      
+      $twigVars['contentViewHtml'] = self::$twig->createTemplate($vars['contentViewTpl'])->render($twigVars);
+      unset($vars['contentViewTpl']);
+      
     } else if (!isset($vars['contentViewHtml'])) {
       $twigVars['contentViewHtml'] = false;
     }

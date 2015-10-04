@@ -88,7 +88,7 @@ class PageController
     
     View::main($this->mainTpl, false, [
       'pageTitle' => $this->page->name,
-      'contentViewHtml' => $this->page->content,
+      'contentViewTpl' => $this->page->content,
       'page' => $this->page
     ]);
   }
