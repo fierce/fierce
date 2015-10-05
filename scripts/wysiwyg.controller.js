@@ -16,6 +16,7 @@
     
     CKEDITOR.config.height = 400
     CKEDITOR.config.baseHref = document.getElementById('base_href').href
+    CKEDITOR.config.entities_additional = false
     
     CKEDITOR.config.toolbarGroups = [
 		    { name: 'styles', groups: [ 'styles' ] },
@@ -49,7 +50,9 @@
       showFormatButton: false,
       showCommentButton: false,
       showUncommentButton: false,
-      showAutoCompleteButton: false
+      showAutoCompleteButton: false,
+      autoCloseBrackets: false,
+      autoCloseTags: false
     }
     
 	  CKEDITOR.replace( this.textareaEl );
