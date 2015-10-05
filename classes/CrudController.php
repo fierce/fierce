@@ -116,7 +116,7 @@ class CrudController extends PageController
     
     $items = $db->$entity->getIndexRows('crud');
     if (!$items) {
-      $items = $entity::all('modified');
+      $items = $entity::all('-modified');
     }
     
     return $items;
