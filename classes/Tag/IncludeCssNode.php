@@ -31,7 +31,7 @@ class IncludeCssNode extends Node
     ]);
     
     $this->compiler
-      ->write("print file_get_contents(BASE_PATH . ")
+      ->write("print file_get_contents('" . \Fierce\Env::get('base_path') . "' . ")
       ->subcompile($this->getNode('value'))
       ->write(");\n")
     ;

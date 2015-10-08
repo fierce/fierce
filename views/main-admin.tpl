@@ -4,11 +4,11 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <base href="{{ BASE_URL }}" id="base_href" data-fierce-base="{{ "#{BASE_URL}#{FIERCE_SRC}" }}">
+  <base href="{{ base_url }}" id="base_href" data-fierce-base="{{ "#{base_url}#{fierce_src}" }}">
   
-  <title>{{ pageTitle }} – {{ SITE_NAME }} Administration</title>
+  <title>{{ pageTitle }} – {{ site_name }} Administration</title>
 
-  {% include_css "#{FIERCE_SRC}css/admin-base.css" %}
+  {% include_css "#{fierce_src}css/admin-base.css" %}
   {% include_css 'css/admin.css' %}
   
   {% for cssUrl in cssUrls %}

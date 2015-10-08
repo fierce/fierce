@@ -27,21 +27,29 @@ the website after the initial build.
   RewriteRule ^(.*)$ - [L,QSA]
   
   # redirect all other traffic to the dispatcher
-  RewriteCond %{REQUEST_URI} !dispatch.php$
-  RewriteRule ^(/?)(.*)$ $1vendor/fierce/fierce/dispatch.php [L,QSA]
+  RewriteCond %{REQUEST_URI} !index.php$
+  RewriteRule ^(/?)(.*)$ $1vendor/index.php [L,QSA]
   ```
 
-2. Create a `fierce-config.php` file, replacing the example salt with a unique one
+2. Create an `index.php` file, replacing the example salt with a unique one
 (You can use `$ random | shasum`):
 
   ```php
   <?php
   
-  define('F_AUTH_SALT', '8d6f6390017eb415bcf468a050d893628e40d12f');
+  // init composer
+  $autoloader = require __DIR__ . '/vendor/autoload.php';
+  $autoloader->addPsr4(false, __DIR__ . '/classes/');
   
-  if ($_SERVER['HTTP_HOST'] == 'localhost') {
-    define('F_DISABLE_CACHE', true);
-  }
+  // config
+  date_default_timezone_set('Australia/Brisbane');
+  
+  Fierce\Env::set('auth_salt', '51c9ea6d59f22130bb3ae33ae42751cbfa1ed8c0');
+  Fierce\Env::set('site_name', 'My Great Website');
+  
+  // connect to database and hand it over to the CMS
+  $db = new Fierce\DB('file', Fierce\Env::get('E') . 'data/');
+  Fierce\CMS::handleRequest($db);
   
   ```
 
@@ -49,7 +57,7 @@ the website after the initial build.
 will be autoloaded in the global namespace and must be PSR-4 compliant (aside
 from the requirement to be outside the global namespace).
 
-4. Add a `views` directory for tpl files (using inline PHP).
+4. Add a `views` directory for tpl files (using TWIG).
 
 5. Use composer to add Fierce
 

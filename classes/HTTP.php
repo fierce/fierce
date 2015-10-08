@@ -16,7 +16,7 @@ class HTTP
 {
   static public function redirect($url)
   {
-    $url = BASE_URL . ltrim($url, '/');
+    $url = Env::get('base_url') . ltrim($url, '/');
     ResponseCache::disable();
     
     header('Location: ' . $url);

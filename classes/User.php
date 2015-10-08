@@ -126,7 +126,7 @@ class User
     
     // apply new id (email may have changed)
     $oldId = $this->id;
-    $this->id = sha1(strtolower($this->row->email) . F_AUTH_SALT);
+    $this->id = sha1(strtolower($this->row->email) . Env::get('auth_salt'));
     $this->row->id = $this->id;
     
     // misc fields
@@ -146,7 +146,7 @@ class User
     }
     
     // hash everything
-    $this->row->signature = sha1($this->row->id . $this->row->type . $this->row->email . $this->row->password . F_AUTH_SALT);
+    $this->row->signature = sha1($this->row->id . $this->row->type . $this->row->email . $this->row->password . Env::get('auth_salt'));
     
     $db->user->archive($oldId);
     $db->user->write($this->id, $this->row);

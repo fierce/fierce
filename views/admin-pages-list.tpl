@@ -51,7 +51,7 @@
   </div>
 {% endfor %}
 
-<link rel="stylesheet" href="{{ FIERCE_SRC }}third-party/nestable/nestable.css">
+<link rel="stylesheet" href="{{ fierce_src }}third-party/nestable/nestable.css">
 <script src="{{ FIERCE_SRC }}third-party/jquery/1.11.1/jquery.min.js"></script>
 <script src="{{ FIERCE_SRC }}third-party/nestable/jquery.nestable.js"></script>
 <script>
@@ -106,7 +106,7 @@ $(document).ready(function()
 });
 </script>
 
-{% form action=controller.url('update-positions', {'return': REQUEST_URL}) %}
+{% form action=controller.url('update-positions', {'return': request_url}) %}
   {% for categoryValue, category in itemsByCategory %}
     <input type="hidden" name="page_list[{{ categoryValue }}]" id="page_list_{{ categoryValue }}_field">
   {% endfor %}

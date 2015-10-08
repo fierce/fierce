@@ -22,12 +22,8 @@ class ResponseCache
       return;
     }
     
-    if (F_DISABLE_CACHE) {
-      return;
-    }
-    
     $cacheSeed = sha1(serialize([
-      REQUEST_URL
+      Env::get('request_url')
     ]));
     
     ob_start();
@@ -42,12 +38,12 @@ class ResponseCache
       return;
     }
     
-    $url = REQUEST_URL;
+    $url = Env::get('request_url');
     if ($url == '/') {
       $url = '/index';
     }
     
-    $cacheFile = BASE_PATH . ltrim($url, '/') . '.html';
+    $cacheFile = Env::get('base_path') . ltrim($url, '/') . '.html';
     
     $contents = ob_get_flush();
     
@@ -77,7 +73,7 @@ class ResponseCache
     
     $entries = $db->cached_pages->find();
     foreach ($entries as $id => $row) {
-      $cacheFile = BASE_PATH . ltrim($row->url, '/') . '.html';
+      $cacheFile = Env::get('base_path') . ltrim($row->url, '/') . '.html';
       if (file_exists($cacheFile)) {
         unlink($cacheFile);
       }

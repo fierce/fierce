@@ -34,19 +34,11 @@ class View
     }
     
     $loader = new \Twig_Loader_Filesystem([
-      BASE_PATH . 'views/',
-      FIERCE_PATH . 'views/'
+      Env::get('base_path') . 'views/',
+      Env::get('fierce_path') . 'views/'
     ]);
     
-    if (!F_DISABLE_CACHE) {
-      $cacheDir = BASE_PATH . 'tmp/twig_cache/';
-      if (!is_dir($cacheDir)) {
-        mkdir($cacheDir, 0777, true);
-      }
-    }
-    
     self::$twig = new \Twig_Environment($loader, [
-      'cache' => F_DISABLE_CACHE ? false : $cacheDir,
       'strict_variables' => true
     ]);
     
@@ -76,6 +68,7 @@ class View
     
     $twigVars = array_merge(
       get_defined_constants(),
+      Env::$vars,
       [
         'loggedInUser' => Auth::loggedInUser(),
         'authHaveRoot' => Auth::haveRoot(),
@@ -106,6 +99,7 @@ class View
     
     $twigVars = array_merge(
       get_defined_constants(),
+      Env::$vars,
       [
         'loggedInUser' => Auth::loggedInUser(),
         'authHaveRoot' => Auth::haveRoot(),
@@ -151,7 +145,7 @@ class View
     $thumb2xUrl = $image->createThumbnail($w * 2, $h * 2, $allowCrop, false, $thumb2xWidth, $thumb2xHeight);
     
     $srcsetHtml = '';
-    if ($thumb2xWidth > $thumbWidth && pathinfo(BASE_PATH . $imageUrl, PATHINFO_EXTENSION) != 'svg') {
+    if ($thumb2xWidth > $thumbWidth && pathinfo(Env::get('base_path') . $imageUrl, PATHINFO_EXTENSION) != 'svg') {
       $srcsetHtml = "srcset=\"$thumbUrl 1x,$thumb2xUrl 2x\"";
     }
     

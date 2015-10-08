@@ -30,13 +30,13 @@ class Image
     
     $url = $this->thumbnailUrl($w, $h, $allowCrop);
     
-    if (file_exists(BASE_PATH . $url)) {
-      list($destWidth, $destHeight) = getimagesize(BASE_PATH . $url);
+    if (file_exists(Env::get('base_path') . $url)) {
+      list($destWidth, $destHeight) = getimagesize(Env::get('base_path') . $url);
       return $url;
     }
     
     // get original width/height
-    list($origWidth, $origHeight) = getimagesize(BASE_PATH . $this->url);
+    list($origWidth, $origHeight) = getimagesize(Env::get('base_path') . $this->url);
     
     // create destination width/height
     if ($allowCrop) {
@@ -47,7 +47,7 @@ class Image
     
     if (!$allowScaleUp) {
       if ($destWidth >= $origWidth || $destHeight >= $origHeight) {
-        list($destWidth, $destHeight) = getimagesize(BASE_PATH . $this->url);
+        list($destWidth, $destHeight) = getimagesize(Env::get('base_path') . $this->url);
         return $this->url;
       }
     }
@@ -56,13 +56,13 @@ class Image
     
     switch (pathinfo($this->url, PATHINFO_EXTENSION)) {
       case 'jpg':
-        $sourceImage = imagecreatefromjpeg(BASE_PATH . $this->url);
+        $sourceImage = imagecreatefromjpeg(Env::get('base_path') . $this->url);
         break;
       case 'png':
-        $sourceImage = imagecreatefrompng(BASE_PATH . $this->url);
+        $sourceImage = imagecreatefrompng(Env::get('base_path') . $this->url);
         break;
       case 'gif':
-        $sourceImage = imagecreatefromgif(BASE_PATH . $this->url);
+        $sourceImage = imagecreatefromgif(Env::get('base_path') . $this->url);
         break;
       default:
         throw new \exception('invalid type');
@@ -72,16 +72,16 @@ class Image
     imagesavealpha($thumbImage, true);
     imagecopyresampled($thumbImage, $sourceImage, 0, 0, 0, 0, $destWidth, $destHeight, $origWidth, $origHeight);
     
-    if (!is_dir(dirname(BASE_PATH . $url))) {
-      mkdir(dirname(BASE_PATH . $url), 0777, true);
+    if (!is_dir(dirname(Env::get('base_path') . $url))) {
+      mkdir(dirname(Env::get('base_path') . $url), 0777, true);
     }
     
     switch (pathinfo($url, PATHINFO_EXTENSION)) {
       case 'jpg':
-        imagejpeg($thumbImage, BASE_PATH . $url, 80);
+        imagejpeg($thumbImage, Env::get('base_path') . $url, 80);
         break;
       case 'png':
-        imagepng($thumbImage, BASE_PATH . $url, 9);
+        imagepng($thumbImage, Env::get('base_path') . $url, 9);
         break;
       default:
         throw new \exception('invalid type');
