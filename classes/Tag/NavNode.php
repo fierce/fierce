@@ -73,7 +73,7 @@ class NavNode extends \Twig_Node
       
       $name = htmlspecialchars($navPage->name);
       
-      $isCurrent = REQUEST_URL == $navPage->url;
+      $isCurrent = \Fierce\Env::get('request_url') == $navPage->url;
       
       $classHtml = $isCurrent ? ' class="current"' : '';
       

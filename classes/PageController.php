@@ -55,7 +55,7 @@ class PageController
   
   public function url($action=false, $params=array(), $absolute=false)
   {
-    $url = REQUEST_URL;
+    $url = Env::get('request_url');
     $url = parse_url($url, PHP_URL_PATH);
     $url = ltrim($url, '/');
     
@@ -69,7 +69,7 @@ class PageController
     }
     
     if ($absolute) {
-      $url = BASE_URL . $url;
+      $url = Env::get('base_url') . $url;
     }
     
     return $url;

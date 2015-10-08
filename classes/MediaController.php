@@ -19,7 +19,7 @@ class MediaController extends PageController
   
   public function defaultAction()
   {
-    $imageFiles = glob(BASE_PATH . 'images/*');
+    $imageFiles = glob(Env::get('base_path') . 'images/*');
     $imageItems = array();
     foreach ($imageFiles as $file) {
       if (!in_array(pathinfo($file, PATHINFO_EXTENSION), ['png', 'jpg', 'svg', 'gif'])) {
@@ -29,7 +29,7 @@ class MediaController extends PageController
       $imageItems[] = (object)[
         'name' => basename($file),
         'path' => $file,
-        'url' => str_replace(BASE_PATH, '', $file)
+        'url' => str_replace(Env::get('base_path'), '', $file)
       ];
     }
     

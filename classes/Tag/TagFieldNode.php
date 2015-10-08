@@ -67,6 +67,6 @@ class TagFieldNode extends FieldNode
     self::closeTag('ul');
     
     // add js
-    $this->requireScript(FIERCE_SRC . 'scripts/tag-field.controller.js');
+    $this->requireScript(\Fierce\Env::get('fierce_src') . 'scripts/tag-field.controller.js');
   }
 }

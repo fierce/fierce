@@ -4,19 +4,19 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <base href="<?= BASE_URL ?>" id="base_href">
+  <base href="<?= base_url ?>" id="base_href">
   
   <title><?= $pageTitle ?></title>
   
   <style type="text/css">
     /* Fierce/css/plain.css */
-    <?= file_get_contents(FIERCE_PATH . 'css/plain.css') ?>
+    <?= file_get_contents(fierce_path . 'css/plain.css') ?>
   </style>
   
   <? foreach ($cssUrls as $cssUrl): ?>
     <style type="text/css">
       /* <?= $cssUrl ?> */
-      <?= file_get_contents(BASE_PATH . $cssUrl) ?>
+      <?= file_get_contents(base_path . $cssUrl) ?>
     </style>
   <? endforeach ?>
   

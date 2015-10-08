@@ -22,7 +22,7 @@ class Auth
       if ($_SERVER['REQUEST_METHOD'] != 'GET') {
         die('not logged in');
       }
-      HTTP::redirect('login?return='  . urlencode(REQUEST_URL));
+      HTTP::redirect('login?return='  . urlencode(Env::get('request_url')));
     }
     
     ResponseCache::disable();
@@ -47,7 +47,7 @@ class Auth
       if ($_SERVER['REQUEST_METHOD'] != 'GET') {
         die('not logged in');
       }
-      HTTP::redirect('login?return='  . urlencode(REQUEST_URL));
+      HTTP::redirect('login?return='  . urlencode(Env::get('request_url')));
     }
     
     ResponseCache::disable();
@@ -66,9 +66,21 @@ class Auth
     return true;
   }
   
+  static public function checkConfig()
+  {
+    if (!Env::get('auth_salt')) {
+      throw new \exception('Auth salt must be defined');
+    }
+    if (Env::get('auth_salt') == '8d6f6390017eb415bcf468a050d893628e40d12f') {
+      throw new \exception('Cannot use the example auth_salt. Make your own with `random | sha1`!');
+    }
+  }
+  
   static public function loggedInUser()
   {
     global $db;
+    
+    self::checkConfig();
     
     if (self::$loggedInUser) {
       return self::$loggedInUser;
@@ -96,20 +108,20 @@ class Auth
     $user = $db->user->byId($loginSession->user);
     
     // verify login session (block privilege escalation by a database injection)
-    if ($loginSession->hash != sha1($loginSession->user . $user->password . $loginSession->last_active . F_AUTH_SALT)){
+    if ($loginSession->hash != sha1($loginSession->user . $user->password . $loginSession->last_active . Env::get('auth_salt'))){
       self::logout();
       return null;
     }
     
     // verify user hash
-    if ($user->signature != sha1($user->id . $user->type . $user->email . $user->password . F_AUTH_SALT)) {
+    if ($user->signature != sha1($user->id . $user->type . $user->email . $user->password . Env::get('auth_salt'))) {
       self::logout();
       return null;
     }
     
     // record activity on the login session
     $loginSession->last_active = time();
-    $loginSession->hash = sha1($loginSession->user . $user->password . $loginSession->last_active . F_AUTH_SALT);
+    $loginSession->hash = sha1($loginSession->user . $user->password . $loginSession->last_active . Env::get('auth_salt'));
     $db->login_session->write($sessionId, $loginSession, true);
     
     // and finally, log them in
@@ -136,8 +148,10 @@ class Auth
   {
     global $db;
     
+    self::checkConfig();
+    
     // find user
-    $id = sha1(strtolower($email) . F_AUTH_SALT);
+    $id = sha1(strtolower($email) . Env::get('auth_salt'));
     try {
       $user = $db->user->byId($id);
     } catch (\Exception $e) {
@@ -177,7 +191,7 @@ class Auth
     }
     
     // verify user hash
-    $expectedSignature = sha1($user->id . $user->type . $user->email . $user->password . F_AUTH_SALT);
+    $expectedSignature = sha1($user->id . $user->type . $user->email . $user->password . Env::get('auth_salt'));
     if ($user->signature != $expectedSignature) {
       $userLoginFailuresRow->failures[] = time();
       $db->login_failures->write($id, $userLoginFailuresRow, true);
@@ -189,7 +203,7 @@ class Auth
       'user' => $id,
       'last_active' => time()
     ];
-    $session->hash = sha1($session->user . $hashForDatabase . $session->last_active . F_AUTH_SALT);
+    $session->hash = sha1($session->user . $hashForDatabase . $session->last_active . Env::get('auth_salt'));
     $db->login_session->write($hashForCookie, $session, true);
     setcookie('u', $hashForCookie, 0, '/');
     
