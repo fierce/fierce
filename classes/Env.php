@@ -24,6 +24,7 @@ class Env
     self::init();
     
     if (!isset(self::$vars[$name])) {
+      throw new \Exception('Undefined Env var: "' . $name . '"');
       return null;
     }
     
