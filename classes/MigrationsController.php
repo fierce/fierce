@@ -16,41 +16,47 @@ class MigrationsController extends PageController
 {
   public $mainTpl = 'main-admin.tpl';
   
-  public function __construct()
+  public function __construct($db)
   {
+    $this->db = $db;
+    
     Auth::requireAdmin();
     
     parent::__construct();
   }
   
-  function defaultAction()
+  function runAction()
   {
-    global $db;
-    
-    $files = glob(BASE_PATH . 'migrations/*.php');
+    $files = glob(Env::get('base_path') . 'migrations/*.php');
     sort($files, SORT_NATURAL);
     
     print '<html><style>body {font-family: monospace; font-size: 12px}</style><body>';
     
+    $count = 0;
     foreach ($files as $file) {
       require_once $file;
       
       $class = strtolower(pathinfo($file, PATHINFO_FILENAME));
       $class = preg_replace('/[^a-z0-9]/', '', $class);
       
-      if ($db->completed_migrations->idExists(sha1($class))) {
+      if ($this->db->completed_migrations->idExists(sha1($class))) {
         continue;
       }
       
       print '<h3>' . basename($file) . '</h3>';
       
       $migration = new $class();
+      $migration->db = $this->db;
       $migration->run();
       
-      $db->completed_migrations->write(sha1($class), (object)[
+      $this->db->completed_migrations->write(sha1($class), (object)[
         'date' => date('Y-m-d H:i:s')
       ]);
+      
+      $count++;
     }
+    
+    print '<p>Finished running ' . $count . ' migrations.</p>';
         
     exit;
   }
