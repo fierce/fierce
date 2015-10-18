@@ -236,10 +236,4 @@ class PagesController extends CrudController
     
     HTTP::redirect($this->url());
   }
-  
-  public function beforeSave($item, &$data)
-  {
-  }
-  
-
 }

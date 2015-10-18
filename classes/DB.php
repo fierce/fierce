@@ -15,8 +15,8 @@ namespace Fierce;
 class DB
 {
   public $type;
-  public $dataPath;
   public $pdo;
+  public $connection;
   
   public function __construct($type, $pathOrDsn, $username=null, $password=null)
   {
@@ -24,11 +24,11 @@ class DB
     
     switch ($type) {
       case 'file':
-        $this->dataPath = $pathOrDsn;
+        $this->connection = new DBConnectionFile($pathOrDsn);
         break;
-//       case 'pdo':
-//         $this->pdo = new PDO($pathOrDsn, $username, $passsword);
-//         break;
+      case 'pdo':
+        $this->connection = new DBConnectionPdo($pathOrDsn, $username, $password);
+        break;
       default:
         throw new \exception('invalid type ' . $type);
     }
@@ -39,7 +39,7 @@ class DB
     $entity = strtolower($entity);
     $entity = preg_replace('/^Fierce\\\/', '', $entity);
     
-    return $this->$entity = new DBEntity($this, $entity);
+    return $this->$entity = new DBEntity($this->connection, $entity);
   }
   
   public function id()

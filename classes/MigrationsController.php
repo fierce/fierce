@@ -20,7 +20,7 @@ class MigrationsController extends PageController
   {
     $this->db = $db;
     
-    Auth::requireAdmin();
+//     Auth::requireAdmin();
     
     parent::__construct();
   }
@@ -50,7 +50,8 @@ class MigrationsController extends PageController
       $migration->run();
       
       $this->db->completed_migrations->write(sha1($class), (object)[
-        'date' => date('Y-m-d H:i:s')
+        'file' => strtolower(pathinfo($file, PATHINFO_FILENAME)),
+        'date' => new \DateTimeImmutable()
       ]);
       
       $count++;

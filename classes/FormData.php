@@ -35,6 +35,9 @@ class FormData
     if (!isset($field->name)) {
       throw new \exception('field must have a name');
     }
+    if (!isset($field->type)) {
+      $field->type = 'string';
+    }
     
     if (!isset($field->displayName)) {
       $displayName = $field->name;
@@ -58,14 +61,113 @@ class FormData
   {
     foreach ($this->_fields as $field) {
       if (isset($_POST[$field->name])) {
-        $field->value = $_POST[$field->name];
-        continue;
+        $rawValue = $_POST[$field->name];
+      } else if (isset($_GET[$field->name])) {
+        $rawValue = $_GET[$field->name];
+      } else {
+        $rawValue = null;
       }
-      if (isset($_GET[$field->name])) {
-        $field->value = $_GET[$field->name];
-        continue;
+      
+      
+      switch ($field->type) {
+        case 'string':
+          $field->value = $rawValue;
+          break;
+        case 'date':
+          if (!$rawValue) {
+            $field->value = null;
+            break;
+          }
+          
+          $dieFunction = function() {
+            die('
+              <p>Invalid value provided for ' . $field->displayName . ' (must be: Day Month Year).</p>
+              <p><a href="javascript:window.history.back()">Go Back</a></p>
+            ');
+          };
+          
+          $dateComponents = preg_split('/[^a-zA-Z0-9]+/', trim($rawValue));
+          if (count($dateComponents) != 3) {
+            $dieFunction();
+          }
+          
+          list($day, $month, $year) = $dateComponents;
+          
+          $year = (int)$year;
+          if ($year < 1000 || $year > 3000) {
+            $dieFunction();
+          }
+          switch ($month) {
+            case 'Jan':
+            case 'January':
+              $month = 1;
+              break;
+            case 'Feb':
+            case 'February':
+              $month = 2;
+              break;
+            case 'Mar':
+            case 'March':
+              $month = 3;
+              break;
+            case 'Apr':
+            case 'April':
+              $month = 4;
+              break;
+            case 'May':
+              $month = 5;
+              break;
+            case 'Jun':
+            case 'June':
+              $month = 6;
+              break;
+            case 'Jul':
+            case 'July':
+              $month = 7;
+              break;
+            case 'Aug':
+            case 'August':
+              $month = 8;
+              break;
+            case 'Sep':
+            case 'September':
+              $month = 9;
+              break;
+            case 'Oct':
+            case 'October':
+              $month = 10;
+              break;
+            case 'Nov':
+            case 'November':
+              $month = 11;
+              break;
+            case 'Dec':
+            case 'December':
+              $month = 12;
+              break;
+          }
+          $month = (int)$month;
+          if ($month < 1 || $month > 12) {
+            $dieFunction();
+          }
+          
+          $day = (int)$day;
+          if ($day < 1 || $day > 31) {
+            $dieFunction();
+          }
+          
+          $dateStr = sprintf("%04d-%02d-%02d", $year, $month, $day);
+          $date = new \DateTimeImmutable($dateStr);
+          
+          if ($date->format('Y-m-d') != $dateStr) { // eg febuary 31st will fail here
+            $dieFunction();
+          }
+          
+          $field->value = $date;
+          break;
+        default:
+          throw new \exception('unknown type ' . $field->type);
       }
-      $field->value = null;
     }
   }
   
@@ -82,6 +184,16 @@ class FormData
       
       $field->value = $data->$fieldName;
     }
+  }
+  
+  public function getValues()
+  {
+    $values = array();
+    foreach ($this->_fields as $field) {
+      $values[$field->name] = $field->value;
+    }
+    
+    return $values;
   }
   
   public function __get($key)

@@ -27,11 +27,12 @@ class PageController
     }
   }
   
-  static public function run($page)
+  static public function run($page, $db=false)
   {
     $controllerClass = get_called_class();
     $controller = new $controllerClass();
     $controller->page = $page;
+    $controller->db = $db;
     
     $action = @$_GET['do'];
     if (!$action) {

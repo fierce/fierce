@@ -79,7 +79,6 @@ class Auth
   static public function loggedInUser()
   {
     global $db;
-    
     self::checkConfig();
     
     if (self::$loggedInUser) {
@@ -99,7 +98,7 @@ class Auth
     }
     
     // inactive for 2 hours? kill it
-    if (($loginSession->last_active + 7200) < time()) {
+    if (($loginSession->last_active->getTimestamp() + 7200) < time()) {
       self::logout();
       return null;
     }
@@ -108,7 +107,7 @@ class Auth
     $user = $db->user->byId($loginSession->user);
     
     // verify login session (block privilege escalation by a database injection)
-    if ($loginSession->hash != sha1($loginSession->user . $user->password . $loginSession->last_active . Env::get('auth_salt'))){
+    if ($loginSession->hash != sha1($loginSession->user . $user->password . $loginSession->last_active->getTimestamp() . Env::get('auth_salt'))){
       self::logout();
       return null;
     }
@@ -120,8 +119,8 @@ class Auth
     }
     
     // record activity on the login session
-    $loginSession->last_active = time();
-    $loginSession->hash = sha1($loginSession->user . $user->password . $loginSession->last_active . Env::get('auth_salt'));
+    $loginSession->last_active = new \DateTimeImmutable();
+    $loginSession->hash = sha1($loginSession->user . $user->password . $loginSession->last_active->getTimestamp() . Env::get('auth_salt'));
     $db->login_session->write($sessionId, $loginSession, true);
     
     // and finally, log them in
@@ -161,10 +160,12 @@ class Auth
     // brute force prevention
     // load all recorded login failures
     try {
-      $userLoginFailuresRow = $db->login_failures->byId($id);
+      $userLoginFailuresRow = $db->login_failure->byId($id);
+      $userLoginFailuresRow->failures = json_decode($userLoginFailuresRow->failures);
     } catch (\Exception $e) {
-      $userLoginFailuresRow = (object)['failures' => []];
+      $userLoginFailuresRow = (object)['id' => $id, 'failures' => []];
     }
+    
     // drop all failures older than 20 mintues
     foreach ($userLoginFailuresRow->failures as $index => $time) {
       if ($time + 1200 < time()) {
@@ -176,17 +177,18 @@ class Auth
     // more than 20 failures? Reject this one
     while (count($userLoginFailuresRow->failures) > 20) {
       $userLoginFailuresRow->failures[] = time();
-      $db->login_failures->write($id, $userLoginFailuresRow, true);
+      $userLoginFailuresRow->failures = json_encode($userLoginFailuresRow->failures);
+      $db->login_failure->write($id, $userLoginFailuresRow, true);
       return false;
     }
     
     // verify password
     $hashForCookie = sha1(password_hash($password, PASSWORD_BCRYPT, ['cost' => 11, 'salt' => $id]));
-    $hashForDatabase = sha1(password_hash($hashForCookie, PASSWORD_BCRYPT, ['cost' => 11, 'salt' => $id]));	
-  
+    $hashForDatabase = sha1(password_hash($hashForCookie, PASSWORD_BCRYPT, ['cost' => 11, 'salt' => $id]));
     if ($user->password != $hashForDatabase) {
       $userLoginFailuresRow->failures[] = time();
-      $db->login_failures->write($id, $userLoginFailuresRow, true);
+      $userLoginFailuresRow->failures = json_encode($userLoginFailuresRow->failures);
+      $db->login_failure->write($id, $userLoginFailuresRow, true);
       return false;
     }
     
@@ -194,16 +196,17 @@ class Auth
     $expectedSignature = sha1($user->id . $user->type . $user->email . $user->password . Env::get('auth_salt'));
     if ($user->signature != $expectedSignature) {
       $userLoginFailuresRow->failures[] = time();
-      $db->login_failures->write($id, $userLoginFailuresRow, true);
+      $userLoginFailuresRow->failures = json_encode($userLoginFailuresRow->failures);
+      $db->login_failure->write($id, $userLoginFailuresRow, true);
       return false;
     }
     
     // log the user in
     $session = (object)[
       'user' => $id,
-      'last_active' => time()
+      'last_active' => new \DateTimeImmutable()
     ];
-    $session->hash = sha1($session->user . $hashForDatabase . $session->last_active . Env::get('auth_salt'));
+    $session->hash = sha1($session->user . $hashForDatabase . $session->last_active->getTimestamp() . Env::get('auth_salt'));
     $db->login_session->write($hashForCookie, $session, true);
     setcookie('u', $hashForCookie, 0, '/');
     

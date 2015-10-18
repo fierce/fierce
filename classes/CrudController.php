@@ -56,8 +56,6 @@ class CrudController extends PageController
   
   public function addAction()
   {
-    global $db;
-    
     $entity = $this->entity;
     $item = $entity::createNew();
     $formData = new FormData($this->editFields);
@@ -77,10 +75,14 @@ class CrudController extends PageController
     $entity = $this->entity;
     $item = $entity::createNew();
     
-    $postData = $_POST;
-    $this->beforeSave($item, $postData);
     
-    $item->setData($postData);
+    $formData = new FormData($this->editFields);
+    $formData->retrieve();
+    
+    $values = $formData->getValues();
+    $this->beforeSave($item, $values);
+    
+    $item->setData($values);
     $item->save();
     
     $this->afterSave($item);
@@ -90,8 +92,6 @@ class CrudController extends PageController
   
   public function editAction()
   {
-    global $db;
-    
     $entity = $this->entity;
     $item = $entity::createById(@$_GET['id']);
     
@@ -110,14 +110,9 @@ class CrudController extends PageController
   
   public function items()
   {
-    global $db;
-    
     $entity = $this->entity;
     
-    $items = $db->$entity->getIndexRows('crud');
-    if (!$items) {
-      $items = $entity::all('-modified');
-    }
+    $items = $entity::all('-modified');
     
     return $items;
   }
@@ -132,10 +127,13 @@ class CrudController extends PageController
     $entity = $this->entity;
     $item = $entity::createById(@$_GET['id']);
     
-    $postData = $_POST;
-    $this->beforeSave($item, $postData);
+    $formData = new FormData($this->editFields);
+    $formData->retrieve();
     
-    $item->setData($postData);
+    $values = $formData->getValues();
+    $this->beforeSave($item, $values);
+    
+    $item->setData($values);
     $item->save();
     
     $this->afterSave($item);
@@ -149,6 +147,7 @@ class CrudController extends PageController
     $item = $entity::createById(@$_GET['id']);
     
     $item->archive();
+    $item->purge();
     
     $this->afterSave($item);
     

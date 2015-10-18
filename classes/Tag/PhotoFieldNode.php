@@ -95,6 +95,6 @@ class PhotoFieldNode extends FieldNode
     self::closeTag('div');
     
     // add js
-    $this->requireScript(Env::get('Fierce\Env') . 'scripts/photo-field.controller.js');
+    $this->requireScript(\Fierce\Env::get('fierce_src') . 'scripts/photo-field.controller.js');
   }
 }

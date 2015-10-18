@@ -57,6 +57,8 @@ class View
     self::$twig->addTokenParser(new Tag\Parser('Fierce\\Tag\\TagFieldRowNode'));
     self::$twig->addTokenParser(new Tag\Parser('Fierce\\Tag\\PhotoFieldNode'));
     self::$twig->addTokenParser(new Tag\Parser('Fierce\\Tag\\PhotoFieldRowNode'));
+    self::$twig->addTokenParser(new Tag\Parser('Fierce\\Tag\\DateFieldNode'));
+    self::$twig->addTokenParser(new Tag\Parser('Fierce\\Tag\\DateFieldRowNode'));
     self::$twig->addTokenParser(new Tag\FormParser());
     
     self::$twig->addFilter(new \Twig_SimpleFilter('ltrim', 'ltrim'));

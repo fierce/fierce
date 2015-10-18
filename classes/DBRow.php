@@ -14,19 +14,40 @@ namespace Fierce;
 
 class DBRow
 {
-  protected $id;
+  public $id;
   protected $row;
   
   static public function all($sort=null)
   {
     global $db;
-    $entity = get_called_class();
+    $class = get_called_class();
+    $entity = preg_replace('/(.*)\\\\/', '', strtolower($class));
     
     $rows = $db->$entity->find([], $sort);
     
     $items = array();
     foreach ($rows as $id => $row) {
-      $item = new $entity();
+      $item = new $class();
+      $item->id = $id;
+      $item->setData($row);
+      
+      $items[] = $item;
+    }
+    
+    return $items;
+  }
+  
+  public static function find($params=[], $sort=null)
+  {
+    global $db;
+    $class = get_called_class();
+    $entity = preg_replace('/(.*)\\\\/', '', strtolower($class));
+    
+    $rows = $db->$entity->find($params, $sort);
+    
+    $items = array();
+    foreach ($rows as $id => $row) {
+      $item = new $class();
       $item->id = $id;
       $item->setData($row);
       
@@ -39,13 +60,14 @@ class DBRow
   static public function createById($id)
   {
     global $db;
-    $entity = strtolower(get_called_class());
+    $class = get_called_class();
+    $entity = preg_replace('/(.*)\\\\/', '', strtolower($class));
     
     $id = preg_replace('/[^a-z0-9-]/', '', $id);
     
     $row = $db->$entity->byId($id);
     
-    $item = new $entity();
+    $item = new $class();
     $item->id = $id;
     $item->setData($row);
     
@@ -55,11 +77,12 @@ class DBRow
   static public function createNew()
   {
     global $db;
-    $entity = strtolower(get_called_class());
+    $class = get_called_class();
+    $entity = preg_replace('/(.*)\\\\/', '', strtolower($class));
     
-    $item = new $entity();
+    $item = new $class();
+    $item->setData($db->$entity->blankRow());
     $item->id = $db->id();
-    $item->setData([]);
     
     return $item;
   }
@@ -74,14 +97,27 @@ class DBRow
     return $this->row->$key;
   }
   
-  public function __isset($key)
+  public function __set($key, $value)
   {
-    switch ($key) {
-      case 'id':
-        return true;
+    if (!property_exists($this->row, $key)) {
+      throw new \exception("Cannot set $key on " . get_called_class());
     }
     
-    return isset($this->row->$key);
+    $this->row->$key = $value;
+  }
+  
+  public function __isset($key)
+  {
+    if (method_exists($this, $key)) {
+      return true;
+    }
+    
+    return property_exists($this->row, $key);
+  }
+  
+  public function id()
+  {
+    return $this->id;
   }
   
   public function setData($data)
@@ -104,25 +140,35 @@ class DBRow
   public function save()
   {
     global $db;
-    $entity = strtolower(get_called_class());
-    
+    $class = get_called_class();
+    $entity = preg_replace('/(.*)\\\\/', '', strtolower($class));
     
     // misc fields
     $user = Auth::loggedInUser();
     $this->row->modified_by = $user->id;
-    $this->row->modified = time();
+    $this->row->modified = new \DateTimeImmutable();
     
     // save
-    $db->$entity->archive($this->id, false);
-    $db->$entity->write($this->id, $this->row);
+    $db->$entity->archive($this->id);
+    $db->$entity->write($this->id, $this->row, true);
     
   }
   
   public function archive()
   {
     global $db;
-    $entity = strtolower(get_called_class());
+    $class = get_called_class();
+    $entity = preg_replace('/(.*)\\\\/', '', strtolower($class));
     
     $db->$entity->archive($this->id);
+  }
+  
+  public function purge()
+  {
+    global $db;
+    $class = get_called_class();
+    $entity = preg_replace('/(.*)\\\\/', '', strtolower($class));
+    
+    $db->$entity->purge($this->id);
   }
 }

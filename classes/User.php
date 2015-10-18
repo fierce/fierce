@@ -130,7 +130,7 @@ class User
     $this->row->id = $this->id;
     
     // misc fields
-    $this->row->modified = time();
+    $this->row->modified = new \DateTimeImmutable();
     $this->row->modified_by = $user->id;
     
     // reset password if it changed
@@ -149,7 +149,7 @@ class User
     $this->row->signature = sha1($this->row->id . $this->row->type . $this->row->email . $this->row->password . Env::get('auth_salt'));
     
     $db->user->archive($oldId);
-    $db->user->write($this->id, $this->row);
+    $db->user->write($this->id, $this->row, true);
     
     if ($isCurrentUser && $newPassword) {
       Auth::attemptLogin($this->row->email, $newPassword);
