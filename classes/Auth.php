@@ -14,6 +14,7 @@ namespace Fierce;
 
 class Auth
 {
+  public static $inactiveLoginTimeout = 172800; // in seconds, default 2 days
   private static $loggedInUser = null;
   
   static public function requireAdmin()
@@ -97,8 +98,8 @@ class Auth
       return null;
     }
     
-    // inactive for 2 hours? kill it
-    if (($loginSession->last_active->getTimestamp() + 7200) < time()) {
+    // inactive for too long? kill it
+    if (($loginSession->last_active->getTimestamp() + self::$inactiveLoginTimeout) < time()) {
       self::logout();
       return null;
     }
@@ -122,6 +123,9 @@ class Auth
     $loginSession->last_active = new \DateTimeImmutable();
     $loginSession->hash = sha1($loginSession->user . $user->password . $loginSession->last_active->getTimestamp() . Env::get('auth_salt'));
     $db->login_session->write($sessionId, $loginSession, true);
+    
+    // bump the expiry date on the cookie
+    setcookie('u', $sessionId, time() + self::$inactiveLoginTimeout, '/');
     
     // and finally, log them in
     self::$loggedInUser = $user;
@@ -208,7 +212,7 @@ class Auth
     ];
     $session->hash = sha1($session->user . $hashForDatabase . $session->last_active->getTimestamp() . Env::get('auth_salt'));
     $db->login_session->write($hashForCookie, $session, true);
-    setcookie('u', $hashForCookie, 0, '/');
+    setcookie('u', $hashForCookie, time() + self::$inactiveLoginTimeout, '/');
     
     return true;
   }
