@@ -75,7 +75,8 @@ class View
         'loggedInUser' => Auth::loggedInUser(),
         'authHaveRoot' => Auth::haveRoot(),
         'cssUrls' => &self::$cssUrls,
-        'scriptUrls' => &self::$scriptUrls
+        'scriptUrls' => &self::$scriptUrls,
+        'Embed' => new EmbedRenderer()
       ],
       self::$vars,
       $vars
@@ -106,7 +107,8 @@ class View
         'loggedInUser' => Auth::loggedInUser(),
         'authHaveRoot' => Auth::haveRoot(),
         'cssUrls' => &self::$cssUrls,
-        'scriptUrls' => &self::$scriptUrls
+        'scriptUrls' => &self::$scriptUrls,
+        'Embed' => new EmbedRenderer()
       ],
       self::$vars,
       $vars
@@ -114,6 +116,27 @@ class View
     
 
     print self::$twig->render($contentView, $twigVars);
+  }
+  
+  static public function renderString($templateString, $vars = array())
+  {
+    self::initTwig();
+    
+    $twigVars = array_merge(
+      get_defined_constants(),
+      Env::$vars,
+      [
+        'loggedInUser' => Auth::loggedInUser(),
+        'authHaveRoot' => Auth::haveRoot(),
+        'cssUrls' => &self::$cssUrls,
+        'scriptUrls' => &self::$scriptUrls,
+        'Embed' => new EmbedRenderer()
+      ],
+      self::$vars,
+      $vars
+    );
+    
+    print self::$twig->createTemplate($templateString)->render($twigVars);
   }
   
   static public function set($key, $value)

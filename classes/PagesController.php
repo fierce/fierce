@@ -183,7 +183,7 @@ class PagesController extends CrudController
     ];
     
     foreach ($items as $item) {
-      if (!isset($item->nav) && !isset($itemsByCategory[@$item->nav])) {
+      if (!isset($item->nav) || !isset($itemsByCategory[@$item->nav])) {
         continue;
       }
       
@@ -195,13 +195,20 @@ class PagesController extends CrudController
   
   public function beforeEditOrAdd($item, $formData)
   {
-    global $autoloadClasses;
+    $formData->content = preg_replace_callback('#^{{.*}}$#m', function($input) {
+      
+      $tag = $input[0];
+      $tag = '<p>' . $tag . '</p>';
+      
+      return $tag;
+    }, $formData->content);
     
-    $classOptions = [
-      'Fierce\PageController' => 'Plain Page'
-    ];
-        
-    View::set('classOptions', $classOptions);
+    $formData->content = preg_replace_callback('#{{ Embed\\.page\\(\'(.+?)\'\\)\\|raw }}#m', function($input) {
+      
+      $url = $input[1];
+      
+      return '[embed ' . $url . ']';
+    }, $formData->content);
   }
   
   public function editSubmitAction()
@@ -220,6 +227,41 @@ class PagesController extends CrudController
     HTTP::redirect($this->url('edit', ['id' => $item->id]));
   }
   
+  public function beforeSave($item, &$postData)
+  {
+    if (!$item->class) {
+      $item->class = '\Fierce\PageController';
+    }
+    
+    $content = $postData['content'];
+    
+    
+    $content = preg_replace_callback('#\\[embed (.+?)\\]#', function($input) {
+      
+      $url = trim($input[1]);
+      
+      $tag = '{{ Embed.page(\'' . $url . '\')|raw }}';
+      
+      return $tag;
+    }, $content);
+    
+    $content = str_replace("\r\n", "\n", $content);
+    $content = preg_replace_callback('#^<p>({{.*}})</p>$#m', function($input) {
+      
+      $tag = $input[1];
+      $tag = str_replace('&nbsp;', ' ', $tag); // html_entity_decode does stupid shit with spaces
+      $tag = html_entity_decode($tag, ENT_HTML5, 'UTF-8');
+      
+      return $tag;
+    }, $content);
+    
+    
+    
+
+    
+    $postData['content'] = $content;
+  }
+  
   public function afterSave($item)
   {
     ResponseCache::flushAll();
@@ -231,8 +273,9 @@ class PagesController extends CrudController
     $item = $entity::createById(@$_GET['id']);
     
     $item->archive();
+    $item->purge();
     
-    $this->afterSave($item);
+    ResponseCache::flushAll();
     
     HTTP::redirect($this->url());
   }
