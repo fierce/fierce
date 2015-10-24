@@ -52,8 +52,8 @@
 {% endfor %}
 
 <link rel="stylesheet" href="{{ fierce_src }}third-party/nestable/nestable.css">
-<script src="{{ FIERCE_SRC }}third-party/jquery/1.11.1/jquery.min.js"></script>
-<script src="{{ FIERCE_SRC }}third-party/nestable/jquery.nestable.js"></script>
+<script src="{{ fierce_src }}third-party/jquery/1.11.1/jquery.min.js"></script>
+<script src="{{ fierce_src }}third-party/nestable/jquery.nestable.js"></script>
 <script>
 
 $(document).ready(function()
