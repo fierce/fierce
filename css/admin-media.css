@@ -70,6 +70,7 @@ div.media-buttons
   display: block;
   margin-top: 10px;
   font-size: 13px;
+  word-wrap: break-word;
 }
 
 #add_image_button_upload

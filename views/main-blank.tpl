@@ -1,32 +1,24 @@
-<? namespace Fierce ?>
-
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="UTF-8">
-  <base href="<?= base_url ?>" id="base_href">
+  <base href="{{ base_url }}" id="base_href" data-fierce-base="{{ "#{base_url}#{fierce_src}" }}">
   
-  <title><?= $pageTitle ?></title>
+  <title>{{ pageTitle | default("") }}</title>
   
-  <style type="text/css">
-    /* Fierce/css/plain.css */
-    <?= file_get_contents(fierce_path . 'css/plain.css') ?>
-  </style>
+  {% include_css "#{fierce_src}css/plain.css" %}
   
-  <? foreach ($cssUrls as $cssUrl): ?>
-    <style type="text/css">
-      /* <?= $cssUrl ?> */
-      <?= file_get_contents(base_path . $cssUrl) ?>
-    </style>
-  <? endforeach ?>
+  {% for cssUrl in cssUrls %}
+    {% include_css cssUrl %}
+  {% endfor %}
   
-  <? foreach ($scriptUrls as $scriptUrl): ?>
-    <script type="text/javascript" src="<?= htmlspecialchars($scriptUrl) ?>" defer="defer"></script>
-  <? endforeach ?>
+  {% for scriptUrl in scriptUrls %}
+    {% include_script scriptUrl %}
+  {% endfor %}
 </head>
 <body>
 
-<?= $contentViewHtml ?>
+{{ contentViewHtml|raw }}
 
 </body>
 </html>

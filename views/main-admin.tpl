@@ -1,12 +1,10 @@
-<? namespace Fierce ?>
-
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="UTF-8">
   <base href="{{ base_url }}" id="base_href" data-fierce-base="{{ "#{base_url}#{fierce_src}" }}">
   
-  <title>{{ pageTitle }} – {{ site_name }} Administration</title>
+  <title>{{ pageTitle | default("") }} – {{ site_name }} Administration</title>
 
   {% include_css "#{fierce_src}css/admin-base.css" %}
   {% include_css 'css/admin.css' %}
