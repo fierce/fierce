@@ -6,10 +6,11 @@ class CMS
 {
   public static function handleRequest($db)
   {
-    try {
-      $id = sha1(Env::get('controller_url'));
+    $id = sha1(Env::get('controller_url'));
+    
+    if ($db->page->idExists($id)) {
       $page = $db->page->byId($id);
-    } catch (\Exception $e) {
+    } else {
       $page = $db->page->byId(sha1('/404'));
     }
     
