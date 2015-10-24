@@ -33,7 +33,7 @@ class NavNode extends \Twig_Node
   static public function printNav($identifier='main')
   {
     // fetch all pages, sorted by position
-    $pages = \Fierce\Page::all('nav_position_left');    
+    $pages = \Fierce\Page::all('nav_position');    
     
     print '<ul id="nav">';
     $depth = 0;
