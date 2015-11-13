@@ -203,6 +203,14 @@ class PagesController extends CrudController
       return $tag;
     }, $formData->content);
     
+        $formData->content = preg_replace_callback('#^{%.*%}$#m', function($input) {
+      
+      $tag = $input[0];
+      $tag = '<p>' . $tag . '</p>';
+      
+      return $tag;
+    }, $formData->content);
+    
     $formData->content = preg_replace_callback('#{{ Embed\\.page\\(\'(.+?)\'\\)\\|raw }}#m', function($input) {
       
       $url = $input[1];
@@ -247,6 +255,14 @@ class PagesController extends CrudController
     
     $content = str_replace("\r\n", "\n", $content);
     $content = preg_replace_callback('#^<p>({{.*}})</p>$#m', function($input) {
+      
+      $tag = $input[1];
+      $tag = str_replace('&nbsp;', ' ', $tag); // html_entity_decode does stupid shit with spaces
+      $tag = html_entity_decode($tag, ENT_HTML5, 'UTF-8');
+      
+      return $tag;
+    }, $content);
+    $content = preg_replace_callback('#^<p>({%.*%})</p>$#m', function($input) {
       
       $tag = $input[1];
       $tag = str_replace('&nbsp;', ' ', $tag); // html_entity_decode does stupid shit with spaces
