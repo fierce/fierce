@@ -125,7 +125,9 @@ class Auth
     $db->login_session->write($sessionId, $loginSession, true);
     
     // bump the expiry date on the cookie
-    setcookie('u', $sessionId, time() + self::$inactiveLoginTimeout, '/');
+    if (!headers_sent()) {
+      setcookie('u', $sessionId, time() + self::$inactiveLoginTimeout, '/');
+    }
     
     // and finally, log them in
     self::$loggedInUser = $user;
