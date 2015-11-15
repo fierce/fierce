@@ -54,5 +54,6 @@ class Env
       $url = rtrim($url, '/');
     }
     Env::set('controller_url', $url, -10);
+    Env::set('page_class', $url == '/'? 'home' : preg_replace('/[^a-z0-9]+/', '-', ltrim(strtolower($url), '/')) . '-page', -10);
   }
 }
