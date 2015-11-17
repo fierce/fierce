@@ -45,9 +45,14 @@ class Env
     
     Env::set('fierce_src', str_replace(Env::get('base_path'), '', Env::get('fierce_path')), -10);
     
-    preg_match('#^(/[^/]+)(.*)#', $_SERVER['REQUEST_URI'], $matches);
-    Env::set('base_url', 'http://' . $_SERVER['SERVER_NAME'] . $matches[1] . '/', -10);
-    Env::set('request_url', $matches[2], -10);
+    if (isset($_SERVER['REQUEST_URI'])) {
+      preg_match('#^(/[^/]+)(.*)#', $_SERVER['REQUEST_URI'], $matches);
+      Env::set('base_url', 'http://' . $_SERVER['SERVER_NAME'] . $matches[1] . '/', -10);
+      Env::set('request_url', $matches[2], -10);
+    } else {
+      Env::set('base_url', false, -10);
+      Env::set('request_url', false, -10);
+    }
     
     $url = parse_url(Env::get('request_url'), PHP_URL_PATH);
     if ($url != '/') {

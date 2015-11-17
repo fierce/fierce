@@ -29,15 +29,19 @@ class DateFieldNode extends FieldNode
     
     // conditional to check for a null value
     $conditionalNode = new \Twig_Node_Expression_Conditional($valueNode, $formatNode, $valueNode, $this->lineno);
-    // 
-//     dp($formatNode, false);
-//     
-//     $this->compiler->write("\n\n\n/*****************************/\n\n\n");
-//     
-//     $this->compiler->subcompile($formatNode);
-//     
-//     dp($this->compiler->getSource());
 
     return $conditionalNode;
+  }
+  
+  public function compileTag()
+  {
+    if (!$this->hasNode('class')) {
+      $this->setNode('class', new \Twig_Node_Expression_Constant('date_field', $this->lineno));
+    }
+    
+    parent::compileTag();
+    
+    $this->requireCss(\Fierce\Env::get('fierce_src') . 'css/date-field.css');
+    $this->requireScript(\Fierce\Env::get('fierce_src') . 'scripts/calendar-field.controller.js');
   }
 }

@@ -17,7 +17,7 @@ class CMS
     // display the page
     // ResponseCache::start();
     
-    $controllerClass = isset($page->class) ? $page->class : 'Fierce\PageController';
+    $controllerClass = $page->class;
     $controllerClass::run($page, $db);
     
     // ResponseCache::saveCacheIfEnabled();

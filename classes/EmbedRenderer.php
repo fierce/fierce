@@ -22,11 +22,13 @@ class EmbedRenderer
     }
     
     $page = $this->db->page->byId($id);
+    $controllerClass = $page->class;
     
     $class = preg_replace('/[^a-z0-9]+/', '_', strtolower('embed_' . $url));
+    print '<div class="' . $class . '"><div class="' . $class .'_inner">';
     
-    print '<div class="' . $class . '">';
-    View::renderString($page->content);
-    print '</div>';
+    $controllerClass::run($page, $this->db, ['content_only' => true]);
+    
+    print '</div></div>';
   }
 }

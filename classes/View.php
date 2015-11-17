@@ -62,6 +62,7 @@ class View
     self::$twig->addTokenParser(new Tag\FormParser());
     
     self::$twig->addFilter(new \Twig_SimpleFilter('ltrim', 'ltrim'));
+    self::$twig->addFilter(new \Twig_SimpleFilter('dp', 'dp'));
   }
   
   static public function main($templateView, $contentView = false, $vars = array())

@@ -171,6 +171,11 @@ class Node extends \Twig_Node
     ;
   }
   
+  public function requireCss($cssUrl)
+  {
+    $this->compiler->write("\Fierce\View::addCss('" . addslashes($cssUrl) . "');");
+  }
+  
   public function requireScript($scriptUrl)
   {
     $this->compiler->write("\Fierce\View::addScript('" . addslashes($scriptUrl) . "');");

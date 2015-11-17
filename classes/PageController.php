@@ -27,7 +27,7 @@ class PageController
     }
   }
   
-  static public function run($page, $db=false)
+  static public function run($page, $db=false, $options=[])
   {
     $controllerClass = get_called_class();
     $controller = new $controllerClass();
@@ -44,13 +44,24 @@ class PageController
     $action[0] = strtolower($action[0]);
     $action .= 'Action';
     
+    $controller->options = $options;
+    
     $controller->$action();
   }
   
-  public function display($tpl, $vars)
+  public function display($tpl, $vars=[])
   {
-    $vars = array_merge(array('controller' => $this), get_object_vars($this), $vars);
-    
+    $vars = array_merge([
+      'controller' => $this,
+      'page' => $this->page,
+      'pageTitle' => $this->page->name
+    ], get_object_vars($this), $vars);
+        
+    if (isset($this->options['content_only']) && $this->options['content_only']) {
+      View::renderTpl($tpl, $vars);
+      return;
+    }
+
     View::main($this->mainTpl, $tpl, $vars);
   }
   
@@ -87,10 +98,18 @@ class PageController
       $this->mainTpl = $this->page->main_tpl;
     }
     
-    View::main($this->mainTpl, false, [
+    $tplVars = [
+      'controller' => $this,
       'pageTitle' => $this->page->name,
       'contentViewTpl' => $this->page->content,
       'page' => $this->page
-    ]);
+    ];
+    
+    if (isset($this->options['content_only']) && $this->options['content_only']) {
+      View::renderString($this->page->content, $tplVars);
+      return;
+    }
+    
+    View::main($this->mainTpl, false, $tplVars);
   }
 }

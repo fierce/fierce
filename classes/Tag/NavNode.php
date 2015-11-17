@@ -35,7 +35,7 @@ class NavNode extends \Twig_Node
     // fetch all pages, sorted by position
     $pages = \Fierce\Page::all('nav_position');    
     
-    print '<ul id="nav">';
+    print '<ul class="nav">';
     $depth = 0;
     $first = true;
     foreach ($pages as $navPage){
