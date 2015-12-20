@@ -1,4 +1,4 @@
-.button
+.button, .button-alt
 {
   background-color: #eee;
   border: 1px solid #aaa;
@@ -6,6 +6,12 @@
   padding: 2px 8px;
   color: #000;
   text-decoration: none;
+}
+
+.button-alt
+{
+  background-color: #aaa;
+  color: #fff;
 }
 
 div.column

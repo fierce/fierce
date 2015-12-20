@@ -15,13 +15,14 @@ class EmbedRenderer
   
   public function page($url)
   {
-    $id = sha1($url);
-    if (!$this->db->page->idExists($id)) {
+    $pages = $this->db->page->find(['url' => $url]);
+    
+    if (count($pages) == 0) {
       print '<!-- page not found: "' . htmlspecialchars($url) . '" -->';
       return;
     }
     
-    $page = $this->db->page->byId($id);
+    $page = array_shift($pages);
     $controllerClass = $page->class;
     
     $class = preg_replace('/[^a-z0-9]+/', '_', strtolower('embed_' . $url));

@@ -36,14 +36,15 @@
         { name: 'Page Heading', element: 'h1' },
         { name: 'Heading', element: 'h2' },
         { name: 'Sub-Heading', element: 'h3' },
+        { name: 'Minor-Heading', element: 'h4' },
     
         // Inline Styles
         { name: 'Button',    element: 'a',    attributes: { 'class': 'button' } },
+        { name: 'Button Alt',    element: 'a',    attributes: { 'class': 'button-alt' } },
         { name: 'Column',    element: 'div',    attributes: { 'class': 'column' } }
     ] );
   
   
-
     CKEDITOR.config.contentsCss = [CKEDITOR.config.contentsCss, document.getElementById('base_href').getAttribute('data-fierce-base') + 'third-party/ckeditor/css/contents.css']
     
     CKEDITOR.config.codemirror = {

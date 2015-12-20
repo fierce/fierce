@@ -4,7 +4,7 @@ namespace Fierce;
 
 class DBConnectionPdo
 {
-  protected $pdo;
+  public $pdo;
   protected $structures = [];
   
   public function __construct($dsn, $username, $password)
@@ -53,13 +53,17 @@ class DBConnectionPdo
         switch ($field->type) {
           case 'date':
             if ($row->$fieldName !== null) {
-              $row->$fieldName = new \DateTimeImmutable($row->$fieldName);
+              $row->$fieldName = new \DateTime($row->$fieldName);
             }
             break;
           case 'datetime':
             if ($row->$fieldName !== null) {
-              $row->$fieldName = new \DateTimeImmutable($row->$fieldName);
+              $row->$fieldName = new \DateTime($row->$fieldName);
             }
+            break;
+          case 'int':
+          case 'uint':
+            $row->$fieldName = (int)$row->$fieldName;
             break;
         }
       }
@@ -90,13 +94,17 @@ class DBConnectionPdo
       switch ($field->type) {
         case 'date':
           if ($row->$fieldName && $row->$fieldName != '0000-00-00') {
-            $row->$fieldName = new \DateTimeImmutable($row->$fieldName);
+            $row->$fieldName = new \DateTime($row->$fieldName);
           }
           break;
         case 'datetime':
           if ($row->$fieldName && $row->$fieldName != '0000-00-00 00:00:00') {
-            $row->$fieldName = new \DateTimeImmutable($row->$fieldName);
+            $row->$fieldName = new \DateTime($row->$fieldName);
           }
+          break;
+        case 'int':
+        case 'uint':
+          $row->$fieldName = (int)$row->$fieldName;
           break;
       }
     }
@@ -160,19 +168,19 @@ class DBConnectionPdo
         case 'date':
           if ($row->$fieldName === null || $row->$fieldName === false) {
             $value = null;
-          } else if (is_a($row->$fieldName, 'DateTimeImmutable')) {
+          } else if (is_a($row->$fieldName, 'DateTime')) {
             $value = $row->$fieldName->format('Y-m-d');
           } else {
-            throw new \exception('Expecting a DateTimeImmutable, but got ' . gettype($row->$fieldName) . ' for ' . $fieldName);
+            throw new \exception('Expecting a DateTime, but got ' . gettype($row->$fieldName) . ' for ' . $fieldName);
           }
           break;
         case 'datetime':
           if ($row->$fieldName === null || $row->$fieldName === false) {
             $value = null;
-          } else if (is_a($row->$fieldName, 'DateTimeImmutable')) {
+          } else if (is_a($row->$fieldName, 'DateTime')) {
             $value = $row->$fieldName->format('Y-m-d H:i:s');
           } else {
-            throw new \exception('Expecting a DateTimeImmutable, but got ' . gettype($row->$fieldName) . ' for ' . $fieldName);
+            throw new \exception('Expecting a DateTime, but got ' . gettype($row->$fieldName) . ' for ' . $fieldName);
           }
           break;
         
@@ -191,7 +199,38 @@ class DBConnectionPdo
             throw new \exception('Value too long for table column ' . $fieldName);
           }
           break;
+        
+        case 'int':
+          $value = (int)$row->$fieldName;
+          break;
+        
+        case 'uint':
+          $value = (int)$row->$fieldName;
+          if ($value < 0) {
+            throw new exception('Cannot write negative value for table column ' . $fieldName);
+          }
+          break;
+        
+        case 'bool':
+          $value = (bool)$row->$fieldName;
+          break;
+        
+        case 'blob':
+          if ($row->$fieldName === null || $row->$fieldName === false) {
+            $value = null;
+          } else {
+            try {
+              $value = (string)$row->$fieldName;
+            } catch (\exception $e) {
+              throw new \exception("Unable to convert $fieldName value into a string");
+            }
+          }
           
+          if (strlen($value) > 65535) {
+            throw new \exception('Value too long for table column ' . $fieldName);
+          }
+          break;
+        
         default:
           throw new \exception('Unknown type ' . $field->type);
       }
@@ -280,6 +319,12 @@ class DBConnectionPdo
         $field->type = 'text';
       } else if ($field->raw_type == 'tinyint(1)') {
         $field->type = 'bool';
+      } else if ($field->raw_type == 'int(11) unsigned') {
+        $field->type = 'uint';
+      } else if ($field->raw_type == 'int(11)') {
+        $field->type = 'int';
+      } else if ($field->raw_type == 'blob') {
+        $field->type = 'blob';
       } else {
         throw new \exception("Unknown field type: " . json_encode($rawField));
       }
@@ -358,6 +403,14 @@ class DBConnectionPdo
         $typeSql = 'tinyint(1)';
         $options['allow_null'] = false;
         break;
+      case 'int':
+        $typeSql = 'int(11)';
+      case 'blob':
+        $typeSql = 'blob';
+        break;
+      case 'uint':
+        $typeSql = 'int(11) unsigned';
+        break;
       default:
         throw new \exception('Invalid type ' . $options['type']);
     }
@@ -374,5 +427,25 @@ class DBConnectionPdo
     $q->execute([
       'default' => $options['default']
     ]);
+  }
+  
+  public function addIndex($entity, $columns, $unique)
+  {
+    $columnsSql = '';
+    foreach ($columns as $column) {
+      if ($columnsSql != '') {
+        $columnsSql .= ', ';
+      }
+      
+      $columnsSql .= '`' . $column . '`';
+    }
+    
+    $uniqueSql = $unique ? 'unique' : '';
+    
+    dp("alter table `$entity` add $uniqueSql index ($columnsSql)");
+    
+    $q = $this->pdo->prepare("
+      alter table `$entity` add $uniqueSql index ($columnsSql)
+    ");
   }
 }

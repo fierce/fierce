@@ -92,6 +92,8 @@ class DBRow
     switch ($key) {
       case 'id':
         return $this->id;
+      case 'row':
+        return $this->row;
     }
     
     return $this->row->$key;
@@ -146,7 +148,7 @@ class DBRow
     // misc fields
     $user = Auth::loggedInUser();
     $this->row->modified_by = $user->id;
-    $this->row->modified = new \DateTimeImmutable();
+    $this->row->modified = new \DateTime();
     
     // save
     $db->$entity->archive($this->id);

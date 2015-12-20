@@ -149,7 +149,7 @@ class CrudController extends PageController
     $item->archive();
     $item->purge();
     
-    $this->afterSave($item);
+    $this->afterDelete($item);
     
     HTTP::redirect($this->url());
   }

@@ -46,9 +46,11 @@
       <div class="dd-empty"></div>
     {% endif %}
   </div>
+  {% if categoryValue == 'not_linked' %}
   <div class="buttons">
-    <a href="{{ controller.url('add', {'nav': categoryValue}) }}" class="button grey">Add Page</a>
+    <a href="{{ controller.url('add') }}" class="button grey">Add Page</a>
   </div>
+  {% endif %}
 {% endfor %}
 
 <link rel="stylesheet" href="{{ fierce_src }}third-party/nestable/nestable.css">
@@ -60,6 +62,9 @@ $(document).ready(function()
 {
   $('.dd').each(function() {
     var nestable = $(this).nestable()
+    
+    // would like to do this, but we'd have to expand/reveal the "current" item
+    // $(this).nestable('collapseAll')
     
     nestable.on('change', function(e) {
       

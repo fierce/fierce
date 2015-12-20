@@ -22,4 +22,9 @@ class HTTP
     header('Location: ' . $url);
     exit;
   }
+  
+  static public function notFoundHeader()
+  {
+    header('HTTP/1.0 404 Not Found');
+  }
 }

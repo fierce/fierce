@@ -7,8 +7,8 @@
     this.monthSelectEl = null
     this.rowEls = []
     this.cellEls = []
-    this.monthNames = ['January', 'February', 'March', 'April', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-    this.monthNamesAbbreviated = ['Jan', 'Feb', 'Mar', 'Apr', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+    this.monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+    this.monthNamesAbbreviated = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
     this.weekdayChars = ['M', 'T', 'W', 'T', 'F', 'S', 'S']
     this.calendarVisible = false
     
@@ -106,12 +106,13 @@
     this.monthSelectEl = document.createElement('select')
     this.monthSelectEl.setAttribute('tabindex', '-1')
     this.monthSelectEl.setAttribute('class', 'date_field_month_select')
+    this.monthSelectEl.addEventListener('change', this.monthSelectChanged.bind(this))
     
     for (var monthIndex = 0; monthIndex < this.monthNames.length; monthIndex++) {
       var optionEl = document.createElement('option')
       optionEl.innerHTML = this.monthNames[monthIndex]
       
-      if (today.getMonth() - 1 == monthIndex) {
+      if (today.getMonth() == monthIndex) {
         optionEl.setAttribute('selected', 'selected')
       }
       
@@ -122,6 +123,8 @@
     this.yearSelectEl = document.createElement('select')
     this.yearSelectEl.setAttribute('tabindex', '-1')
     this.yearSelectEl.setAttribute('class', 'date_field_year_select')  
+    this.yearSelectEl.addEventListener('change', this.monthSelectChanged.bind(this))
+    
     var minYear = today.getFullYear()
     var maxYear = today.getFullYear() + 3
     for (var year = minYear; year <= maxYear; year++) {
@@ -155,12 +158,15 @@
       var rowEl = document.createElement('div')
       rowEl.setAttribute('class', 'date_field_calendar_row')
       
+      // row cells
       this.cellEls[rowIndex] = []
       for (var colIndex = 0; colIndex < colCount; colIndex++) {
         var cellEl = document.createElement('span')
         cellEl.setAttribute('class', 'date_field_calendar_cell')
         cellEl.innerHTML = '&nbsp;'
         rowEl.appendChild(cellEl)
+        
+        cellEl.addEventListener('click', this.cellClicked.bind(this))
         
         this.cellEls[rowIndex][colIndex] = cellEl
       }
@@ -184,6 +190,13 @@
     var firstOfMonth = new Date(today.getTime())
     firstOfMonth.setDate(1)
     
+    firstOfMonth.setYear(this.yearSelectEl.value);
+    for (var monthIndex = 0; monthIndex < this.monthNames.length; monthIndex++) {
+      if (this.monthSelectEl.value == this.monthNames[monthIndex]) {
+        firstOfMonth.setMonth(monthIndex)
+      }
+    }
+    
     var firstOfMonthColIndex = firstOfMonth.getDay() - 1
     if (firstOfMonthColIndex < 0) {
       firstOfMonthColIndex = 6
@@ -202,6 +215,8 @@
         var cellEl = this.cellEls[rowIndex][colIndex]
         cellEl.innerHTML = date.getDate()
         
+        cellEl.setAttribute('data-date', date.getDate() + ' ' + this.monthNamesAbbreviated[date.getMonth()] + ' ' + date.getFullYear())
+        
         var cellClass = 'date_field_calendar_cell'
         if (date.getMonth() != firstOfMonth.getMonth()) {
           cellClass += ' date_field_calendar_other_month_cell'
@@ -217,6 +232,18 @@
     
     // fill out month cells
     
+  }
+  
+  CalendarFieldController.prototype.monthSelectChanged = function(changeEvent)
+  {
+    this.loadMonth()
+  }
+  
+  CalendarFieldController.prototype.cellClicked = function(clickEvent)
+  {
+    this.inputEl.setAttribute('value', clickEvent.target.getAttribute('data-date'))
+    
+    this.hideCalendar();
   }
   
   document.addEventListener('DOMContentLoaded', function() {

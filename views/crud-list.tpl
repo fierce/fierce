@@ -25,7 +25,7 @@
             <a href="{{ item.url|trim('/') }}">View</a>
           {% endif %}
           <a href="{{ controller.url('edit', {'id': item.id}) }}">Edit</a>
-          <a href="javascript:void(0)" confirmedHref="{{ controller.url('delete', {'id': item.id}) }} ?>" onclick="
+          <a href="javascript:void(0)" confirmedHref="{{ controller.url('delete', {'id': item.id}) }}" onclick="
             if (confirm('Are you sure you want to delete {{ attribute(item, displayField)|e('js') }}?')) {
               this.setAttribute('href', this.getAttribute('confirmedHref'))
             }

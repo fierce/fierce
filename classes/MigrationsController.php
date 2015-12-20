@@ -51,7 +51,7 @@ class MigrationsController extends PageController
       
       $this->db->completed_migrations->write(sha1($class), (object)[
         'file' => strtolower(pathinfo($file, PATHINFO_FILENAME)),
-        'date' => new \DateTimeImmutable()
+        'date' => new \DateTime()
       ]);
       
       $count++;

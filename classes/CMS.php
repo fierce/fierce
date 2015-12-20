@@ -6,13 +6,18 @@ class CMS
 {
   public static function handleRequest($db)
   {
-    $id = sha1(Env::get('controller_url'));
-    
-    if ($db->page->idExists($id)) {
-      $page = $db->page->byId($id);
-    } else {
-      $page = $db->page->byId(sha1('/404'));
+    $pages = $db->page->find(['url' => Env::get('controller_url')]);
+
+    if (count($pages) == 0) {
+      HTTP::notFoundHeader();
+      $pages = $db->page->find(['url' => '/404']);
     }
+    
+    if (count($pages) == 0) {
+      die('Page not found');
+    }
+    
+    $page = array_shift($pages);
     
     // display the page
     // ResponseCache::start();

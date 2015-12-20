@@ -60,5 +60,5 @@
   text-indent: 100%;
   white-space: nowrap;
   overflow: hidden;
-  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="20"><rect x="4" y="5" width="16" height="2" fill="#000" fill-opacity="0.2" /><rect x="4" y="10" width="16" height="2" fill="#000" fill-opacity="0.2" /><rect x="4" y="15" width="16" height="2" fill="#000" fill-opacity="0.2" /></svg>');
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="20"><rect x="4" y="5" width="16" height="2" fill="black" fill-opacity="0.2" /><rect x="4" y="10" width="16" height="2" fill="black" fill-opacity="0.2" /><rect x="4" y="15" width="16" height="2" fill="black" fill-opacity="0.2" /></svg>');
 }

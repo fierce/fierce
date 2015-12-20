@@ -18,7 +18,7 @@ class DateFieldNode extends FieldNode
   
   public function valueNode()
   {
-    // date value (either a DateTimeImmutable object, or null)
+    // date value (either a DateTime object, or null)
     $valueNode = parent::valueNode();
     
     // format('Y-m-d') method call on date object

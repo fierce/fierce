@@ -29,9 +29,6 @@ class Page extends DBRow
   
   public function save()
   {
-    $this->id = sha1($this->url);
-    $this->row->id = $this->id;
-    
     parent::save();
   }
 }

@@ -187,6 +187,14 @@ div.sidebar_wrapper div.sidebar h1:first-child
   margin-top: 0;
 }
 
+.dd-list .dd-content a
+{
+  white-space: nowrap;
+  overflow: hidden;
+  max-width: 300px;
+  text-overflow: ellipsis;
+}
+
 .dd-list .dd-content a,
 .dd-dragel a /* drag items are moved out of the list while being dragged */
 {
@@ -203,6 +211,7 @@ div.sidebar_wrapper div.sidebar h1:first-child
 .dd-list .sidebar_active > .dd-content a
 {
   color: #fff;
+  overflow: hidden;
 }
 
 div.sidebar_wrapper div.content

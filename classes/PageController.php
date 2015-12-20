@@ -34,7 +34,11 @@ class PageController
     $controller->page = $page;
     $controller->db = $db;
     
-    $action = @$_GET['do'];
+    if (get_class($controller) == 'Fierce\PageController') {
+      $action = false;
+    } else {
+      $action = @$_GET['do'];
+    }
     if (!$action) {
       $action = 'default';
     }

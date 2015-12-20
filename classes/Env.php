@@ -17,6 +17,10 @@ class Env
     
     self::$vars[$name] = $value;
     self::$varPriorities[$name] = $priority;
+    
+    if ($name == 'base_url') {
+      self::initItemsBasedOnBaseUrl();
+    }
   }
   
   public static function get($name)
@@ -46,11 +50,26 @@ class Env
     Env::set('fierce_src', str_replace(Env::get('base_path'), '', Env::get('fierce_path')), -10);
     
     if (isset($_SERVER['REQUEST_URI'])) {
-      preg_match('#^(/[^/]+)(.*)#', $_SERVER['REQUEST_URI'], $matches);
-      Env::set('base_url', 'http://' . $_SERVER['SERVER_NAME'] . $matches[1] . '/', -10);
-      Env::set('request_url', $matches[2], -10);
+      Env::set('base_url', 'http://' . $_SERVER['SERVER_NAME'] . '/', -10);
     } else {
       Env::set('base_url', false, -10);
+    }
+  }
+  
+  public static function initItemsBasedOnBaseUrl()
+  {
+    if (isset($_SERVER['REQUEST_URI'])) {
+      $requestUri = $_SERVER['REQUEST_URI'];
+      if (preg_match('#https?://[^/]+(/.*)/#', Env::get('base_url'), $matches)) {
+        $baseUrlBaseUri = $matches[1];
+        if (substr($requestUri, 0, strlen($baseUrlBaseUri)) == $baseUrlBaseUri) {
+          $requestUri = substr($requestUri, strlen($baseUrlBaseUri));
+        }
+      }
+      
+      Env::set('request_url', $requestUri, -10);
+      
+    } else {
       Env::set('request_url', false, -10);
     }
     

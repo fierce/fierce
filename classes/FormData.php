@@ -157,7 +157,7 @@ class FormData
           }
           
           $dateStr = sprintf("%04d-%02d-%02d", $year, $month, $day);
-          $date = new \DateTimeImmutable($dateStr);
+          $date = new \DateTime($dateStr);
           
           if ($date->format('Y-m-d') != $dateStr) { // eg febuary 31st will fail here
             $dieFunction();

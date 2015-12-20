@@ -120,7 +120,7 @@ class Auth
     }
     
     // record activity on the login session
-    $loginSession->last_active = new \DateTimeImmutable();
+    $loginSession->last_active = new \DateTime();
     $loginSession->hash = sha1($loginSession->user . $user->password . $loginSession->last_active->getTimestamp() . Env::get('auth_salt'));
     $db->login_session->write($sessionId, $loginSession, true);
     
@@ -210,7 +210,7 @@ class Auth
     // log the user in
     $session = (object)[
       'user' => $id,
-      'last_active' => new \DateTimeImmutable()
+      'last_active' => new \DateTime()
     ];
     $session->hash = sha1($session->user . $hashForDatabase . $session->last_active->getTimestamp() . Env::get('auth_salt'));
     $db->login_session->write($hashForCookie, $session, true);

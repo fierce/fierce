@@ -130,7 +130,7 @@ class User
     $this->row->id = $this->id;
     
     // misc fields
-    $this->row->modified = new \DateTimeImmutable();
+    $this->row->modified = new \DateTime();
     $this->row->modified_by = $user->id;
     
     // reset password if it changed
