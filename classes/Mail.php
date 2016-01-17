@@ -8,10 +8,6 @@ class Mail
   public $to;
   public $message;
   
-  public function __construct()
-  {
-  }
-  
   public function send()
   {
     $headers = 'From: ' . Env::get('company_email') . "\r\n";

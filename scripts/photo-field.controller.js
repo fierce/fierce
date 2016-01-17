@@ -8,6 +8,11 @@
     this.hiddenValueEl = document.getElementById(uploadEl.name + '_field')
     
     this.previewEl = document.getElementById(uploadEl.name + '_preview')
+    this.previewWrapperEl = this.previewEl.parentNode
+    
+    if (this.previewEl.getAttribute('src').length == "") {
+      this.previewWrapperEl.setAttribute('style', 'display: none')
+    }
   }
   
   PhotoFieldController.prototype.uploadElChanged = function(ev)
@@ -24,6 +29,8 @@
         var dataUri = fileRead.target.result
         
         imgEl.src = dataUri
+        this.previewWrapperEl.setAttribute('style', '')
+        
         this.hiddenValueEl.value = dataUri
         this.uploadEl.value = null
       }.bind(this)

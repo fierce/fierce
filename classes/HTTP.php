@@ -16,7 +16,9 @@ class HTTP
 {
   static public function redirect($url)
   {
-    $url = Env::get('base_url') . ltrim($url, '/');
+    if (!preg_match('#^https?://#', $url)) {
+      $url = Env::get('base_url') . ltrim($url, '/');
+    }
     ResponseCache::disable();
     
     header('Location: ' . $url);

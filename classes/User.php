@@ -78,6 +78,17 @@ class User
     return $this->row->$key;
   }
   
+  public function __set($key, $value)
+  {
+    switch ($key) {
+      case 'id':
+        $this->id = $value;
+        return;
+    }
+    
+    $this->row->$key = $value;
+  }
+  
   public function __isset($key)
   {
     switch ($key) {
@@ -117,12 +128,12 @@ class User
     }
   }
   
-  public function save()
+  public function save($checkLogin=true)
   {
     global $db;
     
     $user = Auth::loggedInUser();
-    $isCurrentUser = $user->id == $this->id;
+    $isCurrentUser = $user && $user->id == $this->id;
     
     // apply new id (email may have changed)
     $oldId = $this->id;
@@ -131,11 +142,11 @@ class User
     
     // misc fields
     $this->row->modified = new \DateTime();
-    $this->row->modified_by = $user->id;
+    $this->row->modified_by = $user ? $user->id : '';
     
     // reset password if it changed
     $newPassword = false;
-    if ($this->row->new_password) {
+    if (@$this->row->new_password) {
       $hashForCookie = sha1(password_hash($this->row->new_password, PASSWORD_BCRYPT, ['cost' => 11, 'salt' => $this->id]));
       $hashForDatabase = sha1(password_hash($hashForCookie, PASSWORD_BCRYPT, ['cost' => 11, 'salt' => $this->id]));	
       
@@ -143,6 +154,9 @@ class User
       
       $newPassword = $this->row->new_password;
       unset($this->row->new_password);
+    }
+    if (!isset($this->password)) {
+      $this->password = '';
     }
     
     // hash everything

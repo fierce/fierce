@@ -55,10 +55,16 @@ class PageController
   
   public function display($tpl, $vars=[])
   {
+    $title = @$this->page->title;
+    if (!$title) {
+      $title = $this->page->name;
+    }
+    
     $vars = array_merge([
       'controller' => $this,
       'page' => $this->page,
-      'pageTitle' => $this->page->name
+      'pageTitle' => $title,
+      'metaDescription' => @$this->page->meta_description
     ], get_object_vars($this), $vars);
         
     if (isset($this->options['content_only']) && $this->options['content_only']) {
@@ -102,9 +108,15 @@ class PageController
       $this->mainTpl = $this->page->main_tpl;
     }
     
+    $title = @$this->page->title;
+    if (!$title) {
+      $title = $this->page->name;
+    }
+    
     $tplVars = [
       'controller' => $this,
-      'pageTitle' => $this->page->name,
+      'pageTitle' => $title,
+      'metaDescription' => @$this->page->meta_description,
       'contentViewTpl' => $this->page->content,
       'page' => $this->page
     ];

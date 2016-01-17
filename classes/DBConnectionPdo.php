@@ -405,6 +405,7 @@ class DBConnectionPdo
         break;
       case 'int':
         $typeSql = 'int(11)';
+        break;
       case 'blob':
         $typeSql = 'blob';
         break;

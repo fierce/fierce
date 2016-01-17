@@ -145,6 +145,11 @@ class View
     self::$vars[$key] = $value;
   }
   
+  static public function get($key)
+  {
+    return @self::$vars[$key];
+  }
+  
   static public function addScript($scriptUrl)
   {
     if (in_array($scriptUrl, self::$scriptUrls)) {

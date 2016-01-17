@@ -16,7 +16,7 @@ class FormData
 {
   public $_fields = [];
   
-  public function __construct($fields)
+  public function __construct($fields=[])
   {
     foreach ($fields as $field) {
       $this->addField($field);
@@ -57,21 +57,33 @@ class FormData
     $this->_fields[$field->name] = $field;
   }
   
+  public function getFields()
+  {
+    return $this->_fields;
+  }
+  
   public function retrieve()
   {
+    $this->fromStringArray(array_merge($_GET, $_POST));
+  }
+  
+  public function fromStringArray($values)
+  {
     foreach ($this->_fields as $field) {
-      if (isset($_POST[$field->name])) {
-        $rawValue = $_POST[$field->name];
-      } else if (isset($_GET[$field->name])) {
-        $rawValue = $_GET[$field->name];
+      if (isset($values[$field->name])) {
+        $rawValue = $values[$field->name];
       } else {
         $rawValue = null;
       }
       
-      
       switch ($field->type) {
+        
+        
         case 'string':
           $field->value = $rawValue;
+          break;
+        case 'email':
+          $field->value = trim($rawValue);
           break;
         case 'date':
           if (!$rawValue) {
@@ -79,7 +91,7 @@ class FormData
             break;
           }
           
-          $dieFunction = function() {
+          $dieFunction = function() use ($field) {
             die('
               <p>Invalid value provided for ' . $field->displayName . ' (must be: Day Month Year).</p>
               <p><a href="javascript:window.history.back()">Go Back</a></p>
@@ -171,6 +183,35 @@ class FormData
     }
   }
   
+  public function toStringArray()
+  {
+    $values = [];
+    foreach ($this->_fields as $field) {
+      switch ($field->type) {
+        case 'string':
+          $value = $field->value;
+          break;
+        case 'email':
+          $value = $field->value;
+          break;
+        case 'date':
+          if (!$field->value) {
+            $value = null;
+            break;
+          }
+          
+          $value = $field->value->format('j M Y');
+          break;
+        default:
+          throw new \exception('unknown type ' . $field->type);
+      }
+      
+      $values[$field->name] = $value;
+    }
+    
+    return $values;
+  }
+  
   public function setValues($data)
   {
     if (is_array($data)) {
@@ -217,5 +258,46 @@ class FormData
   public function __isset($key)
   {
     return isset($this->_fields[$key]);
+  }
+  
+  /**
+   *
+   *	@param $failureFunc - function with one argument (array of error message strings)
+   *
+   */
+  public function validate($failureFunc)
+  {
+    $errors = [];
+    foreach ($this->_fields as $field) {
+      if ($field->required) {
+        if ($field->value === null || $field->value === '') {
+          $errors[] = "$field->displayName is missing.";
+          continue;
+        }
+      }
+      
+      switch ($field->type) {
+        case 'string':
+          break;
+        case 'email':
+          if (!filter_var($field->value, FILTER_VALIDATE_EMAIL)) {
+            $errors[] = "$field->displayName is invalid.";
+          }
+          break;
+        case 'date':
+          break;
+        default:
+          throw new \Exception('not sure how to handle ' . $field->name);
+      }
+    }
+    
+    if (count($errors) > 0) {
+      $failureFunc($errors);
+    }
+  }
+  
+  public function hasField($field)
+  {
+    return isset($this->_fields[$field]);
   }
 }

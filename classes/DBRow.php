@@ -147,7 +147,7 @@ class DBRow
     
     // misc fields
     $user = Auth::loggedInUser();
-    $this->row->modified_by = $user->id;
+    $this->row->modified_by = $user ? $user->id : '';
     $this->row->modified = new \DateTime();
     
     // save
