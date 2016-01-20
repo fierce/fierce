@@ -27,7 +27,7 @@ class PageController
     }
   }
   
-  static public function run($page, $db=false, $options=[])
+  static public function run($page=false, $db=false, $options=[])
   {
     $controllerClass = get_called_class();
     $controller = new $controllerClass();
@@ -57,7 +57,7 @@ class PageController
   {
     $title = @$this->page->title;
     if (!$title) {
-      $title = $this->page->name;
+      $title = @$this->page->name;
     }
     
     $vars = array_merge([
@@ -99,7 +99,7 @@ class PageController
   
   public function defaultAction()
   {
-    if ($this->page->url == '/404') {
+    if (@$this->page->url == '/404') {
       header('HTTP/1.0 404 Not Found');
       ResponseCache::disable();
     }
@@ -110,19 +110,19 @@ class PageController
     
     $title = @$this->page->title;
     if (!$title) {
-      $title = $this->page->name;
+      $title = @$this->page->name;
     }
     
     $tplVars = [
       'controller' => $this,
       'pageTitle' => $title,
       'metaDescription' => @$this->page->meta_description,
-      'contentViewTpl' => $this->page->content,
+      'contentViewTpl' => @$this->page->content,
       'page' => $this->page
     ];
     
     if (isset($this->options['content_only']) && $this->options['content_only']) {
-      View::renderString($this->page->content, $tplVars);
+      View::renderString(@$this->page->content, $tplVars);
       return;
     }
     
