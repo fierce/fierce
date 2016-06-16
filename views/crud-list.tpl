@@ -17,7 +17,16 @@
     {% for item in items %}
       <tr>
         {% for field, name in listFields %}
-          <td class="{{ field }}">{% if field ends with '_html' %} {{ attribute(item, field)|raw }} {% else %} {{ attribute(item, field) }} {% endif %}</td>
+          {% set value = attribute(item, field) %}
+          <td class="{{ field }}">
+            {% if field ends with '_html' %}
+              {{ value|raw }}
+            {% elseif value.timestamp is defined %}
+              {{ value|date('j M, Y') }}
+            {% else %}
+              {{ value }}
+            {% endif %}
+          </td>
         {% endfor %}
         
         <td class="buttons">
