@@ -11,8 +11,8 @@
     CKEDITOR.config.extraPlugins = 'codemirror,image2,widget,lineutils,fierce-image-select';
     
     // these two lines make *all* HTML valid
-//    CKEDITOR.config.allowedContent = true
-//    CKEDITOR.config.extraAllowedContent = '*[*];*(*);*{*}';
+   CKEDITOR.config.allowedContent = true
+   CKEDITOR.config.extraAllowedContent = '*[*];*(*);*{*}';
     
     CKEDITOR.config.height = 400
     CKEDITOR.config.baseHref = document.getElementById('base_href').href
