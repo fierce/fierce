@@ -109,52 +109,52 @@ class FormData
           if ($year < 1000 || $year > 3000) {
             $dieFunction();
           }
-          switch ($month) {
-            case 'Jan':
-            case 'January':
+          switch (strtolower($month)) {
+            case 'jan':
+            case 'january':
               $month = 1;
               break;
-            case 'Feb':
-            case 'February':
+            case 'feb':
+            case 'february':
               $month = 2;
               break;
-            case 'Mar':
-            case 'March':
+            case 'mar':
+            case 'march':
               $month = 3;
               break;
-            case 'Apr':
-            case 'April':
+            case 'apr':
+            case 'april':
               $month = 4;
               break;
-            case 'May':
+            case 'may':
               $month = 5;
               break;
-            case 'Jun':
-            case 'June':
+            case 'jun':
+            case 'june':
               $month = 6;
               break;
-            case 'Jul':
-            case 'July':
+            case 'jul':
+            case 'july':
               $month = 7;
               break;
-            case 'Aug':
-            case 'August':
+            case 'aug':
+            case 'august':
               $month = 8;
               break;
-            case 'Sep':
-            case 'September':
+            case 'sep':
+            case 'september':
               $month = 9;
               break;
-            case 'Oct':
-            case 'October':
+            case 'oct':
+            case 'october':
               $month = 10;
               break;
-            case 'Nov':
-            case 'November':
+            case 'nov':
+            case 'november':
               $month = 11;
               break;
-            case 'Dec':
-            case 'December':
+            case 'dec':
+            case 'december':
               $month = 12;
               break;
           }
