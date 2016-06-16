@@ -17,10 +17,6 @@ class DBConnectionPdo
   
   public function find($entity, $params, $orderBy, $range)
   {
-    if ($range) {
-      throw new \exception('not yet implemented');
-    }
-    
     $sql = "
       SELECT * FROM `$entity`
       where 1
@@ -39,6 +35,12 @@ class DBConnectionPdo
       $key = trim($orderBy, '-+');
       
       $sql .= "ORDER BY `$key` " . ($asc ? "ASC\n" : "DESC\n");
+    }
+    
+    if ($range) {
+      list($start, $end) = $range;
+      
+      $sql .= 'LIMIT ' . (int)$start . ', ' . (int)$end . "\n";
     }
     
     $q = $this->pdo->prepare($sql);
