@@ -177,10 +177,16 @@ class PagesController extends CrudController
     
     $items = $entity::all('nav_position');
     
-    $itemsByCategory = [
-      'main' => (object)['name' => 'Main Navigation', 'items' => []],
-      'not_linked' => (object)['name' => 'Not Linked', 'items' => []]
-    ];
+    $itemsByCategory = [];
+    $itemsByCategory['main'] = (object)['name' => 'Main Navigation', 'items' => []];
+    
+    Env::set('additional_nav_categores', [], -1);
+    $additionalCats = Env::get('additional_nav_categores');
+    foreach (Env::get('additional_nav_categores') as $identifier => $name) {
+      $itemsByCategory[$identifier] = (object)['name' => $name, 'items' => []];
+    }
+    
+    $itemsByCategory['not_linked'] = (object)['name' => 'Not Linked', 'items' => []];
     
     foreach ($items as $item) {
       if (!isset($item->nav) || !isset($itemsByCategory[@$item->nav])) {

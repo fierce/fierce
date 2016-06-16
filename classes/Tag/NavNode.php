@@ -15,9 +15,14 @@ namespace Fierce\Tag;
 class NavNode extends \Twig_Node
 {
   public static $tagName = 'nav';
-  public function __construct($line, $tag = null)
+  
+  public $identifier = 'main';
+  
+  public function __construct($line, $tag = null, $identifier = 'main')
   {
     parent::__construct([], [], $line, $tag);
+    
+    $this->identifier = $identifier;
   }
 
   public function compile(\Twig_Compiler $compiler)
@@ -25,7 +30,7 @@ class NavNode extends \Twig_Node
     $compiler
       ->addDebugInfo($this)
       ->write('
-        \Fierce\Tag\NavNode::printNav();
+        \Fierce\Tag\NavNode::printNav("' . preg_replace('[^a-zA-Z0-9-_]', '', $this->identifier) . '");
       ')
     ;
   }

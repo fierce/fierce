@@ -18,10 +18,15 @@ class NavParser extends \Twig_TokenParser
   {
     $parser = $this->parser;
     $stream = $parser->getStream();
-
+    
+    $navIdentifier = 'main';
+    if (!$stream->test(\Twig_Token::BLOCK_END_TYPE)) {
+      $navIdentifier = $stream->expect(\Twig_Token::NAME_TYPE)->getValue();
+    }
+    
     $stream->expect(\Twig_Token::BLOCK_END_TYPE);
-
-    return new NavNode($token->getLine(), $this->getTag());
+    
+    return new NavNode($token->getLine(), $this->getTag(), $navIdentifier);
   }
   
   
