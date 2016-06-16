@@ -196,8 +196,12 @@ class DBConnectionPdo
               throw new \exception("Unable to convert $fieldName value into a string");
             }
           }
+
+          if ($field->raw_type == 'text' && strlen($value) > 65535) {
+            throw new \exception('Value too long for table column ' . $fieldName);
+          }
           
-          if (strlen($value) > 65535) {
+          if ($field->raw_type == 'mediumtext' && strlen($value) > 16777215) {
             throw new \exception('Value too long for table column ' . $fieldName);
           }
           break;
@@ -318,6 +322,8 @@ class DBConnectionPdo
       } else if ($field->raw_type == 'datetime') {
         $field->type = 'datetime';
       } else if ($field->raw_type == 'text') {
+        $field->type = 'text';
+      } else if ($field->raw_type == 'mediumtext') {
         $field->type = 'text';
       } else if ($field->raw_type == 'tinyint(1)') {
         $field->type = 'bool';
