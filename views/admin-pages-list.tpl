@@ -108,6 +108,8 @@ $(document).ready(function()
       document.getElementById('page_list_save_buttons').setAttribute('style', '')
     });
   });
+  
+  $('.dd').nestable('collapseAll');
 });
 </script>
 
