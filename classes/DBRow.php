@@ -17,11 +17,17 @@ class DBRow
   public $id;
   protected $row;
   
+  public static function tableName()
+  {
+    $class = get_called_class();
+    return preg_replace('/(.*)\\\\/', '', strtolower($class));
+  }
+  
   static public function all($sort=null)
   {
     global $db;
     $class = get_called_class();
-    $entity = preg_replace('/(.*)\\\\/', '', strtolower($class));
+    $entity = $class::tableName();
     
     $rows = $db->$entity->find([], $sort);
     
@@ -37,13 +43,13 @@ class DBRow
     return $items;
   }
   
-  public static function find($params=[], $sort=null)
+  public static function find($params=[], $sort=null, $range=null)
   {
     global $db;
     $class = get_called_class();
-    $entity = preg_replace('/(.*)\\\\/', '', strtolower($class));
+    $entity = $class::tableName();
     
-    $rows = $db->$entity->find($params, $sort);
+    $rows = $db->$entity->find($params, $sort, $range);
     
     $items = array();
     foreach ($rows as $id => $row) {
@@ -61,7 +67,7 @@ class DBRow
   {
     global $db;
     $class = get_called_class();
-    $entity = preg_replace('/(.*)\\\\/', '', strtolower($class));
+    $entity = $class::tableName();
     
     $id = preg_replace('/[^a-z0-9-]/', '', $id);
     
@@ -78,7 +84,7 @@ class DBRow
   {
     global $db;
     $class = get_called_class();
-    $entity = preg_replace('/(.*)\\\\/', '', strtolower($class));
+    $entity = $class::tableName();
     
     $item = new $class();
     $item->setData($db->$entity->blankRow());
@@ -143,7 +149,7 @@ class DBRow
   {
     global $db;
     $class = get_called_class();
-    $entity = preg_replace('/(.*)\\\\/', '', strtolower($class));
+    $entity = $class::tableName();
     
     // misc fields
     $user = Auth::loggedInUser();
@@ -160,7 +166,7 @@ class DBRow
   {
     global $db;
     $class = get_called_class();
-    $entity = preg_replace('/(.*)\\\\/', '', strtolower($class));
+    $entity = $class::tableName();
     
     $db->$entity->archive($this->id);
   }
@@ -169,7 +175,7 @@ class DBRow
   {
     global $db;
     $class = get_called_class();
-    $entity = preg_replace('/(.*)\\\\/', '', strtolower($class));
+    $entity = $class::tableName();
     
     $db->$entity->purge($this->id);
   }
