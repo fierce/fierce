@@ -21,11 +21,6 @@ the website after the initial build.
   RewriteCond %{REQUEST_FILENAME} -f
   RewriteRule ^(.*)$ - [L,QSA]
   
-  # homepage is served normally if index.html exists
-  RewriteCond %{REQUEST_URI} ^/?$
-  RewriteCond %{DOCUMENT_ROOT}/index.html -f [NC]
-  RewriteRule ^(.*)$ - [L,QSA]
-  
   # redirect all other traffic to the dispatcher
   RewriteCond %{REQUEST_URI} !index.php$
   RewriteRule ^(/?)(.*)$ $1vendor/index.php [L,QSA]
