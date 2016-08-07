@@ -168,8 +168,8 @@ class User
     // hash everything
     $this->row->signature = Auth::signatureForUser($this);
     
-    $db->user->archive($oldId);
-    $db->user->write($this->id, $this->row, true);
+    $db->User->archive($oldId);
+    $db->User->write($this->id, $this->row, true);
     
     if ($isCurrentUser && $newPassword) {
       Auth::attemptLogin($this->row->email, $newPassword);
@@ -180,6 +180,6 @@ class User
   {
     $db = Env::get('db');
     
-    $db->user->archive($this->id);
+    $db->User->archive($this->id);
   }
 }
