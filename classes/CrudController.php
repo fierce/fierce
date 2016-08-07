@@ -188,4 +188,8 @@ class CrudController extends PageController
   public function afterSave($item)
   {
   }
+  
+  public function afterDelete($item)
+  {
+  }
 }
