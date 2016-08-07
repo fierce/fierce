@@ -182,4 +182,11 @@ class User
     
     $db->User->archive($this->id);
   }
+  
+  public function purge()
+  {
+    $db = Env::get('db');
+
+    $db->User->purge($this->id);
+  }
 }
