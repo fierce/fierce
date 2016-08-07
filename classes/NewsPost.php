@@ -14,11 +14,6 @@ namespace Fierce;
 
 class NewsPost extends DBRow
 {
-  public static function tableName()
-  {
-    return 'news_post';
-  }
-  
   public function __isset($key)
   {
     switch ($key) {

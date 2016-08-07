@@ -8,9 +8,7 @@ class EmbedRenderer
   
   public function __construct()
   {
-    global $db;
-    
-    $this->db = $db;
+    $this->db = Env::get('db');;
   }
   
   public function page($url)

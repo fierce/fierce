@@ -14,7 +14,8 @@
   "require": {
     "php": ">=5.5.0",
     "twig/twig": "^1.21",
-    "ircmaxell/password-compat": "^1.0"
+    "ircmaxell/password-compat": "^1.0",
+    "paragonie/random_compat": "^2.0"
   },
   "autoload": {
     "psr-4": {"Fierce\\": "classes/"}

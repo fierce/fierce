@@ -24,13 +24,8 @@ class UsersController extends CrudController
   public $editFields = [
     'name',
     'email',
-    'new_password'
+    'newPassword'
   ];
   
   public $editTpl = 'user-edit.tpl';
-  
-  public function __construct()
-  {
-    parent::__construct();
-  }
 }

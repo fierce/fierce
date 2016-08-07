@@ -42,12 +42,20 @@ class FormData
     if (!isset($field->displayName)) {
       $displayName = $field->name;
       $displayName = str_replace('_', ' ', $displayName);
+      $displayName = preg_replace('/([a-z0-9])([A-Z])/', '$1 $2', $displayName);
       $displayName = ucwords($displayName);
+      $displayName = preg_replace('/\\bId\\b/', 'ID', $displayName);
       $field->displayName = $displayName;
     }
     
     if (!isset($field->required)) {
-      $field->required = true;
+      switch ($field->type) {
+        case 'bool':
+          $field->required = false;
+          break;
+        default:
+          $field->required = true;
+      }
     }
     
     if (!isset($field->value)) {
@@ -81,6 +89,9 @@ class FormData
         
         case 'string':
           $field->value = $rawValue;
+          break;
+        case 'bool':
+          $field->value = (bool)$rawValue;
           break;
         case 'email':
           $field->value = trim($rawValue);
@@ -191,6 +202,9 @@ class FormData
         case 'string':
           $value = $field->value;
           break;
+        case 'bool':
+          $value = (string)(int)$field->value;
+          break;
         case 'email':
           $value = $field->value;
           break;
@@ -269,15 +283,31 @@ class FormData
   {
     $errors = [];
     foreach ($this->_fields as $field) {
-      if ($field->required) {
+      $required = $field->required;
+      
+      if (is_string($required)) {
+        $evalFunc = function($code, $this) {
+          return eval('return '  . $code . ';');
+        };
+        $required = $evalFunc($required, $this);
+      }
+      
+      if ($required) {
         if ($field->value === null || $field->value === '') {
-          $errors[] = "$field->displayName is missing.";
+          switch ($field->type) {
+            case 'bool':
+              $errors[] = "$field->displayName is required.";
+              break;
+            default:
+              $errors[] = "$field->displayName is missing.";
+          }
           continue;
         }
       }
       
       switch ($field->type) {
         case 'string':
+        case 'bool':
           break;
         case 'email':
           if (!filter_var($field->value, FILTER_VALIDATE_EMAIL)) {

@@ -69,10 +69,25 @@ p.message
 {
   padding: 4px 6px;
   display: inline-block;
+  min-width: 400px;
+    
   background-color: #b1d8ff;
   border-top: 1px solid #258df6;
   border-bottom: 1px solid #258df6;
 }
+
+ul.form-errors
+{
+  display: inline-block;
+  min-width: 400px;
+  
+  border-top: 1px solid #E5D5A2;
+  border-bottom: 1px solid #E5D5A2;
+  
+  background-color: #FFF0CF;
+  padding: 10px 10px 10px 30px;
+}
+
 
 div#header
 {
@@ -140,7 +155,9 @@ div.buttons
   text-align: right;
 }
 
-.buttons a, .buttons input[type=submit]
+.buttons a,
+.buttons input[type=submit],
+.buttons input[type=button]
 {
   padding: 1px 6px 0px 6px;
   
@@ -153,15 +170,22 @@ div.buttons
   font-size: inherit;
   cursor: pointer;
 }
-.buttons a:active, .buttons input[type=submit]:active, .buttons a.grey:active {
-  background-color: #152436;
-}
 
-.buttons a.grey, .sidebar_wrapper div.sidebar .buttons a.grey
+.buttons a.grey,
+.sidebar_wrapper div.sidebar .buttons a.grey,
+.buttons input[type=button]
 {
   background-color: #eee;
   color: #000;
   margin-right: 3px;
+}
+.buttons a:active,
+.buttons input[type=submit]:active,
+.buttons a.grey:active,
+.buttons input[type=button]:active
+{
+  background-color: #152436;
+  color: #fff;
 }
 
 .buttons a.grey:hover
@@ -307,7 +331,7 @@ form > div.row:first-child
   margin-top: 17px;
 }
 
-form > div.row > label
+form > div.row > label:first-child
 {
   display: table-cell;
   width: 150px;
@@ -415,7 +439,7 @@ form > div.wysiwyg_row
   display: block;
 }
 
-form > div.wysiwyg_row label
+form > div.wysiwyg_row label:first-child
 {
   display: block;
 }
@@ -492,6 +516,13 @@ form > div.row span.note:after
   content: ')';
 }
 
+form > div.row > input[type="checkbox"],
+form > div.row > input[type="radio"]
+{
+  vertical-align: top;
+  margin-right: 5px;
+}
+
 form > div.buttons
 {
   margin-top: 20px;
@@ -511,4 +542,3 @@ form > div.buttons input[type=submit]
 form > div.buttons input[type=submit]:active {
   background-color: #003db6;
 }
-

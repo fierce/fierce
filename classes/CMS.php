@@ -6,11 +6,11 @@ class CMS
 {
   public static function handleRequest($db)
   {
-    $pages = $db->page->find(['url' => Env::get('controller_url')]);
+    $pages = $db->Page->find(['url' => Env::get('controller_url')]);
 
     if (count($pages) == 0) {
       HTTP::notFoundHeader();
-      $pages = $db->page->find(['url' => '/404']);
+      $pages = $db->Page->find(['url' => '/404']);
     }
     
     if (count($pages) == 0) {
@@ -20,11 +20,7 @@ class CMS
     $page = array_shift($pages);
     
     // display the page
-    // ResponseCache::start();
-    
     $controllerClass = $page->class;
     $controllerClass::run($page, $db);
-    
-    // ResponseCache::saveCacheIfEnabled();
   }
 }

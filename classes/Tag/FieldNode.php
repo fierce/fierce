@@ -78,14 +78,12 @@ class FieldNode extends Node
       $this->text($this->getNode('label'));
     } else {
       $this->compiler
-        ->write('$fieldName = ')
+        ->write('$displayName = str_replace(\'_\', \' \', ')
         ->subcompile($this->getNode('name'))
-        ->raw(";\n")
-      ;
-      $this->compiler
-        ->write('$displayName = ucwords(str_replace(\'_\', \' \', ')
-        ->subcompile($this->getNode('name'))
-        ->raw("));\n")
+        ->raw(");\n")
+        ->write("\$displayName = preg_replace('/([a-z0-9])([A-Z])/', '$1 $2', \$displayName);\n")
+        ->write("\$displayName = ucwords(\$displayName);\n")
+        ->write("\$displayName = preg_replace('/\\bId\\b/', 'ID', \$displayName);\n")
       ;
       
       $this->compiler

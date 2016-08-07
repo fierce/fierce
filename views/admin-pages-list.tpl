@@ -8,13 +8,13 @@
         {% for navPage in category.items %}
           
           {# no change to depth? close the list item we just left open #}
-          {% if not loop.first and navPage.nav_position_depth == navDepth %}
+          {% if not loop.first and navPage.navPositionDepth == navDepth %}
             </li>
           {% endif %}
           
           {# increase depth? #}
-          {% if navPage.nav_position_depth > navDepth %}
-            {% for i in (navPage.nav_position_depth - navDepth) .. 0 %}
+          {% if navPage.navPositionDepth > navDepth %}
+            {% for i in (navPage.navPositionDepth - navDepth) .. 0 %}
               {% if not loop.first %}
                 <ol class="dd-list">
                 {% set navDepth = navDepth + 1 %}
@@ -23,8 +23,8 @@
           {% endif %}
           
           {# reduce depth? #}
-          {% if navPage.nav_position_depth < navDepth %}
-            {% for i in (navDepth - navPage.nav_position_depth) .. 0 %}
+          {% if navPage.navPositionDepth < navDepth %}
+            {% for i in (navDepth - navPage.navPositionDepth) .. 0 %}
               {% if not loop.first %}
                 </li></ol>
                 {% set navDepth = navDepth - 1 %}

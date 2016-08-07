@@ -73,9 +73,9 @@ class PagesController extends CrudController
         
         $page->setData([
           'nav' => $nav,
-          'nav_position' => $position->position,
-          'nav_position_right' => $position->position_right,
-          'nav_position_depth' => $position->depth
+          'navPositionLeft' => $position->position,
+          'navPositionRight' => $position->position_right,
+          'navPositionDepth' => $position->depth
         ]);
         
         $page->save();
@@ -87,8 +87,6 @@ class PagesController extends CrudController
   
   public function addAction()
   {
-    global $db;
-    
     $entity = $this->entity;
     $item = $entity::createNew();
     $formData = new FormData($this->editFields);
@@ -128,13 +126,13 @@ class PagesController extends CrudController
         continue;
       }
       
-      if ($existingPage->nav_position_right > $largestPosition) {
-        $largestPosition = $existingPage->nav_position_right;
+      if ($existingPage->navPositionRight > $largestPosition) {
+        $largestPosition = $existingPage->navPositionRight;
       }
     }
-    $postData['nav_position'] = $largestPosition + 1;
-    $postData['nav_position_right'] = $largestPosition + 2;
-    $postData['nav_position_depth'] = 0;
+    $postData['navPositionLeft'] = $largestPosition + 1;
+    $postData['navPositionRight'] = $largestPosition + 2;
+    $postData['navPositionDepth'] = 0;
     
     $item->setData($postData);
     $item->save();
@@ -146,8 +144,6 @@ class PagesController extends CrudController
   
   public function editAction()
   {
-    global $db;
-    
     $entity = $this->entity;
     $item = $entity::createById(@$_GET['id']);
     
@@ -171,11 +167,9 @@ class PagesController extends CrudController
   
   public function prepareSidebarList()
   {
-    global $db;
-    
     $entity = $this->entity;
     
-    $items = $entity::all('nav_position');
+    $items = $entity::all('navPositionLeft');
     
     $itemsByCategory = [];
     $itemsByCategory['main'] = (object)['name' => 'Main Navigation', 'items' => []];
@@ -249,7 +243,6 @@ class PagesController extends CrudController
     
     $content = $postData['content'];
     
-    
     $content = preg_replace_callback('#\\[embed (.+?)\\]#', function($input) {
       
       $url = trim($input[1]);
@@ -284,11 +277,6 @@ class PagesController extends CrudController
     $postData['content'] = $content;
   }
   
-  public function afterSave($item)
-  {
-    ResponseCache::flushAll();
-  }
-  
   public function deleteAction()
   {
     $entity = $this->entity;
@@ -296,8 +284,6 @@ class PagesController extends CrudController
     
     $item->archive();
     $item->purge();
-    
-    ResponseCache::flushAll();
     
     HTTP::redirect($this->url());
   }

@@ -38,7 +38,7 @@ class NavNode extends \Twig_Node
   static public function printNav($identifier='main')
   {
     // fetch all pages, sorted by position
-    $pages = \Fierce\Page::all('nav_position');    
+    $pages = \Fierce\Page::all('navPositionLeft');    
     
     print '<ul class="nav">';
     $depth = 0;
@@ -50,19 +50,19 @@ class NavNode extends \Twig_Node
       }
       
       // no change to depth? close the list item we left open in the last iteration.
-      if (!$first && $navPage->nav_position_depth == $depth) {
+      if (!$first && $navPage->navPositionDepth == $depth) {
         print '</li>';
       }
       
       // increase depth?
-      while ($navPage->nav_position_depth > $depth) {
+      while ($navPage->navPositionDepth > $depth) {
         print '<ul>';
         $depth++;
       }
       
       // reduce depth?
-      if ($navPage->nav_position_depth < $depth){
-        while ($navPage->nav_position_depth < $depth) {
+      if ($navPage->navPositionDepth < $depth){
+        while ($navPage->navPositionDepth < $depth) {
           print '</li></ul>';
           $depth--;
         }

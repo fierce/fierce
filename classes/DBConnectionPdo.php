@@ -9,6 +9,10 @@ class DBConnectionPdo
   
   public function __construct($dsn, $username, $password)
   {
+    if (!$dsn) { // probably running a unit test. Assume mocked PDO will be provided
+      return;
+    }
+    
     $this->pdo = new \PDO($dsn, $username, $password, [
     	\PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'
     ]);
@@ -23,9 +27,15 @@ class DBConnectionPdo
     ";
     
     $queryParams = [];
-    foreach ($params as $column => $value) {
+    foreach ($params as $column => $rule) {
+      if (!is_array($rule)) {
+        $rule = ['=', $rule];
+      }
+      
+      list($operator, $value) = $rule;
+      
       $sql .= "
-        and `$column` = :$column
+        and `$column` $operator :$column
       ";
       $queryParams[$column] = $value;
     }
@@ -241,7 +251,7 @@ class DBConnectionPdo
           throw new \exception('Unknown type ' . $field->type);
       }
       
-      if ($value === null && !$field->allow_null) {
+      if ($value === null && !$field->null) {
         throw new \exception('Attempt to write null to ' . $fieldName);
       }
       
@@ -310,7 +320,7 @@ class DBConnectionPdo
       $field = (object)[
         'name' => $rawField->Field,
         'raw_type' => $rawField->Type,
-        'allow_null' => $rawField->Null == 'YES',
+        'null' => $rawField->Null == 'YES',
         'default' => $rawField->Default
       ];
       
@@ -359,6 +369,18 @@ class DBConnectionPdo
     return $row;
   }
   
+  public function entityExists($entity)
+  {
+    $q = $this->pdo->prepare("
+      show tables like ?
+    ");
+    $q->execute([$entity]);
+    
+    $result = $q->fetchColumn();
+    
+    return (bool)$result;
+  }
+  
   public function createEntity($entity)
   {
     $q = $this->pdo->prepare("
@@ -379,7 +401,7 @@ class DBConnectionPdo
     $q->execute();
   }
   
-  public function addColumn($entity, $name, array $options=['type'=>'string', 'length'=>255, 'allow_null'=>false, 'default'=>''])
+  public function addColumn($entity, $name, array $options=['type'=>'string', 'length'=>255, 'null'=>false, 'default'=>''])
   {
     if (!isset($options['type'])) {
       $options['type'] = 'string';
@@ -387,11 +409,11 @@ class DBConnectionPdo
     if (!isset($options['length'])) {
       $options['length'] = 255;
     }
-    if (!isset($options['allow_null'])) {
-      $options['allow_null'] = false;
+    if (!isset($options['null'])) {
+      $options['null'] = false;
     }
     if (!isset($options['default'])) {
-      $options['default'] = $options['allow_null'] ? null : '';
+      $options['default'] = $options['null'] ? null : '';
     }
     
     switch ($options['type']) {
@@ -407,9 +429,12 @@ class DBConnectionPdo
       case 'text':
         $typeSql = 'text';
         break;
+      case 'mediumtext':
+        $typeSql = 'mediumtext';
+        break;
       case 'bool':
         $typeSql = 'tinyint(1)';
-        $options['allow_null'] = false;
+        $options['null'] = false;
         break;
       case 'int':
         $typeSql = 'int(11)';
@@ -424,7 +449,7 @@ class DBConnectionPdo
         throw new \exception('Invalid type ' . $options['type']);
     }
     
-    $nullSql = $options['allow_null'] ? '' : 'NOT NULL';
+    $nullSql = $options['null'] ? '' : 'NOT NULL';
     
     
     $defaultSql = $options['default'] == null ? '' : 'DEFAULT :default';
@@ -436,6 +461,16 @@ class DBConnectionPdo
     $q->execute([
       'default' => $options['default']
     ]);
+  }
+  
+  public function removeColumn($entity, $column)
+  {
+    $q = $this->pdo->prepare("
+      ALTER TABLE `$entity` DROP `$column`;
+
+    ");
+    
+    $q->execute();
   }
   
   public function addIndex($entity, $columns, $unique)
@@ -451,10 +486,23 @@ class DBConnectionPdo
     
     $uniqueSql = $unique ? 'unique' : '';
     
-    dp("alter table `$entity` add $uniqueSql index ($columnsSql)");
-    
     $q = $this->pdo->prepare("
       alter table `$entity` add $uniqueSql index ($columnsSql)
     ");
+  }
+  
+  public function begin()
+  {
+    $this->pdo->beginTransaction();
+  }
+  
+  public function commit()
+  {
+    $this->pdo->commit();
+  }
+  
+  public function rollBack()
+  {
+    $this->pdo->rollBack();
   }
 }

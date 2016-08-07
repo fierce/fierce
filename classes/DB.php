@@ -15,7 +15,6 @@ namespace Fierce;
 class DB
 {
   public $type;
-  public $pdo;
   public $connection;
   
   public function __construct($type, $pathOrDsn, $username=null, $password=null)
@@ -36,7 +35,6 @@ class DB
   
   public function __get($entity)
   {
-    $entity = strtolower($entity);
     $entity = preg_replace('/^Fierce\\\/', '', $entity);
     
     return $this->$entity = new DBEntity($this->connection, $entity);
@@ -50,5 +48,20 @@ class DB
     $id = vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($id), 4));
     
     return $id;
+  }
+  
+  public function begin()
+  {
+    $this->connection->begin();
+  }
+  
+  public function commit()
+  {
+    $this->connection->commit();
+  }
+  
+  public function rollBack()
+  {
+    $this->connection->rollBack();
   }
 }

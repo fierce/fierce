@@ -14,51 +14,69 @@ namespace Fierce;
 
 class MigrationsController extends PageController
 {
+  public $htmlOutput = true;
+  
   public $mainTpl = 'main-admin.tpl';
   
-  public function __construct($db)
+  function defaultAction()
   {
-    $this->db = $db;
-    
-//     Auth::requireAdmin();
-    
-    parent::__construct();
-  }
-  
-  function runAction()
-  {
-    $files = glob(Env::get('base_path') . 'migrations/*.php');
-    sort($files, SORT_NATURAL);
-    
-    print '<html><style>body {font-family: monospace; font-size: 12px}</style><body>';
-    
-    $count = 0;
-    foreach ($files as $file) {
-      require_once $file;
-      
-      $class = strtolower(pathinfo($file, PATHINFO_FILENAME));
-      $class = preg_replace('/[^a-z0-9]/', '', $class);
-      
-      if ($this->db->completed_migrations->idExists(sha1($class))) {
-        continue;
-      }
-      
-      print '<h3>' . basename($file) . '</h3>';
-      
-      $migration = new $class();
-      $migration->db = $this->db;
-      $migration->run();
-      
-      $this->db->completed_migrations->write(sha1($class), (object)[
-        'file' => strtolower(pathinfo($file, PATHINFO_FILENAME)),
-        'date' => new \DateTime()
-      ]);
-      
-      $count++;
+    if ($this->htmlOutput) {
+      print '<html><style>body {font-family: monospace; font-size: 12px}</style><body>';
     }
     
-    print '<p>Finished running ' . $count . ' migrations.</p>';
+    $count = 0;
+    
+    $files = glob(Env::get('fierce_path') . 'migrations/*.php');
+    sort($files, SORT_NATURAL);
+    foreach ($files as $file) {
+      if ($this->runMigrationFile($file)) {
+        $count++;
+      }
+    }
+    
+    $files = glob(Env::get('base_path') . 'migrations/*.php');
+    sort($files, SORT_NATURAL);
+    foreach ($files as $file) {
+      if ($this->runMigrationFile($file)) {
+        $count++;
+      }
+    }
+    
+    if ($this->htmlOutput) {
+      print '<p>';
+    }
+    print 'Finished running ' . $count . ' migrations.';
+    if ($this->htmlOutput) {
+      print '</p>';
+    }
         
     exit;
+  }
+  
+  function runMigrationFile($file)
+  {
+    $db = Env::get('db');
+    
+    if ($db->connection->entityExists('CompletedMigration') &&
+        $db->CompletedMigration->idExists(sha1(basename($file)))) {
+      return false;
+    }
+    
+    if ($this->htmlOutput) {
+      print '<h3>';
+    }
+    print basename($file);
+    if ($this->htmlOutput) {
+      print '</h3>';
+    }
+    
+    require_once $file;
+    
+    $db->CompletedMigration->write(sha1(basename($file)), (object)[
+      'file' => strtolower(pathinfo($file, PATHINFO_FILENAME)),
+      'date' => new \DateTime()
+    ]);
+    
+    return true;
   }
 }

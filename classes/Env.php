@@ -6,7 +6,9 @@ class Env
 {
   public static $vars = [];
   protected static $varPriorities = [];
+  protected static $stackedVars = [];
   
+  // set a variable, optionally using a priority system to avoid overriding something more important
   public static function set($name, $value, $priority = 0)
   {
     self::init();
@@ -21,8 +23,17 @@ class Env
     if ($name == 'base_url') {
       self::initItemsBasedOnBaseUrl();
     }
+    
+    if ($name == 'base_path') {
+      Env::set('baseDir', new FilesystemNode($value));
+    }
+    
+    if ($name == 'fierce_path') {
+      Env::set('fierceDir', new FilesystemNode($value));
+    }
   }
   
+  // get a variable
   public static function get($name)
   {
     self::init();
@@ -33,6 +44,32 @@ class Env
     }
     
     return self::$vars[$name];
+  }
+  
+  // push a new variable onto the stack, assigning a new value while saving the previous value to be re-applied when this one is popped
+  public static function push($name, $value)
+  {
+    self::init();
+    
+    if (!isset(self::$stackedVars[$name])) {
+      self::$stackedVars[$name] = [];
+    }
+    if (isset(self::$vars[$name])) {
+      self::$stackedVars[$name][] = self::$vars[$name];
+    } else {
+      self::$stackedVars[$name][] = null;
+    }
+    
+    self::$vars[$name] = $value;
+  }
+  
+  public static function pop($name)
+  {
+    if (!isset(self::$stackedVars[$name]) || count(self::$stackedVars[$name]) == 0) {
+      throw new \Exception('Attempt to pop Env var: "' . $name . '" but it\'s not on the stack');
+    }
+    
+    self::$vars[$name] = array_pop(self::$stackedVars[$name]);
   }
   
   public static function init()
@@ -78,6 +115,9 @@ class Env
       $url = rtrim($url, '/');
     }
     Env::set('controller_url', $url, -10);
+    
     Env::set('page_class', $url == '/'? 'home' : preg_replace('/[^a-z0-9]+/', '-', ltrim(strtolower($url), '/')) . '-page', -10);
+    
+    Env::set('cookie', new CookieManager(), -10);
   }
 }

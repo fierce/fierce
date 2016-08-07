@@ -31,12 +31,15 @@ class SelectNode extends FieldNode
         ->raw(");\n")
     ;
     $this->compiler
-      ->write("foreach (\$context['_fierce_select_options'] as \$fierceSelectOptionName) {\n")
+      ->write("\$fierceSelectUseNameAsValue = array_keys(\$context['_fierce_select_options']) === range(0, count(\$context['_fierce_select_options']) - 1);\n")
+      ->write("foreach (\$context['_fierce_select_options'] as \$fierceSelectOptionValue => \$fierceSelectOptionName) {\n")
       ->indent()
-      ->write("\$selectedHtml = \$fierceSelectOptionName == ")
+      ->write("\$valueHtml = \$fierceSelectUseNameAsValue ? '' : 'value=\"' . htmlspecialchars(\$fierceSelectOptionValue) . '\"';\n")
+      ->write("\$value = \$fierceSelectUseNameAsValue ? \$fierceSelectOptionName : \$fierceSelectOptionValue;\n")
+      ->write("\$selectedHtml = \$value == ")
       ->subcompile($this->valueNode())
-      ->raw(" ? 'selected=\"selected\"' : '';\n")
-      ->write("print \"<option \$selectedHtml>\" . htmlspecialchars(\$fierceSelectOptionName) . \"</option>\";\n")
+      ->raw(" ? 'selected' : '';\n")
+      ->write("print \"<option \$valueHtml \$selectedHtml>\" . htmlspecialchars(\$fierceSelectOptionName) . \"</option>\";\n")
       ->outdent()
       ->write("}\n");
     ;

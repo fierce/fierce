@@ -20,12 +20,12 @@ class DBRow
   public static function tableName()
   {
     $class = get_called_class();
-    return preg_replace('/(.*)\\\\/', '', strtolower($class));
+    return preg_replace('/(.*)\\\\/', '', $class);
   }
   
   static public function all($sort=null)
   {
-    global $db;
+    $db = Env::get('db');
     $class = get_called_class();
     $entity = $class::tableName();
     
@@ -45,7 +45,7 @@ class DBRow
   
   public static function find($params=[], $sort=null, $range=null)
   {
-    global $db;
+    $db = Env::get('db');
     $class = get_called_class();
     $entity = $class::tableName();
     
@@ -65,11 +65,11 @@ class DBRow
   
   static public function createById($id)
   {
-    global $db;
+    $db = Env::get('db');
     $class = get_called_class();
     $entity = $class::tableName();
     
-    $id = preg_replace('/[^a-z0-9-]/', '', $id);
+    $id = preg_replace('/[^a-zA-Z0-9-]/', '', $id);
     
     $row = $db->$entity->byId($id);
     
@@ -82,7 +82,7 @@ class DBRow
   
   static public function createNew()
   {
-    global $db;
+    $db = Env::get('db');
     $class = get_called_class();
     $entity = $class::tableName();
     
@@ -147,13 +147,15 @@ class DBRow
   
   public function save()
   {
-    global $db;
+    $db = Env::get('db');
     $class = get_called_class();
     $entity = $class::tableName();
     
     // misc fields
     $user = Auth::loggedInUser();
-    $this->row->modified_by = $user ? $user->id : '';
+    if ($user) {
+      $this->row->modifiedBy = $user->id;
+    }
     $this->row->modified = new \DateTime();
     
     // save
@@ -164,7 +166,7 @@ class DBRow
   
   public function archive()
   {
-    global $db;
+    $db = Env::get('db');
     $class = get_called_class();
     $entity = $class::tableName();
     
@@ -173,7 +175,7 @@ class DBRow
   
   public function purge()
   {
-    global $db;
+    $db = Env::get('db');
     $class = get_called_class();
     $entity = $class::tableName();
     

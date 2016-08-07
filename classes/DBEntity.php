@@ -22,7 +22,7 @@ class DBEntity
     $this->connection = $connection;
     $this->entity = $entity;
     
-    $this->dataEntity = preg_replace('/.*\\\\/', '', strtolower($entity));
+    $this->dataEntity = preg_replace('/.*\\\\/', '', $entity);
   }
   
   public function find($params = array(), $orderBy = null, $range = null)

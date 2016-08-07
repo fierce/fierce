@@ -30,11 +30,29 @@ class PageController
   static public function run($page=false, $db=false, $options=[])
   {
     $controllerClass = get_called_class();
-    $controller = new $controllerClass();
-    $controller->page = $page;
-    $controller->db = $db;
     
-    if (get_class($controller) == 'Fierce\PageController') {
+    $controller = $controllerClass::createForCurrentRequest($page, $db, $options);
+    
+    $controller->action = $controller->actionForCurrentRequest();
+    
+    $controller->runActionNamed($controller->action);
+  }
+  
+  static public function createForCurrentRequest($page=false, $db=false, $options=[])
+  {
+    $controllerClass = get_called_class();
+    $controller = new $controllerClass();
+    
+    $controller->page = $page;
+    $controller->db = $db ? $db : Env::get('db');
+    $controller->options = $options;
+    
+    return $controller;
+  }
+  
+  public function actionForCurrentRequest()
+  {
+    if (get_class($this) == 'Fierce\PageController') {
       $action = false;
     } else {
       $action = @$_GET['do'];
@@ -42,15 +60,24 @@ class PageController
     if (!$action) {
       $action = 'default';
     }
-    $action = preg_replace('/[^a-z0-9_]+/', ' ', $action);
-    $action = ucwords($action);
-    $action = str_replace(' ', '', $action);
-    $action[0] = strtolower($action[0]);
-    $action .= 'Action';
     
-    $controller->options = $options;
+    return $action;
+  }
+  
+  public function runActionNamed($action)
+  {
+    $methodName = preg_replace('/[^a-z0-9_]+/', ' ', $action);
+    $methodName = ucwords($methodName);
+    $methodName = str_replace(' ', '', $methodName);
+    $methodName[0] = strtolower($methodName[0]);
+    $methodName .= 'Action';
     
-    $controller->$action();
+    if (!method_exists($this, $methodName)) {
+      HTTP::notFoundHeader();
+      die('Page not found');
+    }
+    
+    $this->$methodName();
   }
   
   public function display($tpl, $vars=[])
@@ -101,7 +128,6 @@ class PageController
   {
     if (@$this->page->url == '/404') {
       header('HTTP/1.0 404 Not Found');
-      ResponseCache::disable();
     }
     
     if (isset($this->page->main_tpl)) {

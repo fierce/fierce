@@ -19,14 +19,14 @@ class User
   
   public $displayNames = [
     'email' => 'Email',
-    'new_password' => 'New Password'
+    'newPassword' => 'New Password'
   ];
   
   static public function all($sort=null)
   {
-    global $db;
+    $db = Env::get('db');
     
-    $rows = $db->user->find([], '-modified');
+    $rows = $db->User->find([], '-modified');
     
     $users = array();
     foreach ($rows as $id => $row) {
@@ -42,11 +42,11 @@ class User
   
   static public function createById($id)
   {
-    global $db;
+    $db = Env::get('db');
     
     $id = preg_replace('/[^a-z0-9-]/', '', $id);
     
-    $row = $db->user->byId($id);
+    $row = $db->User->byId($id);
     
     $user = new User();
     $user->id = $id;
@@ -57,7 +57,7 @@ class User
   
   static public function createNew()
   {
-    global $db;
+    $db = Env::get('db');
     
     $user = new User();
     $user->id = $db->id();
@@ -105,7 +105,8 @@ class User
       $data = (object)$data;
     }
     if (!$this->row) {
-      $this->row = (object)[];
+      $db = Env::get('db');
+      $this->row = $db->User->blankRow();
     }
     
     if (isset($data->id)) {
@@ -123,17 +124,23 @@ class User
     if (isset($data->password)) {
       $this->row->password = (string)@$data->password;
     }
-    if (isset($data->new_password)) {
-      $this->row->new_password = (string)@$data->new_password;
+    if (isset($data->newPassword)) {
+      $this->row->newPassword = (string)@$data->newPassword;
     }
   }
   
   public function save($checkLogin=true)
   {
-    global $db;
+    $db = Env::get('db');
+    
+    if ($checkLogin) {
+      Auth::requireAdmin();
+    }
     
     $user = Auth::loggedInUser();
     $isCurrentUser = $user && $user->id == $this->id;
+    
+    
     
     // apply new id (email may have changed)
     $oldId = $this->id;
@@ -142,25 +149,24 @@ class User
     
     // misc fields
     $this->row->modified = new \DateTime();
-    $this->row->modified_by = $user ? $user->id : '';
+    if ($user) {
+      $this->row->modifiedBy = $user->id;
+    }
     
     // reset password if it changed
     $newPassword = false;
-    if (@$this->row->new_password) {
-      $hashForCookie = sha1(password_hash($this->row->new_password, PASSWORD_BCRYPT, ['cost' => 11, 'salt' => $this->id]));
-      $hashForDatabase = sha1(password_hash($hashForCookie, PASSWORD_BCRYPT, ['cost' => 11, 'salt' => $this->id]));	
+    if (@$this->row->newPassword) {
+      $this->row->password = Auth::hashForPassword($this->email, $this->newPassword);
       
-      $this->row->password = $hashForDatabase;
-      
-      $newPassword = $this->row->new_password;
-      unset($this->row->new_password);
+      $newPassword = $this->row->newPassword;
+      unset($this->row->newPassword);
     }
     if (!isset($this->password)) {
       $this->password = '';
     }
     
     // hash everything
-    $this->row->signature = sha1($this->row->id . $this->row->type . $this->row->email . $this->row->password . Env::get('auth_salt'));
+    $this->row->signature = Auth::signatureForUser($this);
     
     $db->user->archive($oldId);
     $db->user->write($this->id, $this->row, true);
@@ -172,7 +178,7 @@ class User
   
   public function archive()
   {
-    global $db;
+    $db = Env::get('db');
     
     $db->user->archive($this->id);
   }

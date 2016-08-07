@@ -60,6 +60,15 @@ class CrudController extends PageController
     $item = $entity::createNew();
     $formData = new FormData($this->editFields);
     
+    $this->errorMessages = false;
+    if (@$_GET['errors']) {
+      $this->formErrors = json_decode($_GET['errors']);
+    }
+    
+    if (@$_GET['form']) {
+      $formData->fromStringArray(json_decode($_GET['form'], true));
+    }
+    
     $this->beforeEditOrAdd($item, $formData);
     
     $formType = 'Add';
@@ -72,21 +81,30 @@ class CrudController extends PageController
   
   public function addSubmitAction()
   {
+    $db = Env::get('db');
+    $db->begin();
+    
     $entity = $this->entity;
     $item = $entity::createNew();
-    
     
     $formData = new FormData($this->editFields);
     $formData->retrieve();
     
-    $values = $formData->getValues();
-    $this->beforeSave($item, $values);
+    $formData->validate(function($errors) use ($formData) {
+      $errorsJson = json_encode($errors);
+      $formDataJson = json_encode($formData->toStringArray());
+      
+      HTTP::redirect($this->url('add', ['errors' => $errorsJson, 'form' => $formDataJson]));
+    });
     
-    $item->setData($values);
+    $this->beforeSave($item, $formData);
+    
+    $item->setData($formData->getValues());
     $item->save();
     
     $this->afterSave($item);
     
+    $db->commit();
     HTTP::redirect($this->url());
   }
   
@@ -104,6 +122,8 @@ class CrudController extends PageController
     $formAction = $this->url('edit-submit', ['id' => $item->id]);
     
     $this->pageTitle = 'Edit ' . $this->noun;
+    
+    $message = @$_GET['message'];
     
     $this->display($this->editTpl, get_defined_vars());
   }
@@ -124,25 +144,31 @@ class CrudController extends PageController
   
   public function editSubmitAction()
   {
+    $db = Env::get('db');
+    $db->begin();
+    
     $entity = $this->entity;
     $item = $entity::createById(@$_GET['id']);
     
     $formData = new FormData($this->editFields);
     $formData->retrieve();
     
-    $values = $formData->getValues();
-    $this->beforeSave($item, $values);
+    $this->beforeSave($item, $formData);
     
-    $item->setData($values);
+    $item->setData($formData->getValues());
     $item->save();
     
     $this->afterSave($item);
     
-    HTTP::redirect($this->url('edit', ['id' => $item->id]));
+    $db->commit();
+    HTTP::redirect($this->url('edit', ['id' => $item->id, 'message' => 'Changes Saved']));
   }
   
   public function deleteAction()
   {
+    $db = Env::get('db');
+    $db->begin();
+    
     $entity = $this->entity;
     $item = $entity::createById(@$_GET['id']);
     
@@ -151,10 +177,11 @@ class CrudController extends PageController
     
     $this->afterDelete($item);
     
+    $db->commit();
     HTTP::redirect($this->url());
   }
   
-  public function beforeSave($item, &$data)
+  public function beforeSave($item, FormData &$formData)
   {
   }
   
