@@ -105,7 +105,8 @@ class ApiController extends PageController
       ];
     }
     
-    return [
+    return (object)[
+      'userId' => Auth::userIdByEmail($params->email),
       'authToken' => $token
     ];
   }

@@ -52,6 +52,7 @@ $this->assert($response != null, 'Valid API response');
 
 $this->assertEqual($response->error, false, 'Create API Token without error');
 $this->assert(is_string($response->authToken), 'Test create API Token string');
+$this->assertEqual($response->userId, $user->id, 'Test create API Token user id');
 
 
 // create token with invalid email
