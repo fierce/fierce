@@ -371,6 +371,11 @@ form > div.row input.num[type=text]
   width: 50px;
 }
 
+form > div.row input[readonly]
+{
+  border-color: #ddd;
+}
+
 form > div.row select
 {
   border: 1px solid #aaa;
