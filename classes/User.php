@@ -135,10 +135,13 @@ class User
     
     if ($checkLogin) {
       Auth::requireAdmin();
+      
+      $user = Auth::loggedInUser();
+      $isCurrentUser = $user && $user->id == $this->id;
+    } else {
+      $user = null;
+      $isCurrentUser = false;
     }
-    
-    $user = Auth::loggedInUser();
-    $isCurrentUser = $user && $user->id == $this->id;
     
     
     
