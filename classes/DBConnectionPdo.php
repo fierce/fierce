@@ -228,7 +228,7 @@ class DBConnectionPdo
           break;
         
         case 'bool':
-          $value = (bool)$row->$fieldName;
+          $value = (int)(bool)$row->$fieldName;
           break;
         
         case 'blob':
