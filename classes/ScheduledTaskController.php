@@ -8,6 +8,7 @@ class ScheduledTaskController extends PageController
   {
     $tasks = $this->db->ScheduledTask->find();
     
+    $taskCount = 0;
     foreach ($tasks as $task) {
       // re-fetch task, incase it's status is out of date
       $task = $this->db->ScheduledTask->byId($task->id);
@@ -51,6 +52,7 @@ class ScheduledTaskController extends PageController
       $mac = hash_hmac('sha256', $classMethod, $password);
       
       // execute the task
+      print('<h3>Running ' . $task->class . '->' . $task->method . '()</h3>');
       $url = Env::get('base_url') . 'vendor/fierce/fierce/maint/tasks.php?' . http_build_query([
         'do' => 'run-task',
         'id' => $task->id,
@@ -58,6 +60,7 @@ class ScheduledTaskController extends PageController
         'auth' => $mac
       ]);
       $response = file_get_contents($url);
+      print '<pre>' . htmlspecialchars($response) . '</pre>';
       
       // create a log entry with the response
       $logEntry->completed = (new \DateTime())->format('Y-m-d H:i:s');
@@ -82,6 +85,8 @@ class ScheduledTaskController extends PageController
       // write to db
       $this->db->ScheduledTask->write($task->id, $writeRow, true);
     }
+    
+    print("<p>Finished running $taskCount tasks</p>");
   }
   
   public function runTaskAction()
