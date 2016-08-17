@@ -486,9 +486,35 @@ class DBConnectionPdo
     
     $uniqueSql = $unique ? 'unique' : '';
     
-    $q = $this->pdo->prepare("
+    $this->pdo->prepare("
       alter table `$entity` add $uniqueSql index ($columnsSql)
-    ");
+    ")->execute();
+  }
+  
+  public function addConstraint($entity, $foreignEntity, $name=false)
+  {
+    if (is_array($foreignEntity)) {
+      list($foreignEntity, $foreignEntityColumn) = $foreignEntity;
+    } else {
+      $foreignEntityColumn = 'id';
+    }
+    
+    if (is_array($entity)) {
+      list($entity, $entityColumn) = $entity;
+    } else {
+      $entityColumn = lcfirst($foreignEntity) . 'Id';
+    }
+    
+    if (!$name) {
+      $name = "{$entity}_{$entityColumn}";
+    }
+    
+    $this->pdo->prepare("
+      alter table `$entity`
+      add constraint `$name`
+      foreign key (`$entityColumn`)
+      references `$foreignEntity` (`$foreignEntityColumn`)
+    ")->execute();
   }
   
   public function begin()

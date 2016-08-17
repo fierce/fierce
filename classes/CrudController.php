@@ -172,6 +172,8 @@ class CrudController extends PageController
     $entity = $this->entity;
     $item = $entity::createById(@$_GET['id']);
     
+    $this->beforeDelete($item);
+    
     $item->archive();
     $item->purge();
     
@@ -186,6 +188,10 @@ class CrudController extends PageController
   }
   
   public function afterSave($item)
+  {
+  }
+  
+  public function beforeDelete($item)
   {
   }
   
