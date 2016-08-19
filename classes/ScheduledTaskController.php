@@ -84,6 +84,7 @@ class ScheduledTaskController extends PageController
       
       // write to db
       $this->db->ScheduledTask->write($task->id, $writeRow, true);
+      $taskCount++;
     }
     
     print("<p>Finished running $taskCount tasks</p>");
