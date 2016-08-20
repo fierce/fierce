@@ -143,7 +143,7 @@ class DBConnectionPdo
   public function write($entity, $id, $row, $allowOverwrite)
   {
     // clone and sanitize the row
-    $row = clone (object)$row;
+    $row = (object)get_object_vars((object)$row); // PHP's built in clone() leaks memory (or perhaps just stops it being garbage collected)
     $row->id = $id;
     
     $structure = $this->entityStructure($entity);
