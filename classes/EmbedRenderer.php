@@ -13,7 +13,7 @@ class EmbedRenderer
   
   public function page($url)
   {
-    $pages = $this->db->page->find(['url' => $url]);
+    $pages = $this->db->Page->find(['url' => $url]);
     
     if (count($pages) == 0) {
       print '<!-- page not found: "' . htmlspecialchars($url) . '" -->';
