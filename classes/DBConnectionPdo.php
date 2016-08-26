@@ -6,6 +6,7 @@ class DBConnectionPdo
 {
   public $pdo;
   protected $structures = [];
+  public $validEntities = null;
   
   public function __construct($dsn, $username, $password)
   {
@@ -19,8 +20,31 @@ class DBConnectionPdo
     $this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
   }
   
+  public function checkEntity($entity)
+  {
+    if (isset($this->validEntities[$entity])) {
+      return;
+    }
+    
+    $q = $this->pdo->prepare("
+      show tables
+    ");
+    $q->execute([$entity]);
+    
+    $this->validEntities = [];
+    while ($entityName = $q->fetchColumn()) {
+      $this->validEntities[$entityName] = true;
+    }
+    
+    if (!isset($this->validEntities[$entity])) {
+      throw new \Exception("Attepmted to use invalid entity '$entity'.");
+    }
+  }
+  
   public function find($entity, $params, $orderBy, $range)
   {
+    $this->checkEntity($entity);
+    
     $sql = "
       SELECT * FROM `$entity`
       where 1
@@ -88,6 +112,8 @@ class DBConnectionPdo
   
   public function byId($entity, $id)
   {
+    $this->checkEntity($entity);
+    
     $q = $this->pdo->prepare("
       SELECT * FROM `$entity` where `id` = :id
     ");
@@ -130,6 +156,8 @@ class DBConnectionPdo
   
   public function idExists($entity, $id)
   {
+    $this->checkEntity($entity);
+    
     $q = $this->pdo->prepare("
       SELECT count(*) FROM `$entity` where `id` = :id
     ");
@@ -142,6 +170,8 @@ class DBConnectionPdo
   
   public function write($entity, $id, $row, $allowOverwrite)
   {
+    $this->checkEntity($entity);
+    
     // clone and sanitize the row
     $row = (object)get_object_vars((object)$row); // PHP's built in clone() leaks memory (or perhaps just stops it being garbage collected)
     $row->id = $id;
@@ -273,6 +303,8 @@ class DBConnectionPdo
   
   public function archive($entity, $id)
   {
+    $this->checkEntity($entity);
+    
     // road row
     $q = $this->pdo->prepare("
       SELECT * FROM `$entity` where `id` = :id
@@ -297,6 +329,8 @@ class DBConnectionPdo
   
   public function purge($entity, $id)
   {
+    $this->checkEntity($entity);
+    
     $sql = "DELETE FROM `$entity` where\n`id` = :id";
     
     $q = $this->pdo->prepare($sql);
@@ -305,10 +339,11 @@ class DBConnectionPdo
   }
   
   public function entityStructure($entity)
-  {
-    if (isset($this->structures[$entity])) {
+  {if (isset($this->structures[$entity])) {
       return $this->structures[$entity];
     }
+    
+    $this->checkEntity($entity);
     
     $q = $this->pdo->prepare("
       DESCRIBE `$entity`
@@ -357,6 +392,8 @@ class DBConnectionPdo
   
   public function blankEntity($entity)
   {
+    $this->checkEntity($entity);
+    
   	$structure = $this->entityStructure($entity);
   	
   	$row = (object)[];
@@ -403,6 +440,8 @@ class DBConnectionPdo
   
   public function addColumn($entity, $name, array $options=['type'=>'string', 'length'=>255, 'null'=>false, 'default'=>''])
   {
+    $this->checkEntity($entity);
+    
     if (!isset($options['type'])) {
       $options['type'] = 'string';
     }
@@ -465,6 +504,8 @@ class DBConnectionPdo
   
   public function removeColumn($entity, $column)
   {
+    $this->checkEntity($entity);
+    
     $q = $this->pdo->prepare("
       ALTER TABLE `$entity` DROP `$column`;
 
@@ -475,6 +516,8 @@ class DBConnectionPdo
   
   public function addIndex($entity, $columns, $unique)
   {
+    $this->checkEntity($entity);
+    
     $columnsSql = '';
     foreach ($columns as $column) {
       if ($columnsSql != '') {
@@ -493,6 +536,8 @@ class DBConnectionPdo
   
   public function addConstraint($entity, $foreignEntity, $name=false)
   {
+    $this->checkEntity($entity);
+    
     if (is_array($foreignEntity)) {
       list($foreignEntity, $foreignEntityColumn) = $foreignEntity;
     } else {
