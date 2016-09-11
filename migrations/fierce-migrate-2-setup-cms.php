@@ -58,4 +58,5 @@ $user = User::createNew();
 $user->name = 'Admin';
 $user->email = 'admin';
 $user->newPassword = 'test';
+$user->modifiedBy = 'setup';
 $user->save(false);
