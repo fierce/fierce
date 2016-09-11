@@ -25,9 +25,9 @@ Update `config.php`, especially:
   - specify your site name
   - create a  and enter connection details
 
-Run migrations by loading http://localhost/example.com/vendor/fierce/fierce/maint/migrate.php
+Run migrations by running `/vendor/fierce/fierce/maint/migrate.php` in your browser
 
-Navigate to the http://localhost/example.com/admin and login with user `admin` password `test`. From here you can setup pages and specify a new password.
+Navigate to `/admin` and login with user `admin` password `test`. From here you can setup pages and specify a new password.
 
-The site design can be changed by editing `views/main-public.tpl`. Add any custom PHP classes to the `classes` directory. Any subclass of `PageController` can be attached to a URL by creating a new entry in the `Page` databse table.
+The site design is changed by editing `views/main-public.tpl`. Add any custom PHP classes to the `classes` directory. Subclass of `PageController` can be associated with a URL by creating a new entry in the `Page` database table (preferably by creating a migration in the `migrations` directory).
 
