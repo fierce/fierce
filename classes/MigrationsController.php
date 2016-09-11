@@ -70,7 +70,10 @@ class MigrationsController extends PageController
       print '</h3>';
     }
     
-    require_once $file;
+    $f = function() use ($file) {
+      require_once $file;
+    };
+    $f();
     
     $db->CompletedMigration->write(sha1(basename($file)), (object)[
       'file' => strtolower(pathinfo($file, PATHINFO_FILENAME)),
