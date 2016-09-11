@@ -10,16 +10,24 @@ the website after the initial build.
 
 ## Setup a Feirce website
 
-git checkout-index -a -f --prefix=/destination/path/
+Export a copy of the example template:
 
-cd into
+    svn export https://github.com/fierce/site-template.git/trunk example.com
 
-composer install
+Use [Composer](https://getcomposer.org) to load dependencies:
 
-create database
+    cd example.com
+    composer install
 
-update config (esp. auth salt)
+Update `config.php`, especially:
+  - specify your timezone
+  - generate a new auth_salt using `uuidgen | shasum`
+  - specify your site name
+  - create a  and enter connection details
 
-run migrations
+Run migrations by loading http://localhost/example.com/vendor/fierce/fierce/maint/migrate.php
 
-go to /admin, login admin/test
+Navigate to the http://localhost/example.com/admin and login with user `admin` password `test`. From here you can setup pages and specify a new password.
+
+The site design can be changed by editing `views/main-public.tpl`. Add any custom PHP classes to the `classes` directory. Any subclass of `PageController` can be attached to a URL by creating a new entry in the `Page` databse table.
+
