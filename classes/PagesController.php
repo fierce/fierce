@@ -235,13 +235,13 @@ class PagesController extends CrudController
     HTTP::redirect($this->url('edit', ['id' => $item->id]));
   }
   
-  public function beforeSave($item, &$postData)
+  public function beforeSave($item, FormData &$formData)
   {
     if (!$item->class) {
       $item->class = '\Fierce\PageController';
     }
     
-    $content = $postData['content'];
+    $content = $formData->content;
     
     $content = preg_replace_callback('#\\[embed (.+?)\\]#', function($input) {
       
@@ -270,11 +270,7 @@ class PagesController extends CrudController
       return $tag;
     }, $content);
     
-    
-    
-
-    
-    $postData['content'] = $content;
+    $postData->content = $content;
   }
   
   public function deleteAction()
