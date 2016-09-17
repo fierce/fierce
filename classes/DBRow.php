@@ -93,6 +93,23 @@ class DBRow
     return $item;
   }
   
+  static public function createByFind($params)
+  {
+    $db = Env::get('db');
+    $class = get_called_class();
+    $entity = $class::tableName();
+    
+    $rows = self::find($params);
+    if (count($rows) == 0) {
+    	throw new \exception("Cannot find row matching params");
+    }
+    if (count($rows) > 1) {
+    	throw new \exception("Found too many rows matching params");
+    }
+    
+    return array_shift($rows);
+  }
+  
   public function __get($key)
   {
     switch ($key) {
