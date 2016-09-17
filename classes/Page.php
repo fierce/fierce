@@ -14,21 +14,4 @@ namespace Fierce;
 
 class Page extends DBRow
 {
-  public function __get($key)
-  {
-    switch ($key) {
-      default:
-        return parent::__get($key);
-    }
-  }
-  
-  public function __isset($key)
-  {
-    return parent::__isset($key);
-  }
-  
-  public function save()
-  {
-    parent::save();
-  }
 }
