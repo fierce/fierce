@@ -418,7 +418,7 @@ class DBConnectionPdo
     return (bool)$result;
   }
   
-  public function createEntity($entity)
+  public function createEntity($entity, $columns=[])
   {
     $q = $this->pdo->prepare("
       CREATE TABLE `$entity` (
@@ -428,6 +428,17 @@ class DBConnectionPdo
     ");
     
     $q->execute();
+    
+    foreach ($columns as $column) {
+      if (is_string($column)) {
+        $this->addColumn($entity, $column);
+      } else {
+        $name = $column['name'];
+        unset($column['name']);
+        
+        $this->addColumn($entity, $name, $column);
+      }
+    }
   }
   
   public function removeEntity($entity)
@@ -555,10 +566,18 @@ class DBConnectionPdo
     }
     
     $this->pdo->prepare("
+      SET FOREIGN_KEY_CHECKS=0
+    ")->execute();
+    
+    $this->pdo->prepare("
       alter table `$entity`
       add constraint `$name`
       foreign key (`$entityColumn`)
       references `$foreignEntity` (`$foreignEntityColumn`)
+    ")->execute();
+    
+    $this->pdo->prepare("
+      SET FOREIGN_KEY_CHECKS=1
     ")->execute();
   }
   

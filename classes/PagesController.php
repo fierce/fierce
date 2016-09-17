@@ -116,7 +116,7 @@ class PagesController extends CrudController
     $item = $entity::createNew();
     
     $postData = $_POST;
-    $this->beforeSave($item, $postData);
+    $this->beforePageSave($item, $postData);
     
     // set nav position
     $largestPosition = 0;
@@ -225,7 +225,7 @@ class PagesController extends CrudController
     $item = $entity::createById(@$_GET['id']);
     
     $postData = $_POST;
-    $this->beforeSave($item, $postData);
+    $this->beforePageSave($item, $postData);
     
     $item->setData($postData);
     $item->save();
@@ -235,13 +235,13 @@ class PagesController extends CrudController
     HTTP::redirect($this->url('edit', ['id' => $item->id]));
   }
   
-  public function beforeSave($item, FormData &$formData)
+  public function beforePageSave($item, &$postData)
   {
     if (!$item->class) {
       $item->class = '\Fierce\PageController';
     }
     
-    $content = $formData->content;
+    $content = $postData['content'];
     
     $content = preg_replace_callback('#\\[embed (.+?)\\]#', function($input) {
       
@@ -270,7 +270,7 @@ class PagesController extends CrudController
       return $tag;
     }, $content);
     
-    $postData->content = $content;
+    $postData['content'] = $content;
   }
   
   public function deleteAction()
