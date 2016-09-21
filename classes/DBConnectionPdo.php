@@ -513,6 +513,70 @@ class DBConnectionPdo
     ]);
   }
   
+  public function changeColumn($entity, $oldName, $newName, array $options=['type'=>'string', 'length'=>255, 'null'=>false, 'default'=>''])
+  {
+    $this->checkEntity($entity);
+    
+    if (!isset($options['type'])) {
+      $options['type'] = 'string';
+    }
+    if (!isset($options['length'])) {
+      $options['length'] = 255;
+    }
+    if (!isset($options['null'])) {
+      $options['null'] = false;
+    }
+    if (!isset($options['default'])) {
+      $options['default'] = $options['null'] ? null : '';
+    }
+    
+    switch ($options['type']) {
+      case 'string':
+        $typeSql = 'varchar(' . $options['length'] . ')';
+        break;
+      case 'date':
+        $typeSql = 'date';
+        break;
+      case 'datetime':
+        $typeSql = 'datetime';
+        break;
+      case 'text':
+        $typeSql = 'text';
+        break;
+      case 'mediumtext':
+        $typeSql = 'mediumtext';
+        break;
+      case 'bool':
+        $typeSql = 'tinyint(1)';
+        $options['null'] = false;
+        break;
+      case 'int':
+        $typeSql = 'int(11)';
+        break;
+      case 'blob':
+        $typeSql = 'blob';
+        break;
+      case 'uint':
+        $typeSql = 'int(11) unsigned';
+        break;
+      default:
+        throw new \exception('Invalid type ' . $options['type']);
+    }
+    
+    $nullSql = $options['null'] ? '' : 'NOT NULL';
+    
+    
+    $defaultSql = $options['default'] == null ? '' : 'DEFAULT :default';
+    
+    $q = $this->pdo->prepare("
+      ALTER TABLE `$entity` CHANGE `$oldName` `$newName` $typeSql $nullSql $defaultSql;
+    ");
+    
+    $q->execute([
+      'default' => $options['default']
+    ]);
+  }
+  
   public function removeColumn($entity, $column)
   {
     $this->checkEntity($entity);

@@ -5,7 +5,7 @@ $pdo = $db->connection;
 $pdo->createEntity('CompletedMigration');
 $pdo->addColumn('CompletedMigration', 'date', ['type' => 'datetime']);
 
-$pdo->createEntity('_archive', false);
+$pdo->createEntity('_archive');
 $pdo->addColumn('_archive', 'datetime', ['type' => 'datetime']);
 $pdo->addColumn('_archive', 'entity');
 $pdo->addColumn('_archive', 'data', ['type' => 'mediumtext']);
