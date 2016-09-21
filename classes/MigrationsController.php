@@ -70,7 +70,7 @@ class MigrationsController extends PageController
       print '</h3>';
     }
     
-    $f = function() use ($file) {
+    $f = function() use ($file, $db) {
       require_once $file;
     };
     $f();
