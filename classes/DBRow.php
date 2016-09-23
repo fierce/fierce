@@ -86,9 +86,12 @@ class DBRow
     $class = get_called_class();
     $entity = $class::tableName();
     
+    $row = $db->$entity->blankRow();
+    $row->id = $db->id();
+    
     $item = new $class();
-    $item->setData($db->$entity->blankRow());
-    $item->id = $db->id();
+    $item->setData($row);
+    $item->id = $row->id;
     
     return $item;
   }
@@ -172,6 +175,8 @@ class DBRow
     $user = Auth::loggedInUser();
     if ($user) {
       $this->row->modifiedBy = $user->id;
+    } else {
+      $this->row->modifiedBy = 'none';
     }
     $this->row->modified = new \DateTime();
     
