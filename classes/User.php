@@ -154,6 +154,8 @@ class User
     $this->row->modified = new \DateTime();
     if ($user) {
       $this->row->modifiedBy = $user->id;
+    } else {
+      $this->row->modifiedBy = 'none';
     }
     
     // reset password if it changed
