@@ -116,6 +116,15 @@ class CrudController extends PageController
     $formData = new FormData($this->editFields);
     $formData->setValues($item);
     
+    $this->errorMessages = false;
+    if (@$_GET['errors']) {
+      $this->formErrors = json_decode($_GET['errors']);
+    }
+    
+    if (@$_GET['form']) {
+      $formData->fromStringArray(json_decode($_GET['form'], true));
+    }
+    
     $this->beforeEditOrAdd($item, $formData);
     
     $formType = 'Edit';
@@ -152,6 +161,13 @@ class CrudController extends PageController
     
     $formData = new FormData($this->editFields);
     $formData->retrieve();
+    
+    $formData->validate(function($errors) use ($formData, $item) {
+      $errorsJson = json_encode($errors);
+      $formDataJson = json_encode($formData->toStringArray());
+      
+      HTTP::redirect($this->url('edit', ['errors' => $errorsJson, 'form' => $formDataJson, 'id' => $item->id]));
+    });
     
     $this->beforeSave($item, $formData);
     
@@ -197,5 +213,31 @@ class CrudController extends PageController
   
   public function afterDelete($item)
   {
+  }
+  
+  public function breadcrumbs()
+  {
+    $breadcrumbs = [
+      ['url' => $this->url(), 'name' => $this->nounPlural]
+    ];
+    
+    if ($this->action == 'edit') {
+      $entity = $this->entity;
+      $item = $entity::createById($_GET['id']);
+      
+      $breadcrumbs[] = [
+        'url' => $this->url('edit', ['id' => $item->id]),
+        'name' => 'Edit ' . ($item->title ? $item->title : $this->noun)
+      ];
+    }
+    
+    if ($this->action == 'add') {
+      $breadcrumbs[] = [
+        'url' => $this->url('add'),
+        'name' => 'Add' . $this->noun
+      ];
+    }
+    
+    return $breadcrumbs;
   }
 }

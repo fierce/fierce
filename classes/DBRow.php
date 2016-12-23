@@ -63,6 +63,17 @@ class DBRow
     return $items;
   }
   
+  static public function idExists($id)
+  {
+    $db = Env::get('db');
+    $class = get_called_class();
+    $entity = $class::tableName();
+    
+    $id = preg_replace('/[^a-zA-Z0-9-]/', '', $id);
+    
+    return $db->$entity->idExists($id);
+  }
+  
   static public function createById($id)
   {
     $db = Env::get('db');

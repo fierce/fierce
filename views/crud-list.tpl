@@ -1,4 +1,4 @@
-<h1>{{ noun }} List</h1>
+<h1>{{ nounPlural }}</h1>
 
 <div class="buttons">
   <a href="{{ controller.url('add') }}">Add {{ noun }}</a>

@@ -611,19 +611,19 @@ class DBConnectionPdo
   
   public function addConstraint($entity, $foreignEntity, $name=false)
   {
-    $this->checkEntity($entity);
-    
     if (is_array($foreignEntity)) {
       list($foreignEntity, $foreignEntityColumn) = $foreignEntity;
     } else {
       $foreignEntityColumn = 'id';
     }
+    $this->checkEntity($foreignEntity);
     
     if (is_array($entity)) {
       list($entity, $entityColumn) = $entity;
     } else {
       $entityColumn = lcfirst($foreignEntity) . 'Id';
     }
+    $this->checkEntity($entity);
     
     if (!$name) {
       $name = "{$entity}_{$entityColumn}";
@@ -638,6 +638,40 @@ class DBConnectionPdo
       add constraint `$name`
       foreign key (`$entityColumn`)
       references `$foreignEntity` (`$foreignEntityColumn`)
+    ")->execute();
+    
+    $this->pdo->prepare("
+      SET FOREIGN_KEY_CHECKS=1
+    ")->execute();
+  }
+  
+  public function removeConstraint($entity, $foreignEntity, $name=false)
+  {
+    if (is_array($foreignEntity)) {
+      list($foreignEntity, $foreignEntityColumn) = $foreignEntity;
+    } else {
+      $foreignEntityColumn = 'id';
+    }
+    $this->checkEntity($foreignEntity);
+    
+    if (is_array($entity)) {
+      list($entity, $entityColumn) = $entity;
+    } else {
+      $entityColumn = lcfirst($foreignEntity) . 'Id';
+    }
+    $this->checkEntity($entity);
+    
+    if (!$name) {
+      $name = "{$entity}_{$entityColumn}";
+    }
+    
+    $this->pdo->prepare("
+      SET FOREIGN_KEY_CHECKS=0
+    ")->execute();
+    
+    $this->pdo->prepare("
+      alter table `$entity`
+      drop foreign key `$name`
     ")->execute();
     
     $this->pdo->prepare("

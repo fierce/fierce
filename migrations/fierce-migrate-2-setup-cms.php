@@ -22,7 +22,7 @@ $page->content = "
   <p>The requested URL <span id=\"url\"></span> was not found on this server.</p>
   
   <script type=\"text/javascript\">
-    var url = document.location.toString().replace(/.*abhibeckert.com/, '');
+    var url = document.location.toString().replace(/https?:\\/\\/[^\\/]+/, '');
   
     document.getElementById('url').innerHTML = url;
   </script>

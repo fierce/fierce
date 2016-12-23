@@ -25,7 +25,7 @@ class View
   protected static $scriptUrls = [];
   protected static $cssUrls = [];
   
-  protected static $twig = false;
+  public static $twig = false;
   
   static protected function initTwig()
   {
