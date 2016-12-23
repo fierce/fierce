@@ -62,6 +62,13 @@ class FormData
       $field->value = null;
     }
     
+    if ($field->type == 'currency' && !isset($field->allowZero)) {
+      $field->allowZero = true;
+    }
+    if ($field->type == 'currency' && !isset($field->allowNegative)) {
+      $field->allowNegative = false;
+    }
+    
     $this->_fields[$field->name] = $field;
   }
   
@@ -95,6 +102,22 @@ class FormData
           break;
         case 'email':
           $field->value = trim($rawValue);
+          break;
+        case 'currency':
+          $value = trim($rawValue);
+          if ($value[0] != '$') {
+            $value = '$' . $value;
+          }
+          
+          if (!preg_match('/^\\$\\-?[0-9]+(\\.[0-9][0-9])?$/', $value)) {
+            die('
+              <p>Invalid value provided for ' . $field->displayName . '.</p>
+              <p><a href="javascript:window.history.back()">Go Back</a></p>
+            ');
+          }
+          
+          $field->value = $value;
+          $field->numericValue = (float)substr($value, 1);
           break;
         case 'date':
           if (!$rawValue) {
@@ -200,6 +223,7 @@ class FormData
     foreach ($this->_fields as $field) {
       switch ($field->type) {
         case 'string':
+        case 'currency':
           $value = $field->value;
           break;
         case 'bool':
@@ -312,6 +336,13 @@ class FormData
         case 'email':
           if (!filter_var($field->value, FILTER_VALIDATE_EMAIL)) {
             $errors[] = "$field->displayName is invalid.";
+          }
+          break;
+        case 'currency':
+          if (!$field->allowNegative && $field->numericValue < 0) {
+            $errors[] = "$field->displayName cannot be below zero.";
+          } else if (!$field->allowZero && $field->numericValue == 0) {
+            $errors[] = "$field->displayName cannot be zero.";
           }
           break;
         case 'date':

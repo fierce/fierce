@@ -66,7 +66,7 @@ class PageController
   
   public function runActionNamed($action)
   {
-    $methodName = preg_replace('/[^a-z0-9_]+/', ' ', $action);
+    $methodName = preg_replace('/[^a-z0-9A-Z_]+/', ' ', $action);
     $methodName = ucwords($methodName);
     $methodName = str_replace(' ', '', $methodName);
     $methodName[0] = strtolower($methodName[0]);
