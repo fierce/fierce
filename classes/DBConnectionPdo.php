@@ -104,7 +104,11 @@ class DBConnectionPdo
         }
       }
       
-      $rows[$row->id] = $row;
+      if (isset($row->id)) {
+        $rows[$row->id] = $row;
+      } else {
+        $rows[] = $row;
+      }
     }
     
     return $rows;
