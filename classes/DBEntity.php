@@ -47,6 +47,16 @@ class DBEntity
   {
     $this->connection->write($this->entity, $id, $row, $allowOverwrite);
   }
+  
+  public function insert($row)
+  {
+    $this->connection->insert($this->entity, $row);
+  }
+  
+  public function update($where, $row)
+  {
+    $this->connection->update($this->entity, $where, $row);
+  }
     
   public function archive($id)
   {

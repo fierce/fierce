@@ -180,10 +180,147 @@ class DBConnectionPdo
     $row = (object)get_object_vars((object)$row); // PHP's built in clone() leaks memory (or perhaps just stops it being garbage collected)
     $row->id = $id;
     
+    list($valuesSql, $values) = $this->valuesSql($entity, $row);
+    
+    $sql = "INSERT INTO `$entity` set\n`id` = :id,\n" . $valuesSql;
+    
+    if ($allowOverwrite) {
+      $sql .= "\n\nON DUPLICATE KEY UPDATE\n" . $valuesSql;
+    }
+    
+    $q = $this->pdo->prepare($sql);
+    
+    $q->execute($values);
+  }
+  
+  public function insert($entity, $row)
+  {
+    $this->checkEntity($entity);
+    
+    $row = (object)get_object_vars((object)$row); // PHP's built in clone() leaks memory (or perhaps just stops it being garbage collected)
+    
+    list($valuesSql, $values) = $this->valuesSql($entity, $row);
+    
+    $sql = "INSERT INTO `$entity` set\n" . $valuesSql;
+    
+    $q = $this->pdo->prepare($sql);
+    
+    $q->execute($values);
+  }
+  
+  public function update($entity, $where, $row)
+  {
+    $this->checkEntity($entity);
+    
+    // clone and sanitize the row
+    $where = (object)get_object_vars((object)$where); // PHP's built in clone() leaks memory (or perhaps just stops it being garbage collected)
+    $row = (object)get_object_vars((object)$row); // PHP's built in clone() leaks memory (or perhaps just stops it being garbage collected)
+    
+    list($whereSql, $where) = $this->valuesSql($entity, $where, '_where');
+    list($valuesSql, $values) = $this->valuesSql($entity, $row, '_value');
+    
+    $sql = "UPDATE `$entity` set\n" . $valuesSql;
+    $sql .= "\n\nWHERE \n" . $whereSql;
+    
+    $q = $this->pdo->prepare($sql);
+    
+    $q->execute(array_merge($where, $values));
+  }
+  
+  public function archive($entity, $id)
+  {
+    $this->checkEntity($entity);
+    
+    // road row
+    $q = $this->pdo->prepare("
+      SELECT * FROM `$entity` where `id` = :id
+    ");
+    $q->execute(['id' => $id]);
+    $row = $q->fetch(\PDO::FETCH_OBJ);
+    
+    // write archive
+    $q = $this->pdo->prepare("
+      INSERT INTO `_archive` set
+      `datetime` = :datetime,
+      `entity` = :entity,
+      `data` = :row
+    ");
+    
+    $q->execute([
+      'datetime' => date('Y-m-d H:i:s'),
+      'entity' => $entity,
+      'row' => json_encode($row, JSON_PRETTY_PRINT)
+    ]);
+  }
+  
+  public function purge($entity, $id)
+  {
+    $this->checkEntity($entity);
+    
+    $sql = "DELETE FROM `$entity` where\n`id` = :id";
+    
+    $q = $this->pdo->prepare($sql);
+    
+    $q->execute(['id' => $id]);
+  }
+  
+  public function entityStructure($entity)
+  {if (isset($this->structures[$entity])) {
+      return $this->structures[$entity];
+    }
+    
+    $this->checkEntity($entity);
+    
+    $q = $this->pdo->prepare("
+      DESCRIBE `$entity`
+    ");
+    $q->execute();
+    
+    $structure = [];
+    while ($rawField = $q->fetch(\PDO::FETCH_OBJ)) {
+      $field = (object)[
+        'name' => $rawField->Field,
+        'raw_type' => $rawField->Type,
+        'null' => $rawField->Null == 'YES',
+        'default' => $rawField->Default
+      ];
+      
+      if (preg_match('/^varchar\(([0-9]+)\)/', $field->raw_type, $matches)) {
+        $field->type = 'string';
+        $field->length = (int)$matches[1];
+      } else if ($field->raw_type == 'date') {
+        $field->type = 'date';
+      } else if ($field->raw_type == 'datetime') {
+        $field->type = 'datetime';
+      } else if ($field->raw_type == 'text') {
+        $field->type = 'text';
+      } else if ($field->raw_type == 'mediumtext') {
+        $field->type = 'text';
+      } else if ($field->raw_type == 'tinyint(1)') {
+        $field->type = 'bool';
+      } else if ($field->raw_type == 'int(11) unsigned') {
+        $field->type = 'uint';
+      } else if ($field->raw_type == 'int(11)') {
+        $field->type = 'int';
+      } else if ($field->raw_type == 'blob') {
+        $field->type = 'blob';
+      } else {
+        throw new \exception("Unknown field type: " . json_encode($rawField));
+      }
+      
+      $structure[$field->name] = $field;
+    }
+    
+    $this->structures[$entity] = $structure;
+    
+    return $structure;
+  }
+  
+  public function valuesSql($entity, $row, $suffix='')
+  {
     $structure = $this->entityStructure($entity);
     
     $valuesSql = "";
-    $values = ['id' => $id];
     foreach ($structure as $field) {
       $fieldName = $field->name;
       
@@ -289,109 +426,13 @@ class DBConnectionPdo
         throw new \exception('Attempt to write null to ' . $fieldName);
       }
       
-      $values[$fieldName] = $value;
-      $valuesSql .= ",\n`$fieldName` = :$fieldName";
+      $values[$fieldName . $suffix] = $value;
+      $valuesSql .= ",\n`$fieldName` = :$fieldName$suffix";
     }
+    
     $valuesSql = ltrim($valuesSql, ",\n");
     
-    $sql = "INSERT INTO `$entity` set\n`id` = :id,\n" . $valuesSql;
-    
-    if ($allowOverwrite) {
-      $sql .= "\n\nON DUPLICATE KEY UPDATE\n" . $valuesSql;
-    }
-    
-    $q = $this->pdo->prepare($sql);
-    
-    $q->execute($values);
-  }
-  
-  public function archive($entity, $id)
-  {
-    $this->checkEntity($entity);
-    
-    // road row
-    $q = $this->pdo->prepare("
-      SELECT * FROM `$entity` where `id` = :id
-    ");
-    $q->execute(['id' => $id]);
-    $row = $q->fetch(\PDO::FETCH_OBJ);
-    
-    // write archive
-    $q = $this->pdo->prepare("
-      INSERT INTO `_archive` set
-      `datetime` = :datetime,
-      `entity` = :entity,
-      `data` = :row
-    ");
-    
-    $q->execute([
-      'datetime' => date('Y-m-d H:i:s'),
-      'entity' => $entity,
-      'row' => json_encode($row, JSON_PRETTY_PRINT)
-    ]);
-  }
-  
-  public function purge($entity, $id)
-  {
-    $this->checkEntity($entity);
-    
-    $sql = "DELETE FROM `$entity` where\n`id` = :id";
-    
-    $q = $this->pdo->prepare($sql);
-    
-    $q->execute(['id' => $id]);
-  }
-  
-  public function entityStructure($entity)
-  {if (isset($this->structures[$entity])) {
-      return $this->structures[$entity];
-    }
-    
-    $this->checkEntity($entity);
-    
-    $q = $this->pdo->prepare("
-      DESCRIBE `$entity`
-    ");
-    $q->execute();
-    
-    $structure = [];
-    while ($rawField = $q->fetch(\PDO::FETCH_OBJ)) {
-      $field = (object)[
-        'name' => $rawField->Field,
-        'raw_type' => $rawField->Type,
-        'null' => $rawField->Null == 'YES',
-        'default' => $rawField->Default
-      ];
-      
-      if (preg_match('/^varchar\(([0-9]+)\)/', $field->raw_type, $matches)) {
-        $field->type = 'string';
-        $field->length = (int)$matches[1];
-      } else if ($field->raw_type == 'date') {
-        $field->type = 'date';
-      } else if ($field->raw_type == 'datetime') {
-        $field->type = 'datetime';
-      } else if ($field->raw_type == 'text') {
-        $field->type = 'text';
-      } else if ($field->raw_type == 'mediumtext') {
-        $field->type = 'text';
-      } else if ($field->raw_type == 'tinyint(1)') {
-        $field->type = 'bool';
-      } else if ($field->raw_type == 'int(11) unsigned') {
-        $field->type = 'uint';
-      } else if ($field->raw_type == 'int(11)') {
-        $field->type = 'int';
-      } else if ($field->raw_type == 'blob') {
-        $field->type = 'blob';
-      } else {
-        throw new \exception("Unknown field type: " . json_encode($rawField));
-      }
-      
-      $structure[$field->name] = $field;
-    }
-    
-    $this->structures[$entity] = $structure;
-    
-    return $structure;
+    return [$valuesSql, $values];
   }
   
   public function blankEntity($entity)
