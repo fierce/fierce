@@ -220,7 +220,7 @@ class Auth
     }
     
     if ($user->signature != self::signatureForUser($user)) {
-      throw new \Exception("Invalid signature on user `$user`");
+      throw new \Exception("Invalid signature on user `$user->email`");
     }
     if ($token->hash != self::tokenHashForUser($user, $token->created, $token->id)) {
       throw new \Exception("Invalid API Token");

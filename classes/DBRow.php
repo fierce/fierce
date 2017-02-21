@@ -172,7 +172,11 @@ class DBRow
     }
     
     foreach ($data as $key => $value) {
-      $this->row->$key = $value;
+      if (isset($this->$key)) {
+        $this->$key = $value;
+      } else {
+        $this->row->$key = $value;
+      }
     }
   }
   

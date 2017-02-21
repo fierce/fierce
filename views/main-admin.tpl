@@ -23,8 +23,6 @@
 <div id="header">
   {% if loggedInUser %}
     <div id="nav">
-      <img src="images/logo.png" width="59" height="48" valign="middle" style="margin-right: 10px">
-      
       {% include 'admin-nav.tpl' %}
     </div>
   {% endif %}

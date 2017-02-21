@@ -11,11 +11,19 @@ class ApiController extends PageController
   {
     $controller = parent::createForCurrentRequest($page, $db, $options);
     
-    $json = file_get_contents('php://input');
-    
-    if ($json == '') {
+    $headers = apache_request_headers();
+    if (isset($headers['api-action'])) {
       $controller->apiParams = (object)[];
+      foreach ($headers as $key => $value) {
+        if (substr($key, 0, 4) != 'api-') {
+          continue;
+        }
+        
+        $apiKey = substr($key, 4);
+        $controller->apiParams->$apiKey = $value;
+      }
     } else {
+      $json = file_get_contents('php://input');
       $controller->apiParams = json_decode($json);
     }
     

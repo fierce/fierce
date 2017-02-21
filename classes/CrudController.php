@@ -25,6 +25,8 @@ class CrudController extends PageController
   public $listTpl = 'crud-list.tpl';
   public $editTpl = false;
   
+  public $editReturnToList = false;
+  
   public function __construct()
   {
     Auth::requireAdmin();
@@ -177,7 +179,12 @@ class CrudController extends PageController
     $this->afterSave($item);
     
     $db->commit();
-    HTTP::redirect($this->url('edit', ['id' => $item->id, 'message' => 'Changes Saved']));
+    
+    if ($this->editReturnToList) {
+      HTTP::redirect($this->url());
+    } else {
+      HTTP::redirect($this->url('edit', ['id' => $item->id, 'message' => 'Changes Saved']));
+    }
   }
   
   public function deleteAction()

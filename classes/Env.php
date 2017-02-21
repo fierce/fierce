@@ -86,6 +86,8 @@ class Env
     
     Env::set('fierce_src', str_replace(Env::get('base_path'), '', Env::get('fierce_path')), -10);
     
+    Env::set('mailOverrideAddress', false, -10);
+    
     if (isset($_SERVER['REQUEST_URI'])) {
       Env::set('base_url', 'http://' . $_SERVER['SERVER_NAME'] . '/', -10);
     } else {

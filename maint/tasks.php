@@ -2,6 +2,6 @@
 
 namespace Fierce;
 
-require '../../../../config.php';
+require realpath(__DIR__ . '/../../../../config.php');
 
 ScheduledTaskController::run();

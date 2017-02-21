@@ -41,6 +41,13 @@ class DBConnectionPdo
     }
   }
   
+  /**
+   * find('Product', ['status' => 'active'], '-date', [0, 10])
+   * find('Product', [
+   *       ['status', '!=', 'deleted'],
+   *       ['status', '!=', 'archived']
+   *     ], '-date', [0, 10])
+   */
   public function find($entity, $params, $orderBy, $range)
   {
     $this->checkEntity($entity);
@@ -52,16 +59,22 @@ class DBConnectionPdo
     
     $queryParams = [];
     foreach ($params as $column => $rule) {
-      if (!is_array($rule)) {
-        $rule = ['=', $rule];
+      if (is_numeric($column)) {
+        list($column, $operator, $value) = $rule;
+      } else {
+        if (!is_array($rule)) {
+          $rule = ['=', $rule];
+        }
+      
+        list($operator, $value) = $rule;
       }
       
-      list($operator, $value) = $rule;
+      $paramNum = count($queryParams) + 1;
       
       $sql .= "
-        and `$column` $operator :$column
+        and `$column` $operator :{$paramNum}_$column
       ";
-      $queryParams[$column] = $value;
+      $queryParams["{$paramNum}_$column"] = $value;
     }
     
     if ($orderBy) {
@@ -181,6 +194,7 @@ class DBConnectionPdo
     $row->id = $id;
     
     list($valuesSql, $values) = $this->valuesSql($entity, $row);
+    $values['id'] = $id;
     
     $sql = "INSERT INTO `$entity` set\n`id` = :id,\n" . $valuesSql;
     
