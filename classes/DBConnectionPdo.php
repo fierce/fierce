@@ -171,6 +171,17 @@ class DBConnectionPdo
     return $row;
   }
   
+  public function byFind($entity, $params, $orderBy)
+  {
+    $rows = $this->find($entity, $params, $orderBy, [0, 1]);
+    
+    if (count($rows) == 0) {
+      throw new \exception('cannot find record matching ' . json_encode($params) . ' for entity ' . $entity);
+    }
+    
+    return array_shift($rows);
+  }
+  
   public function idExists($entity, $id)
   {
     $this->checkEntity($entity);

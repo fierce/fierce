@@ -38,6 +38,11 @@ class DBEntity
     return $this->connection->byId($this->entity, $id);
   }
   
+  public function byFind($params = array(), $orderBy = null)
+  {
+    return $this->connection->byFind($this->entity, $params, $orderBy);
+  }
+  
   public function idExists($id)
   {
     return $this->connection->idExists($this->entity, $id);
