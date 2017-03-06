@@ -231,6 +231,8 @@ class DBConnectionPdo
     $q = $this->pdo->prepare($sql);
     
     $q->execute($values);
+    
+    return $this->pdo->lastInsertId();
   }
   
   public function update($entity, $where, $row)

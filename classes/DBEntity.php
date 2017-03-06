@@ -55,7 +55,7 @@ class DBEntity
   
   public function insert($row)
   {
-    $this->connection->insert($this->entity, $row);
+    return $this->connection->insert($this->entity, $row);
   }
   
   public function update($where, $row)
