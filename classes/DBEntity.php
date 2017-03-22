@@ -30,6 +30,16 @@ class DBEntity
     return $this->connection->find($this->entity, $params, $orderBy, $range);
   }
   
+  public function walk($params, $orderBy, $range, $callback)
+  {
+    $this->connection->walk($this->entity, $params, $orderBy, $range, $callback);
+  }
+  
+  public function findColumn($column, $params = [], $orderBy = null, $range = null, $distinct = false)
+  {
+    return $this->connection->findColumn($this->entity, $column, $params, $orderBy, $range, $distinct);
+  }
+  
   /**
    * Fetch a record by it's id.
    */

@@ -50,6 +50,21 @@ class DBConnectionPdo
    */
   public function find($entity, $params, $orderBy, $range)
   {
+    $rows = [];
+    
+    $this->walk($entity, $params, $orderBy, $range, function($row) use (&$rows) {
+     if (isset($row->id)) {
+        $rows[$row->id] = $row;
+      } else {
+        $rows[] = $row;
+      }
+    });
+    
+    return $rows;
+  }
+  
+  public function walk($entity, $params, $orderBy, $range, $callback)
+  {
     $this->checkEntity($entity);
     
     $sql = "
@@ -71,10 +86,49 @@ class DBConnectionPdo
       
       $paramNum = count($queryParams) + 1;
       
-      $sql .= "
-        and `$column` $operator :{$paramNum}_$column
-      ";
-      $queryParams["{$paramNum}_$column"] = $value;
+      if ($operator == 'in') {
+        if (count($value) == 0) {
+          $sql .= "
+            and 0
+          ";
+        } else {
+          $subParamNum = 0;  
+          $first = true;
+          foreach ($value as $valueItem) {
+            if ($first) {
+              $sql .= "
+                and `$column` in (
+              ";
+              $first = false;
+            } else {
+              $sql .= ",
+              ";
+            }
+            $sql .= ":{$paramNum}_{$column}_{$subParamNum}";
+          
+            $queryParams["{$paramNum}_{$column}_{$subParamNum}"] = $valueItem;
+          
+            $subParamNum++;
+          }
+          $sql .= "  )
+          ";
+        }
+      } else if ($operator == 'isnull') {
+        if ($value) {
+          $sql .= "
+            and isnull(`$column`)
+          ";
+        } else {
+          $sql .= "
+            and !isnull(`$column`)
+          ";
+        }
+      } else {
+        $sql .= "
+          and `$column` $operator :{$paramNum}_$column
+        ";
+        $queryParams["{$paramNum}_$column"] = $value;
+      }
     }
     
     if ($orderBy) {
@@ -90,12 +144,12 @@ class DBConnectionPdo
       $sql .= 'LIMIT ' . (int)$start . ', ' . (int)$end . "\n";
     }
     
+    $structure = $this->entityStructure($entity);
+    
     $q = $this->pdo->prepare($sql);
     $q->execute($queryParams);
     
-    $rows = [];
     while ($row = $q->fetch(\PDO::FETCH_OBJ)) {
-      $structure = $this->entityStructure($entity);
       foreach ($structure as $field) {
         $fieldName = $field->name;
         
@@ -114,17 +168,131 @@ class DBConnectionPdo
           case 'uint':
             $row->$fieldName = (int)$row->$fieldName;
             break;
+          case 'float':
+            $row->$fieldName = (float)$row->$fieldName;
+            break;
         }
       }
       
-      if (isset($row->id)) {
-        $rows[$row->id] = $row;
+      $callback($row);
+    }
+  }
+  
+  public function findColumn($entity, $column, $params, $orderBy, $range, $distinct)
+  {
+    $this->checkEntity($entity);
+    
+    $distinct = $distinct ? 'DISTINCT' : '';
+    $sql = "
+      SELECT $distinct `$column` FROM `$entity`
+      where 1
+    ";
+    
+    $queryParams = [];
+    foreach ($params as $column => $rule) {
+      if (is_numeric($column)) {
+        list($column, $operator, $value) = $rule;
       } else {
-        $rows[] = $row;
+        if (!is_array($rule)) {
+          $rule = ['=', $rule];
+        }
+      
+        list($operator, $value) = $rule;
+      }
+      
+      $paramNum = count($queryParams) + 1;
+      
+      if ($operator == 'in') {
+        if (count($value) == 0) {
+          $sql .= "
+            and 0
+          ";
+        } else {
+          $subParamNum = 0;  
+          $first = true;
+          foreach ($value as $valueItem) {
+            if ($first) {
+              $sql .= "
+                and `$column` in (
+              ";
+              $first = false;
+            } else {
+              $sql .= ",
+              ";
+            }
+            $sql .= ":{$paramNum}_{$column}_{$subParamNum}";
+          
+            $queryParams["{$paramNum}_{$column}_{$subParamNum}"] = $valueItem;
+          
+            $subParamNum++;
+          }
+          $sql .= "  )
+          ";
+        }
+      } else if ($operator == 'isnull') {
+        if ($value) {
+          $sql .= "
+            and isnull(`$column`)
+          ";
+        } else {
+          $sql .= "
+            and !isnull(`$column`)
+          ";
+        }
+      } else {
+        $sql .= "
+          and `$column` $operator :{$paramNum}_$column
+        ";
+        $queryParams["{$paramNum}_$column"] = $value;
       }
     }
     
-    return $rows;
+    if ($orderBy) {
+      $asc = ($orderBy[0] != '-');
+      $key = trim($orderBy, '-+');
+      
+      $sql .= "ORDER BY `$key` " . ($asc ? "ASC\n" : "DESC\n");
+    }
+    
+    if ($range) {
+      list($start, $end) = $range;
+      
+      $sql .= 'LIMIT ' . (int)$start . ', ' . (int)$end . "\n";
+    }
+    
+    $q = $this->pdo->prepare($sql);
+    $q->execute($queryParams);
+    
+    $structure = $this->entityStructure($entity);
+    $cells = [];
+    while ($row = $q->fetch(\PDO::FETCH_NUM)) {
+      $cell = array_shift($row);
+      $field = $structure[$column];
+      
+      switch ($field->type) {
+        case 'date':
+          if ($cell !== null) {
+            $cell = new \DateTime($cell);
+          }
+          break;
+        case 'datetime':
+          if ($cell !== null) {
+            $cell = new \DateTime($cell);
+          }
+          break;
+        case 'int':
+        case 'uint':
+          $cell = (int)$cell;
+          break;
+        case 'float':
+          $cell = (float)$cell;
+          break;
+      }
+      
+      $cells[] = $cell;
+    }
+    
+    return $cells;
   }
   
   public function byId($entity, $id)
@@ -160,6 +328,9 @@ class DBConnectionPdo
         case 'int':
         case 'uint':
           $row->$fieldName = (int)$row->$fieldName;
+          break;
+        case 'float':
+          $row->$fieldName = (float)$row->$fieldName;
           break;
       }
     }
@@ -309,7 +480,8 @@ class DBConnectionPdo
         'name' => $rawField->Field,
         'raw_type' => $rawField->Type,
         'null' => $rawField->Null == 'YES',
-        'default' => $rawField->Default
+        'default' => $rawField->Default,
+        'primaryKey' => ($rawField->Key == 'PRI')
       ];
       
       if (preg_match('/^varchar\(([0-9]+)\)/', $field->raw_type, $matches)) {
@@ -327,12 +499,20 @@ class DBConnectionPdo
         $field->type = 'bool';
       } else if ($field->raw_type == 'int(11) unsigned') {
         $field->type = 'uint';
+      } else if ($field->raw_type == 'time') {
+        $field->type = 'uint';
       } else if ($field->raw_type == 'int(11)') {
         $field->type = 'int';
       } else if ($field->raw_type == 'blob') {
         $field->type = 'blob';
+      } else if ($field->raw_type == 'float') {
+        $field->type = 'float';
+      } else if ($field->raw_type == 'double') {
+        $field->type = 'float';
+      } else if (preg_match('/^decimal\\(/', $field->raw_type)) {
+        $field->type = 'float';
       } else {
-        throw new \exception("Unknown field type: " . json_encode($rawField));
+        throw new \exception("Unknown field type for {$entity}->{$field->name}: " . json_encode($rawField));
       }
       
       $structure[$field->name] = $field;
@@ -348,6 +528,7 @@ class DBConnectionPdo
     $structure = $this->entityStructure($entity);
     
     $valuesSql = "";
+    $values = [];
     foreach ($structure as $field) {
       $fieldName = $field->name;
       
@@ -423,6 +604,10 @@ class DBConnectionPdo
           if ($value < 0) {
             throw new exception('Cannot write negative value for table column ' . $fieldName);
           }
+          break;
+        
+        case 'float':
+          $value = (float)$row->$fieldName;
           break;
         
         case 'bool':
@@ -567,6 +752,9 @@ class DBConnectionPdo
       case 'uint':
         $typeSql = 'int(11) unsigned';
         break;
+      case 'float':
+        $typeSql = 'float';
+        break;
       default:
         throw new \exception('Invalid type ' . $options['type']);
     }
@@ -630,6 +818,9 @@ class DBConnectionPdo
         break;
       case 'uint':
         $typeSql = 'int(11) unsigned';
+        break;
+      case 'float':
+        $typeSql = 'float';
         break;
       default:
         throw new \exception('Invalid type ' . $options['type']);
