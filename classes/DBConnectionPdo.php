@@ -69,67 +69,10 @@ class DBConnectionPdo
     
     $sql = "
       SELECT * FROM `$entity`
-      where 1
+      where 
     ";
     
-    $queryParams = [];
-    foreach ($params as $column => $rule) {
-      if (is_numeric($column)) {
-        list($column, $operator, $value) = $rule;
-      } else {
-        if (!is_array($rule)) {
-          $rule = ['=', $rule];
-        }
-      
-        list($operator, $value) = $rule;
-      }
-      
-      $paramNum = count($queryParams) + 1;
-      
-      if ($operator == 'in') {
-        if (count($value) == 0) {
-          $sql .= "
-            and 0
-          ";
-        } else {
-          $subParamNum = 0;  
-          $first = true;
-          foreach ($value as $valueItem) {
-            if ($first) {
-              $sql .= "
-                and `$column` in (
-              ";
-              $first = false;
-            } else {
-              $sql .= ",
-              ";
-            }
-            $sql .= ":{$paramNum}_{$column}_{$subParamNum}";
-          
-            $queryParams["{$paramNum}_{$column}_{$subParamNum}"] = $valueItem;
-          
-            $subParamNum++;
-          }
-          $sql .= "  )
-          ";
-        }
-      } else if ($operator == 'isnull') {
-        if ($value) {
-          $sql .= "
-            and isnull(`$column`)
-          ";
-        } else {
-          $sql .= "
-            and !isnull(`$column`)
-          ";
-        }
-      } else {
-        $sql .= "
-          and `$column` $operator :{$paramNum}_$column
-        ";
-        $queryParams["{$paramNum}_$column"] = $value;
-      }
-    }
+    $sql .= $this->whereSqlFromParams($params, $queryParams);
     
     if ($orderBy) {
       $asc = ($orderBy[0] != '-');
@@ -185,67 +128,10 @@ class DBConnectionPdo
     $distinct = $distinct ? 'DISTINCT' : '';
     $sql = "
       SELECT $distinct `$column` FROM `$entity`
-      where 1
+      where
     ";
     
-    $queryParams = [];
-    foreach ($params as $column => $rule) {
-      if (is_numeric($column)) {
-        list($column, $operator, $value) = $rule;
-      } else {
-        if (!is_array($rule)) {
-          $rule = ['=', $rule];
-        }
-      
-        list($operator, $value) = $rule;
-      }
-      
-      $paramNum = count($queryParams) + 1;
-      
-      if ($operator == 'in') {
-        if (count($value) == 0) {
-          $sql .= "
-            and 0
-          ";
-        } else {
-          $subParamNum = 0;  
-          $first = true;
-          foreach ($value as $valueItem) {
-            if ($first) {
-              $sql .= "
-                and `$column` in (
-              ";
-              $first = false;
-            } else {
-              $sql .= ",
-              ";
-            }
-            $sql .= ":{$paramNum}_{$column}_{$subParamNum}";
-          
-            $queryParams["{$paramNum}_{$column}_{$subParamNum}"] = $valueItem;
-          
-            $subParamNum++;
-          }
-          $sql .= "  )
-          ";
-        }
-      } else if ($operator == 'isnull') {
-        if ($value) {
-          $sql .= "
-            and isnull(`$column`)
-          ";
-        } else {
-          $sql .= "
-            and !isnull(`$column`)
-          ";
-        }
-      } else {
-        $sql .= "
-          and `$column` $operator :{$paramNum}_$column
-        ";
-        $queryParams["{$paramNum}_$column"] = $value;
-      }
-    }
+    $sql .= $this->whereSqlFromParams($params, $queryParams);
     
     if ($orderBy) {
       $asc = ($orderBy[0] != '-');
@@ -955,5 +841,75 @@ class DBConnectionPdo
   public function rollBack()
   {
     $this->pdo->rollBack();
+  }
+  
+  public function whereSqlFromParams($params, &$queryParams = [])
+  {
+    if (count($params) == 0) {
+      return '1';
+    }
+    
+    $sql = '';
+    
+    foreach ($params as $column => $rule) {
+      if ($sql != '') {
+        $sql .= "\nand ";
+      } else {
+        $sql .= "\n";
+      }
+      
+      if (is_numeric($column)) {
+        list($column, $operator, $value) = $rule;
+      } else {
+        if (!is_array($rule)) {
+          $rule = ['=', $rule];
+        }
+      
+        list($operator, $value) = $rule;
+      }
+      
+      $paramNum = count($queryParams) + 1;
+      
+      if ($operator == 'in') {
+        if (count($value) == 0) {
+          $sql .= "0";
+        } else {
+          $subParamNum = 0;  
+          $first = true;
+          foreach ($value as $valueItem) {
+            if ($first) {
+              $sql .= "`$column` in (";
+              $first = false;
+            } else {
+              $sql .= ",
+              ";
+            }
+            $sql .= ":{$paramNum}_{$column}_{$subParamNum}";
+          
+            $queryParams["{$paramNum}_{$column}_{$subParamNum}"] = $valueItem;
+          
+            $subParamNum++;
+          }
+          $sql .= "  )";
+        }
+      } else if ($operator == 'inSubquery') {
+        list($subqueryTable, $subqueryColumn, $subqueryParams) = $value;
+        $sql .= "`$column` in (select `$subqueryColumn` from `$subqueryTable` where " . $this->whereSqlFromParams($subqueryParams, $queryParams);
+        $sql .= ')';
+      } else if ($operator == 'isnull') {
+        if ($value) {
+          $sql .= "isnull(`$column`)";
+        } else {
+          $sql .= "!isnull(`$column`)";
+        }
+      } else {
+        $sql .= "`$column` $operator :{$paramNum}_$column";
+        $queryParams["{$paramNum}_$column"] = $value;
+      }
+    }
+    
+    $sql .= "\n";
+    
+    return $sql;
   }
 }
