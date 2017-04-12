@@ -851,7 +851,13 @@ class DBConnectionPdo
     
     $sql = '';
     
+     $assocParams = array_keys($params) !== range(0, count($params) -1);
+    
     foreach ($params as $column => $rule) {
+      if (!$assocParams) {
+        $column = $rule[0];
+        $rule = $rule[1];
+      }
       if ($sql != '') {
         $sql .= "\nand ";
       } else {
