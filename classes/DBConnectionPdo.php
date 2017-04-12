@@ -193,7 +193,7 @@ class DBConnectionPdo
     $row = $q->fetch(\PDO::FETCH_OBJ);
     
     if (!$row) {
-    	throw new \exception("Invalid id $id on $entity");
+      throw DBRowNotFoundException::sharedInstance();
     }
     
     $structure = $this->entityStructure($entity);
@@ -222,7 +222,7 @@ class DBConnectionPdo
     }
     
     if (!$row) {
-      throw new \exception('invalid id ' . $id . ' for entity ' . $entity);
+      throw DBRowNotFoundException::sharedInstance();
     }
     
     return $row;
@@ -233,7 +233,7 @@ class DBConnectionPdo
     $rows = $this->find($entity, $params, $orderBy, [0, 1]);
     
     if (count($rows) == 0) {
-      throw new \exception('cannot find record matching ' . json_encode($params) . ' for entity ' . $entity);
+      throw DBRowNotFoundException::sharedInstance();
     }
     
     return array_shift($rows);
