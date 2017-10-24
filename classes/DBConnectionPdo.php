@@ -391,6 +391,8 @@ class DBConnectionPdo
         $field->type = 'int';
       } else if ($field->raw_type == 'blob') {
         $field->type = 'blob';
+      } else if ($field->raw_type == 'mediumblob') {
+        $field->type = 'blob';
       } else if ($field->raw_type == 'float') {
         $field->type = 'float';
       } else if ($field->raw_type == 'double') {
