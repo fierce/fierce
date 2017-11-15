@@ -264,7 +264,7 @@ class DBConnectionPdo
     list($valuesSql, $values) = $this->valuesSql($entity, $row);
     $values['id'] = $id;
     
-    $sql = "INSERT INTO `$entity` set\n`id` = :id,\n" . $valuesSql;
+    $sql = "INSERT INTO `$entity` set\n" . $valuesSql;
     
     if ($allowOverwrite) {
       $sql .= "\n\nON DUPLICATE KEY UPDATE\n" . $valuesSql;
@@ -367,7 +367,8 @@ class DBConnectionPdo
         'raw_type' => $rawField->Type,
         'null' => $rawField->Null == 'YES',
         'default' => $rawField->Default,
-        'primaryKey' => ($rawField->Key == 'PRI')
+        'primaryKey' => ($rawField->Key == 'PRI'),
+        'autoIncrement' => ($rawField->Extra == 'auto_increment')
       ];
       
       if (preg_match('/^varchar\(([0-9]+)\)/', $field->raw_type, $matches)) {
@@ -420,7 +421,7 @@ class DBConnectionPdo
     foreach ($structure as $field) {
       $fieldName = $field->name;
       
-      if ($fieldName == 'id') {
+      if ($fieldName == 'id' && $field->autoIncrement) {
         continue;
       }
       

@@ -14,20 +14,26 @@ namespace Fierce;
 
 class DBRow
 {
+  static $dbEntity = null;
+  static $dbEnvName = 'db';
+  
   public $id;
   protected $row;
+  protected $fetchCache = [];
   
   public static function tableName()
   {
-    $class = get_called_class();
-    return preg_replace('/(.*)\\\\/', '', $class);
+    if (static::$dbEntity) {
+      return static::$dbEntity;
+    }
+    
+    return preg_replace('/(.*)\\\\/', '', get_called_class());
   }
   
   static public function all($sort=null)
   {
-    $db = Env::get('db');
-    $class = get_called_class();
-    $entity = $class::tableName();
+    $db = Env::get(static::$dbEnvName);
+    $entity = static::tableName();
     
     $rows = $db->$entity->find([], $sort);
     
@@ -45,9 +51,9 @@ class DBRow
   
   public static function find($params=[], $sort=null, $range=null)
   {
-    $db = Env::get('db');
+    $db = Env::get(static::$dbEnvName);
     $class = get_called_class();
-    $entity = $class::tableName();
+    $entity = static::tableName();
     
     $rows = $db->$entity->find($params, $sort, $range);
     
@@ -65,9 +71,8 @@ class DBRow
   
   static public function idExists($id)
   {
-    $db = Env::get('db');
-    $class = get_called_class();
-    $entity = $class::tableName();
+    $db = Env::get(static::$dbEnvName);
+    $entity = static::tableName();
     
     $id = preg_replace('/[^a-zA-Z0-9-]/', '', $id);
     
@@ -76,9 +81,9 @@ class DBRow
   
   static public function createById($id)
   {
-    $db = Env::get('db');
+    $db = Env::get(static::$dbEnvName);
     $class = get_called_class();
-    $entity = $class::tableName();
+    $entity = static::tableName();
     
     $id = preg_replace('/[^a-zA-Z0-9-]/', '', $id);
     
@@ -93,9 +98,9 @@ class DBRow
   
   static public function createNew()
   {
-    $db = Env::get('db');
+    $db = Env::get(static::$dbEnvName);
     $class = get_called_class();
-    $entity = $class::tableName();
+    $entity = static::tableName();
     
     $row = $db->$entity->blankRow();
     $row->id = $db->id();
@@ -109,9 +114,8 @@ class DBRow
   
   static public function createByFind($params)
   {
-    $db = Env::get('db');
-    $class = get_called_class();
-    $entity = $class::tableName();
+    $db = Env::get(static::$dbEnvName);
+    $entity = static::tableName();
     
     $rows = self::find($params);
     if (count($rows) == 0) {
@@ -124,8 +128,31 @@ class DBRow
     return array_shift($rows);
   }
   
+  /**
+   * Property accessor for database entity. Several locations are searched, in this order:
+   * 
+   * - if a "getKey()" method exists it will be executed
+   * - if a "fetchKey()" method exists it will be executed the first time and cached thereafter. unset($this->fetchCache[$key]) to clear
+   * - for "id" the id of the row is returned (in future this may support dual primary keys)
+   * - for "row" the raw row object is returned
+   * - if the key is a database column in the entity it will be returned
+   * - failing those, an exception is thrown
+   */
   public function __get($key)
   {
+    $getMethod = 'get' . $key;
+    if (method_exists($this, $getMethod)) {
+      return $this->$getMethod();
+    }
+    
+    $fetchMethod = 'fetch' . $key;
+    if (method_exists($this, $fetchMethod)) {
+      if (!array_key_exists($key, $this->fetchCache)) {
+        $this->fetchCache[$key] = $this->$fetchMethod();
+      }
+      return $this->fetchCache[$key];
+    }
+    
     switch ($key) {
       case 'id':
         return $this->id;
@@ -133,7 +160,11 @@ class DBRow
         return $this->row;
     }
     
-    return $this->row->$key;
+    if (property_exists($this->row, $key)) {
+      return $this->row->$key;
+    }
+    
+    throw new \exception("Cannot acccess $key on " . get_called_class());
   }
   
   public function __set($key, $value)
@@ -182,18 +213,21 @@ class DBRow
   
   public function save()
   {
-    $db = Env::get('db');
-    $class = get_called_class();
-    $entity = $class::tableName();
+    $db = Env::get(static::$dbEnvName);
+    $entity = static::tableName();
     
     // misc fields
-    $user = Auth::loggedInUser();
-    if ($user) {
-      $this->row->modifiedBy = $user->id;
-    } else {
-      $this->row->modifiedBy = 'none';
+    if (property_exists($this->row, 'modifiedBy')) {
+      $user = Auth::loggedInUser();
+      if ($user) {
+        $this->row->modifiedBy = $user->id;
+      } else {
+        $this->row->modifiedBy = 'none';
+      }
     }
-    $this->row->modified = new \DateTime();
+    if (property_exists($this->row, 'modified')) {
+      $this->row->modified = new \DateTime();
+    }
     
     // save
     $db->$entity->archive($this->id);
@@ -203,18 +237,16 @@ class DBRow
   
   public function archive()
   {
-    $db = Env::get('db');
-    $class = get_called_class();
-    $entity = $class::tableName();
+    $db = Env::get(static::$dbEnvName);
+    $entity = static::tableName();
     
     $db->$entity->archive($this->id);
   }
   
   public function purge()
   {
-    $db = Env::get('db');
-    $class = get_called_class();
-    $entity = $class::tableName();
+    $db = Env::get(static::$dbEnvName);
+    $entity = static::tableName();
     
     $db->$entity->purge($this->id);
   }
