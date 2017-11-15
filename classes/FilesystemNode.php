@@ -54,6 +54,24 @@ class FilesystemNode
     return file_get_contents($this->path);
   }
   
+  public function createDir($mode = 0777)
+  {
+    $success = mkdir($this->path, $mode, true);
+    
+    if (!$success) {
+    	throw new \Exceltion("Cannot create '$this->path'");
+    }
+  }
+  
+  function deleteFile()
+  {
+    $success = unlink($this->path);
+    
+    if (!$success) {
+    	throw new \Exceltion("Cannot remove '$this->path'");
+    }
+  }
+  
   public function children()
   {
     if (!$this->isDir()) {
@@ -89,4 +107,9 @@ class FilesystemNode
     
     return substr($this->path, strlen($relativeTo->path) + 1);
   }
+  
+  public function isDescendantOf(FilesystemNode $dir)
+  {
+    return substr($this->path, 0, strlen($dir->path)) == $dir->path;
+}
 }
