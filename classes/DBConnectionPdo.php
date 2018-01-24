@@ -78,17 +78,20 @@ class DBConnectionPdo
       $asc = ($orderBy[0] != '-');
       $key = trim($orderBy, '-+');
       
-      $sql .= "ORDER BY `$key` " . ($asc ? "ASC\n" : "DESC\n");
+      $sql .= "
+        ORDER BY `$key` " . ($asc ? "ASC\n" : "DESC
+      ");
     }
     
     if ($range) {
       list($start, $end) = $range;
       
-      $sql .= 'LIMIT ' . (int)$start . ', ' . (int)$end . "\n";
+      $sql .= '
+        LIMIT ' . (int)$start . ', ' . (int)$end . '
+      ';
     }
     
     $structure = $this->entityStructure($entity);
-    
     $q = $this->pdo->prepare($sql);
     $q->execute($queryParams);
     
