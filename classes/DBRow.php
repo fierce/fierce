@@ -169,6 +169,11 @@ class DBRow
   
   public function __set($key, $value)
   {
+    $setMethod = 'set' . $key;
+    if (method_exists($this, $setMethod)) {
+      return $this->$setMethod($value);
+    }
+    
     if (!property_exists($this->row, $key)) {
       throw new \exception("Cannot set $key on " . get_called_class());
     }
