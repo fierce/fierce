@@ -119,10 +119,10 @@ class DBRow
     
     $rows = self::find($params);
     if (count($rows) == 0) {
-    	throw new \exception("Cannot find row matching params");
+    	throw new \exception("Cannot find $entity where " . json_encode($params));
     }
     if (count($rows) > 1) {
-    	throw new \exception("Found too many rows matching params");
+    	throw new \exception("Found too many rows in $entity where " . json_encode($params));
     }
     
     return array_shift($rows);
