@@ -30,6 +30,11 @@ class DBEntity
     return $this->connection->find($this->entity, $params, $orderBy, $range);
   }
   
+  public function count($params = array())
+  {
+    return $this->connection->count($this->entity, $params);
+  }
+  
   public function walk($params, $orderBy, $range, $callback)
   {
     $this->connection->walk($this->entity, $params, $orderBy, $range, $callback);

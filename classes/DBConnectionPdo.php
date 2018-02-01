@@ -124,6 +124,23 @@ class DBConnectionPdo
     }
   }
   
+  public function count($entity, $params)
+  {
+    $this->checkEntity($entity);
+    
+    $sql = "
+      SELECT count(*) FROM `$entity`
+      where 
+    ";
+    
+    $sql .= $this->whereSqlFromParams($params, $queryParams);
+    
+    $q = $this->pdo->prepare($sql);
+    $q->execute($queryParams);
+    
+    return $q->fetchColumn();
+  }
+  
   public function findColumn($entity, $column, $params, $orderBy, $range, $distinct)
   {
     $this->checkEntity($entity);
@@ -882,7 +899,7 @@ class DBConnectionPdo
       
       $paramNum = count($queryParams) + 1;
       
-      if ($operator == 'in') {
+      if ($operator == 'in' || $operator == 'not in') {
         if (count($value) == 0) {
           $sql .= "0";
         } else {
@@ -890,7 +907,7 @@ class DBConnectionPdo
           $first = true;
           foreach ($value as $valueItem) {
             if ($first) {
-              $sql .= "`$column` in (";
+              $sql .= "`$column` $operator (";
               $first = false;
             } else {
               $sql .= ",
