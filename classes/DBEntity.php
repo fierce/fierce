@@ -45,6 +45,11 @@ class DBEntity
     return $this->connection->findColumn($this->entity, $column, $params, $orderBy, $range, $distinct);
   }
   
+  public function findCell($column, $params = [], $orderBy = null, $range = null, $distinct = false)
+  {
+    return $this->connection->findCell($this->entity, $column, $params, $orderBy, $range, $distinct);
+  }
+  
   /**
    * Fetch a record by it's id.
    */

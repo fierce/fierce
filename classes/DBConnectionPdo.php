@@ -201,6 +201,66 @@ class DBConnectionPdo
     return $cells;
   }
   
+  public function findCell($entity, $column, $params, $orderBy, $range, $distinct)
+  {
+    $this->checkEntity($entity);
+    
+    $distinct = $distinct ? 'DISTINCT' : '';
+    $sql = "
+      SELECT $distinct `$column` FROM `$entity`
+      where
+    ";
+    
+    $sql .= $this->whereSqlFromParams($params, $queryParams);
+    
+    if ($orderBy) {
+      $asc = ($orderBy[0] != '-');
+      $key = trim($orderBy, '-+');
+      
+      $sql .= "ORDER BY `$key` " . ($asc ? "ASC\n" : "DESC\n");
+    }
+    
+    if ($range) {
+      list($start, $end) = $range;
+      
+      $sql .= 'LIMIT ' . (int)$start . ', ' . (int)$end . "\n";
+    }
+    
+    $q = $this->pdo->prepare($sql);
+    $q->execute($queryParams);
+    
+    if ($row = $q->fetch(\PDO::FETCH_NUM)) {
+      $cell = array_shift($row);
+      
+      $structure = $this->entityStructure($entity);
+      $field = $structure[$column];
+      
+      switch ($field->type) {
+        case 'date':
+          if ($cell !== null) {
+            $cell = new \DateTime($cell);
+          }
+          break;
+        case 'datetime':
+          if ($cell !== null) {
+            $cell = new \DateTime($cell);
+          }
+          break;
+        case 'int':
+        case 'uint':
+          $cell = (int)$cell;
+          break;
+        case 'float':
+          $cell = (float)$cell;
+          break;
+      }
+      
+      return $cell;
+    }
+    
+    return null;
+  }
+  
   public function byId($entity, $id)
   {
     $this->checkEntity($entity);
@@ -402,6 +462,8 @@ class DBConnectionPdo
         $field->type = 'text';
       } else if ($field->raw_type == 'mediumtext') {
         $field->type = 'text';
+      } else if ($field->raw_type == 'longtext') {
+        $field->type = 'text';
       } else if ($field->raw_type == 'tinyint(1)') {
         $field->type = 'bool';
       } else if ($field->raw_type == 'int(11) unsigned') {
@@ -500,6 +562,11 @@ class DBConnectionPdo
           }
           
           if ($field->raw_type == 'mediumtext' && strlen($value) > 16777215) {
+            throw new \exception('Value too long for table column ' . $fieldName);
+          }
+          break;
+          
+          if ($field->raw_type == 'longtext' && strlen($value) > 4294967295) {
             throw new \exception('Value too long for table column ' . $fieldName);
           }
           break;
@@ -648,6 +715,9 @@ class DBConnectionPdo
       case 'mediumtext':
         $typeSql = 'mediumtext';
         break;
+      case 'longtext':
+        $typeSql = 'longtext';
+        break;
       case 'bool':
         $typeSql = 'tinyint(1)';
         $options['null'] = false;
@@ -714,6 +784,9 @@ class DBConnectionPdo
         break;
       case 'mediumtext':
         $typeSql = 'mediumtext';
+        break;
+      case 'longtext':
+        $typeSql = 'longtext';
         break;
       case 'bool':
         $typeSql = 'tinyint(1)';
