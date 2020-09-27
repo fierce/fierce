@@ -23,7 +23,7 @@ class MediaController extends PageController
     $imageItems = array();
     foreach ($imageFiles as $file) {
       $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
-      if (!in_array($ext, ['png', 'jpg', 'svg', 'gif'])) {
+      if (!in_array($ext, ['png', 'jpg', 'svg', 'gif', 'pdf'])) {
         continue;
       }
       
@@ -52,7 +52,7 @@ class MediaController extends PageController
     $name = preg_replace('/[^a-zA-Z0-9-_.]+/', '-', $name);
     
     $ext = strtolower(pathinfo($name, PATHINFO_EXTENSION));
-    if (!in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'svg'])) {
+    if (!in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'svg', 'pdf'])) {
       die('Invalid file type');
     }
     
