@@ -241,7 +241,7 @@
   
   CalendarFieldController.prototype.cellClicked = function(clickEvent)
   {
-    this.inputEl.setAttribute('value', clickEvent.target.getAttribute('data-date'))
+    this.inputEl.value = clickEvent.target.getAttribute('data-date')
     
     this.hideCalendar();
   }
@@ -257,5 +257,9 @@
       
       node.controller = new CalendarFieldController(node)
     }
+  })
+  
+  document.addEventListener('CalendarFieldNodeAdded', function(e) {
+    e.target.controller = new CalendarFieldController(e.target)
   })
 }())
