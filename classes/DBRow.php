@@ -96,14 +96,14 @@ class DBRow
     return $item;
   }
   
-  static public function createNew()
+  static public function createNew($id=false)
   {
     $db = Env::get(static::$dbEnvName);
     $class = get_called_class();
     $entity = static::tableName();
     
     $row = $db->$entity->blankRow();
-    $row->id = $db->id();
+    $row->id = $id ? $id : $db->id();
     
     $item = new $class();
     $item->setData($row);
@@ -183,7 +183,27 @@ class DBRow
   
   public function __isset($key)
   {
+    $getMethod = 'get' . $key;
+    if (method_exists($this, $getMethod)) {
+      return true;
+    }
+    
+    $fetchMethod = 'fetch' . $key;
+    if (method_exists($this, $fetchMethod)) {
+      return true;
+    }
+    
     if (method_exists($this, $key)) {
+      return true;
+    }
+    
+    return property_exists($this->row, $key);
+  }
+  
+  public function canSet($key)
+  {
+    $setMethod = 'set' . $key;
+    if (method_exists($this, $setMethod)) {
       return true;
     }
     
@@ -208,7 +228,7 @@ class DBRow
     }
     
     foreach ($data as $key => $value) {
-      if (isset($this->$key)) {
+      if (isset($this->$key) && $this->canSet($key)) {
         $this->$key = $value;
       } else {
         $this->row->$key = $value;

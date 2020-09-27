@@ -469,7 +469,7 @@ class DBConnectionPdo
       } else if ($field->raw_type == 'int(11) unsigned') {
         $field->type = 'uint';
       } else if ($field->raw_type == 'time') {
-        $field->type = 'uint';
+        $field->type = 'time';
       } else if ($field->raw_type == 'int(11)') {
         $field->type = 'int';
       } else if ($field->raw_type == 'blob') {
@@ -543,6 +543,17 @@ class DBConnectionPdo
             $value = $row->$fieldName->format('Y-m-d H:i:s');
           } else {
             throw new \exception('Expecting a DateTime, but got ' . gettype($row->$fieldName) . ' for ' . $fieldName);
+          }
+          break;
+        case 'time':
+          if ($row->$fieldName === null || $row->$fieldName === false) {
+            $value = null;
+          } else {
+            try {
+              $value = (string)$row->$fieldName;
+            } catch (\exception $e) {
+              throw new \exception("Unable to convert $fieldName value into a time");
+            }
           }
           break;
         

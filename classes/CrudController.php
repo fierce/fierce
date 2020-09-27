@@ -87,7 +87,7 @@ class CrudController extends PageController
     $db->begin();
     
     $entity = $this->entity;
-    $item = $entity::createNew();
+    $item = $entity::createNew($_GET['id']);
     
     $formData = new FormData($this->editFields);
     $formData->retrieve();
@@ -172,8 +172,9 @@ class CrudController extends PageController
     });
     
     $this->beforeSave($item, $formData);
-    
-    $item->setData($formData->getValues());
+
+    $item->setData($formData->getValues());    
+      
     $item->save();
     
     $this->afterSave($item);
