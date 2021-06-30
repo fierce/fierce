@@ -75,12 +75,21 @@ class DBConnectionPdo
     $sql .= $this->whereSqlFromParams($params, $queryParams);
     
     if ($orderBy) {
-      $asc = ($orderBy[0] != '-');
-      $key = trim($orderBy, '-+');
-      
-      $sql .= "
-        ORDER BY `$key` " . ($asc ? "ASC\n" : "DESC
-      ");
+      if (!is_array($orderBy)) {
+        $orderBy = [$orderBy];
+      }
+      $orderByIndex = 0;
+      foreach ($orderBy as $orderByColumn) {
+        $asc = ($orderByColumn[0] != '-');
+        $key = trim($orderByColumn, '-+');
+        
+        if ($orderByIndex == 0) {
+          $sql .= "\n  ORDER BY `$key` " . ($asc ? "ASC" : "DESC");
+        } else {
+          $sql .= ", `$key` " . ($asc ? "ASC" : "DESC");
+        }
+        $orderByIndex++;
+      }
     }
     
     if ($range) {
