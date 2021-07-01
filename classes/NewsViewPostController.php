@@ -17,6 +17,10 @@ class NewsViewPostController extends PageController
   public function defaultAction()
   {
     $post = NewsPost::createById(@$_GET['id']);
+    if (!$post) {
+      HTTP::notFoundHeader();
+      die('page not found');
+    }
     
     $tpl = 'news-view-post.tpl';
     $vars = [
