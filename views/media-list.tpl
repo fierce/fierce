@@ -10,7 +10,6 @@
   <img id="add_image_preview" width="200">
   <p>Uploading...</p>
 </div>
-
 <div class="media_list_wrapper">
   <table class="grid" id="media_image_list">
     <tbody>

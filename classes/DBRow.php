@@ -33,6 +33,7 @@ class DBRow
   static public function all($sort=null)
   {
     $db = Env::get(static::$dbEnvName);
+    $class = get_called_class();
     $entity = static::tableName();
     
     $rows = $db->$entity->find([], $sort);
