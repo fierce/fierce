@@ -23,7 +23,7 @@ class DateFieldNode extends FieldNode
     
     // format('Y-m-d') method call on date object
     $args = new \Twig_Node_Expression_Array([], $this->lineno);
-    $args->addElement(new \Twig_Node_Expression_Constant('j M, Y', $this->lineno));
+    $args->addElement(new \Twig_Node_Expression_Constant('j M Y', $this->lineno));
     
     $formatNode = new \Twig_Node_Expression_MethodCall($valueNode, 'format', $args, $this->lineno);
     
